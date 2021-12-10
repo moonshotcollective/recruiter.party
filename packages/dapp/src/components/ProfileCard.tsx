@@ -8,6 +8,7 @@ import {
   Tag,
   Text,
   VStack,
+  Button,
 } from "@chakra-ui/react";
 import { UnlockIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
@@ -35,6 +36,7 @@ export const ProfileCard = ({
   country,
   skills,
   description,
+  approve
 }: ProfileCardProps) => {
   const router = useRouter();
 
@@ -82,6 +84,14 @@ export const ProfileCard = ({
             </Tag>
           ))}
         </SimpleGrid>
+        {approve && (
+          <VStack paddingY={6} width="100%" align="start">
+            <Text fontSize="lg" color="yellow.200">0.2 MATIC</Text>
+            <HStack pt={6} justify="end" width="100%">
+              <Button colorScheme="yellow">Approve</Button>
+            </HStack>
+          </VStack>
+        )}
       </VStack>
     </Box>
   );

@@ -1,4 +1,16 @@
 /* Global Styling here */
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap");
+
 .blockies {
   border-radius: 50%;
+}
+
+.dot {
+  height: 50px;
+  width: 50px;
+  background-color: #fff;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  top: 10px;
 }

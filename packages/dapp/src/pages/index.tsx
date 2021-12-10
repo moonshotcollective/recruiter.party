@@ -1,13 +1,55 @@
 import {
   Heading,
   HStack,
-  Text,
   VStack,
-  Button
+  Button,
+  Divider,
+  Input,
+  SimpleGrid,
 } from "@chakra-ui/react";
+import { ProfileCard, ProfileCardProps } from "components/ProfileCard";
 import { useRouter } from "next/router";
 
 import Container from "../components/layout/Container";
+
+const profiles: ProfileCardProps[] = [
+  {
+    name: "Huxwell",
+    coverSrc:
+      "https://images.unsplash.com/photo-1426604966848-d7adac402bff?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+    avatarSrc: "https://source.unsplash.com/random",
+    isUnlocked: true,
+    emoji: "🤓",
+    city: "New York",
+    country: "USA",
+    skills: ["React", "Node", "GraphQL", "Next.js", "Everything"],
+    description: "Open Source software engineer",
+  },
+  {
+    name: "QEDK",
+    coverSrc:
+      "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80",
+    avatarSrc: "https://avatars.githubusercontent.com/u/1272002?v=4",
+    isUnlocked: false,
+    emoji: "🤓",
+    city: "Quadratic Lands",
+    country: "CO",
+    skills: ["Solidity", "Ethereum", "Node"],
+    description: "Anon",
+  },
+  {
+    name: "Dhaiwat",
+    coverSrc:
+      "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+    avatarSrc: "https://avatars.githubusercontent.com/u/39617427",
+    isUnlocked: false,
+    emoji: "🤓",
+    city: "Gujarat",
+    country: "IN",
+    skills: ["React", "Node", "GraphQL", "Next.js"],
+    description: "Anon 2",
+  },
+];
 
 const Home = () => {
   const router = useRouter();
@@ -17,20 +59,54 @@ const Home = () => {
   }
   return (
     <Container>
-      <VStack w="full" p="8">
-        <HStack align="center">
-          <Heading fontSize="7xl">Homepage</Heading>
-        </HStack>
-        <Heading fontSize="xl">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dignissimos esse rerum doloremque eligendi tenetur reprehenderit consequuntur adipisci officia amet quam architecto, commodi deserunt neque debitis porro non iusto asperiores molestiae!
+      <VStack w="full" p="8" align="start" spacing="8">
+        <Heading fontSize="4xl" mb={-6}>
+          Recruiter.Party <span className="dot"></span>
         </Heading>
-        <Text>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dignissimos esse rerum doloremque eligendi tenetur reprehenderit consequuntur adipisci officia amet quam architecto, commodi deserunt neque debitis porro non iusto asperiores molestiae!
-        </Text>
+        <Heading
+          fontSize="xl"
+          color="purple.500"
+          width="600px"
+          lineHeight="8"
+          fontWeight={"normal"}
+        >
+          Lorem ipsum dolor sit amet
+          <br />
+          consectetur adipisicing elit
+        </Heading>
         <HStack>
-          <Button>Action 1</Button>
-          <Button variant="outline">Action 2</Button>
+          <Button textTransform="none" bgColor="yellow.200">
+            Join as a Developer
+          </Button>
+          <Button
+            textTransform="none"
+            textColor="yellow.200"
+            borderColor="yellow.200"
+            variant="outline"
+          >
+            View Requests
+          </Button>
         </HStack>
+
+        <Divider />
+
+        <HStack align="start" justify="space-between" width="100%">
+          <VStack align="start" maxWidth="50%">
+            <Heading fontSize="2xl" color="yellow.200">
+              Browse Developers
+            </Heading>
+            <Heading fontSize="md" color="purple.500" fontWeight="normal">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit
+            </Heading>
+          </VStack>
+          <Input borderColor="purple.600" placeholder="Search" width="30%" />
+        </HStack>
+
+        <SimpleGrid width="100%" columns={3} spacing={6}>
+          {profiles.map((profile) => (
+            <ProfileCard {...profile} key={profile.avatarSrc} />
+          ))}
+        </SimpleGrid>
       </VStack>
     </Container>
   );

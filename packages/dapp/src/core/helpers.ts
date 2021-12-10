@@ -125,7 +125,7 @@ function getProfiles() {
       emoji: "🤓",
       city: "Gujarat",
       country: "IN",
-      skills: ["React", "Node", "GraphQL", "Next.js"],
+      skills: ["React", "Node", "GraphQL"],
       experiences: [{
         title: "Lead Engineer",
         company: "Company 1",

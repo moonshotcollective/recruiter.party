@@ -47,6 +47,9 @@ const Home = () => {
             textColor="yellow.200"
             borderColor="yellow.200"
             variant="outline"
+            onClick={() => {
+              goTo('/requests');
+            }}
           >
             View Requests
           </Button>

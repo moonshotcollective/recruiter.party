@@ -82,9 +82,8 @@ const Navbar = (props: any) => {
           <Box px="2">
             <NextLink href="/">
               <Flex _hover={{ cursor: "pointer" }} align="center" mr={5}>
-                <LogoIcon size="25px" />
                 <Heading fontSize="lg" pl="2">
-                  Greenpill project
+                  Recruiter.Party
                 </Heading>
               </Flex>
             </NextLink>

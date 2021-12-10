@@ -7,49 +7,13 @@ import {
   Input,
   SimpleGrid,
 } from "@chakra-ui/react";
+import { getProfiles } from "../core/helpers";
 import { ProfileCard, ProfileCardProps } from "components/ProfileCard";
 import { useRouter } from "next/router";
 
 import Container from "../components/layout/Container";
 
-const profiles: ProfileCardProps[] = [
-  {
-    name: "Huxwell",
-    coverSrc:
-      "https://images.unsplash.com/photo-1426604966848-d7adac402bff?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-    avatarSrc: "https://source.unsplash.com/random",
-    isUnlocked: true,
-    emoji: "🤓",
-    city: "New York",
-    country: "USA",
-    skills: ["React", "Node", "GraphQL", "Next.js", "Everything"],
-    description: "Open Source software engineer",
-  },
-  {
-    name: "QEDK",
-    coverSrc:
-      "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80",
-    avatarSrc: "https://avatars.githubusercontent.com/u/1272002?v=4",
-    isUnlocked: false,
-    emoji: "🤓",
-    city: "Quadratic Lands",
-    country: "CO",
-    skills: ["Solidity", "Ethereum", "Node"],
-    description: "Anon",
-  },
-  {
-    name: "Dhaiwat",
-    coverSrc:
-      "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-    avatarSrc: "https://avatars.githubusercontent.com/u/39617427",
-    isUnlocked: false,
-    emoji: "🤓",
-    city: "Gujarat",
-    country: "IN",
-    skills: ["React", "Node", "GraphQL", "Next.js"],
-    description: "Anon 2",
-  },
-];
+const profiles: ProfileCardProps[] = getProfiles();
 
 const Home = () => {
   const router = useRouter();

@@ -10,6 +10,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { UnlockIcon } from "@chakra-ui/icons";
+import { useRouter } from "next/router";
 
 export interface ProfileCardProps {
   name: string;
@@ -24,6 +25,7 @@ export interface ProfileCardProps {
 }
 
 export const ProfileCard = ({
+  id,
   name,
   emoji,
   coverSrc,
@@ -34,6 +36,8 @@ export const ProfileCard = ({
   skills,
   description,
 }: ProfileCardProps) => {
+  const router = useRouter();
+
   return (
     <Box border="2px solid" borderColor="purple.700" borderRadius="lg">
       <Image
@@ -54,7 +58,10 @@ export const ProfileCard = ({
         </HStack>
         <Spacer mt={4} />
         <Text color="yellow.200">
-          {emoji} {name}
+          {emoji}
+          <a href="#" onClick={() => router.push("/profile/" + id)}>
+            {name}
+          </a>
         </Text>
         <Text fontSize="md">{description}</Text>
         <Spacer mt={4} />

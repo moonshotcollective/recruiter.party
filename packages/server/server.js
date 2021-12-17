@@ -1,6 +1,9 @@
 const fastify = require('fastify')({ logger: true })
+const mercurius = require('mercurius')
 const mongoose = require('mongoose')
 const config = require('config')
+const { schema } = require('./graphql/schema')
+const { resolvers } = require('./graphql/resolvers')
 const { makeCeramicClient } = require('./helpers/ceramic')
 
 const { corsOptions, sessionOptions, dbUrl, host, port } = config.get('API_CONFIG.api')
@@ -18,6 +21,11 @@ fastify.register(require('fastify-secure-session'), {
 })
 
 fastify.register(require('./routes'))
+fastify.register(mercurius, {
+  schema,
+  resolvers,
+  graphiql: true,
+})
 
 // Run the server!
 const start = async () => {

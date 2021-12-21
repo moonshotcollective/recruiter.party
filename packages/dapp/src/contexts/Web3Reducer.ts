@@ -4,12 +4,9 @@ import { ethers } from "ethers";
 export type State = {
   loading: boolean;
   account?: string;
+  chainId?: number;
   provider?: ethers.providers.Web3Provider;
-  staticProvider: ethers.providers.Web3Provider;
   ens?: string;
-  self?: any;
-  core?: any;
-  identityLink?: any;
   contracts?: any;
   connectWeb3?: any;
   logout?: any;

@@ -1,6 +1,7 @@
 import { RepeatIcon } from "@chakra-ui/icons";
 import { HStack, IconButton, Text, VStack } from "@chakra-ui/react";
 import { Title } from "@scaffold-eth/ui";
+import { useWeb3React } from '@web3-react/core';
 import ContractFields from "components/custom/ContractFields";
 import React, { useContext, useEffect, useState } from "react";
 import Faucet from "../components/custom/Faucet";
@@ -9,13 +10,14 @@ import { hexToString } from "../core/helpers";
 import useCustomColor from "../core/hooks/useCustomColor";
 
 const Home = () => {
-  const { account, provider, staticProvider } = useContext(Web3Context);
-  const { coloredText } = useCustomColor();
+  const { account } = useContext(Web3Context);
+  const { library } = useWeb3React();
+  const { coloredText, accentColor } = useCustomColor();
   const [yourBalance, setYourBalance] = useState("");
 
   const getEthBalance = async () => {
-    if (provider && account) {
-      const res = await provider?.getBalance(account);
+    if (library && account) {
+      const res = await library?.getBalance(account);
       const balance = hexToString(res);
       setYourBalance(balance);
       // console.log(`balance`, balance);
@@ -23,26 +25,13 @@ const Home = () => {
   };
 
   useEffect(() => {
-    // const getFaucetAddress = async () => {
-    //   if (staticProvider) {
-    //     const _faucetAddress = await staticProvider.listAccounts();
-    //     setFaucetAddress(_faucetAddress[0]);
-    //     const signer = await staticProvider.getSigner();
-    //     // const address = await signer.getAddress();
-    //     setFaucetSigner(signer);
-    //     const _balance = await signer.getBalance();
-    //     setFaucetBalance(utils.formatEther(_balance.toString()));
-    //     getFaucetBalance();
-    //   }
-    // };
-    // getFaucetAddress();
     getEthBalance();
-  }, [account]);
+  }, [account, library]);
 
   return (
     <VStack>
       <HStack align="center" w="full">
-        <Title>Title</Title>
+        <Title color={accentColor}>Title</Title>
       </HStack>
       <Text textStyle="h2">
         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dignissimos

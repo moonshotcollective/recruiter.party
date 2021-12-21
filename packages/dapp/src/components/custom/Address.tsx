@@ -20,6 +20,7 @@ import {
   useDisclosure,
   Text,
 } from "@chakra-ui/react";
+import { useWeb3React } from '@web3-react/core';
 import useCustomColor from "core/hooks/useCustomColor";
 import React, { useContext } from "react";
 import Blockies from "react-blockies";
@@ -27,26 +28,6 @@ import { MdCheckCircle, MdContentCopy } from "react-icons/md";
 import { RiExternalLinkFill } from "react-icons/ri";
 import { Web3Context } from "../../contexts/Web3Provider";
 import { useResolveEnsName } from "../../core/hooks/useResolveEnsName";
-
-// changed value={account} to account={account}
-
-/*
-  ~ What it does? ~
-  Displays an account with a blockie image and option to copy account
-  ~ How can I use? ~
-  <Address
-    account={account}
-    ensProvider={mainnetProvider}
-    blockExplorer={blockExplorer}
-    fontSize={fontSize}
-  />
-  ~ Features ~
-  - Provide ensProvider={mainnetProvider} and your account will be replaced by ENS name
-              (ex. "0xa870" => "user.eth")
-  - Provide blockExplorer={blockExplorer}, click on account and get the link
-              (ex. by default "https://etherscan.io/" or for xdai "https://blockscout.com/poa/xdai/")
-  - Provide fontSize={fontSize} to change the size of account text
-*/
 
 const blockExplorerLink = (address: string, blockExplorer?: string) =>
   `${blockExplorer || "https://etherscan.io/"}${"address/"}${address}`;
@@ -72,9 +53,9 @@ function Address({
   fontSize?: string;
   blockiesScale?: number;
 }) {
-  const { staticProvider } = useContext(Web3Context);
+  const { library } = useWeb3React();
   const account = value || address;
-  const ens = useResolveEnsName(staticProvider, address);
+  const ens = useResolveEnsName(library, address);
   const { hasCopied, onCopy } = useClipboard(account);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { coloredText } = useCustomColor();

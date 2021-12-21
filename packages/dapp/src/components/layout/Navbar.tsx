@@ -20,7 +20,8 @@ import { useRouter } from "next/router";
 import useCustomColor from "../../core/hooks/useCustomColor";
 import ConnectButton from "../Buttons/ConnectButton";
 import ThemeToggle from "../Buttons/ThemeToggle";
-import GitcoinIcon from "../Icons/GitcoinIcon";
+import NetworkSwitch from '../custom/NetworkSwitch';
+import ScaffoldIcon from "../Icons/ScaffoldIcon";
 
 const LinkItem = ({ href, children, ...props }: any) => {
   const { pathname } = useRouter();
@@ -63,16 +64,17 @@ const Navbar = () => {
         wrap="wrap"
         alignItems="center"
       >
-        <HStack px="4" spacing={4}>
-          <GitcoinIcon size="36px" />
+        <HStack px="4">
+          <ScaffoldIcon size="36px" />
           <NextLink href="/">
             <Link
               display={{ base: "none", md: "flex" }}
               fontWeight="bold"
               color={accentColor}
               textTransform="uppercase"
+              size="md"
             >
-              Coordination.party
+              Scaffold
             </Link>
           </NextLink>
           <HStack pl="4" spacing="4" display={{ base: "none", lg: "flex" }}>
@@ -81,6 +83,7 @@ const Navbar = () => {
         </HStack>
 
         <HStack marginLeft="auto">
+          <NetworkSwitch />
           <ConnectButton />
           <ThemeToggle />
           <IconButton

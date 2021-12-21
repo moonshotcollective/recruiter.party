@@ -1,12 +1,18 @@
-import { VStack, Button, Text } from "@chakra-ui/react";
-import { Web3Context } from "../../contexts/Web3Provider";
+import { VStack, Button, Text, Link } from "@chakra-ui/react";
 import React, { useContext, useState, useEffect } from "react";
 import { ethers, utils } from "ethers";
 import toast, { Toaster } from "react-hot-toast";
+import { useWeb3React } from '@web3-react/core';
+
+import { Web3Context } from "../../contexts/Web3Provider";
 import { hexToString } from "../../core/helpers";
+import NETWORKS from '../../core/networks';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
 
 function Faucet({ ...others }: any) {
-  const { account, staticProvider } = useContext(Web3Context);
+  const { account, } = useContext(Web3Context);
+  const { chainId, library } = useWeb3React();
+
   const [faucetAddress, setFaucetAddress] = useState("");
   const [faucetBalance, setFaucetBalance] = useState("");
   const [faucetSigner, setFaucetSigner] =
@@ -14,11 +20,11 @@ function Faucet({ ...others }: any) {
 
   useEffect(() => {
     const getFaucetAddress = async () => {
-      if (staticProvider) {
-        const _faucetAddress = await staticProvider.listAccounts();
+      if (library) {
+        const _faucetAddress = await library.listAccounts();
         setFaucetAddress(_faucetAddress[0]);
 
-        const signer = await staticProvider.getSigner();
+        const signer = await library.getSigner();
         // const address = await signer.getAddress();
         setFaucetSigner(signer);
 
@@ -26,7 +32,7 @@ function Faucet({ ...others }: any) {
       }
     };
     getFaucetAddress();
-  }, [staticProvider]);
+  }, []);
 
   const getFaucetBalance = async () => {
     if (faucetSigner) {
@@ -62,6 +68,8 @@ function Faucet({ ...others }: any) {
     }
   };
 
+  const network = chainId && (NETWORKS as any)[chainId.toString()];
+
   return (
     <>
       <VStack
@@ -72,8 +80,21 @@ function Faucet({ ...others }: any) {
       >
         <Text>Faucet</Text>
         <Text textStyle="small">{faucetAddress}</Text>
-        <Text textStyle="small">{faucetBalance}</Text>
-        <Button onClick={faucet}>Get some eth</Button>
+        {
+          faucetBalance &&
+          <Text textStyle="small">
+            {faucetBalance}{" "}
+            {network.symbol ?? "Native tokens"}
+          </Text>
+        }
+        {chainId === 31337
+          ? <Button onClick={faucet}>Get some eth</Button>
+          : network && <Link href={network.faucet} target="_blank" rel="noopener noreferrer">
+            <Button leftIcon={<ExternalLinkIcon />}>
+              Get faucet tokens
+            </Button>
+          </Link>
+        }
       </VStack>
       <Toaster
         toastOptions={{

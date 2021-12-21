@@ -6,7 +6,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironmentExtended) => {
   const { getNamedAccounts, deployments } = hre as any;
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
-  await deploy('YourContract', {
+  await deploy('DRecruitV1', {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
     // args: ["Hello"],
@@ -15,14 +15,13 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironmentExtended) => {
 
   /*
     // Getting a previously deployed contract
-    const YourContract = await ethers.getContract("YourContract", deployer);
-    await YourContract.setPurpose("Hello");
+    const DRecruitV1 = await ethers.getContract("DRecruitV1", deployer);
     
-    //const yourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
+    //const yourContract = await ethers.getContractAt('DRecruitV1', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
   */
 };
 export default func;
-func.tags = ['YourContract'];
+func.tags = ['DRecruitV1'];
 
 /*
 Tenderly verification

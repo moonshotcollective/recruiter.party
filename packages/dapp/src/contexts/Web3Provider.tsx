@@ -121,14 +121,14 @@ const Web3Provider = ({ children }: { children: any }) => {
         console.log({ network });
         const abis = ABIS as Record<string, any>;
         const yourReadContract = new ethers.Contract(
-          abis[strChainId][network.name].contracts.YourContract.address,
-          abis[strChainId][network.name].contracts.YourContract.abi,
+          abis[strChainId][network.name].contracts.DRecruitV1.address,
+          abis[strChainId][network.name].contracts.DRecruitV1.abi,
           // TODO: replace this with static provider and rpc url based on chainId
           signer
         );
         const yourWriteContract = new ethers.Contract(
-          abis[strChainId][network.name].contracts.YourContract.address,
-          abis[strChainId][network.name].contracts.YourContract.abi,
+          abis[strChainId][network.name].contracts.DRecruitV1.address,
+          abis[strChainId][network.name].contracts.DRecruitV1.abi,
           signer
         );
         setContracts({ yourReadContract, yourWriteContract });
@@ -174,13 +174,13 @@ const Web3Provider = ({ children }: { children: any }) => {
       const network = NETWORKS[strChainId as keyof typeof NETWORKS];
       const abis = ABIS as Record<string, any>;
       const yourReadContract = new ethers.Contract(
-        abis[strChainId][network.name].contracts.YourContract.address,
-        abis[strChainId][network.name].contracts.YourContract.abi,
+        abis[strChainId][network.name].contracts.DRecruitV1.address,
+        abis[strChainId][network.name].contracts.DRecruitV1.abi,
         signer
       );
       const yourWriteContract = new ethers.Contract(
-        abis[strChainId][network.name].contracts.YourContract.address,
-        abis[strChainId][network.name].contracts.YourContract.abi,
+        abis[strChainId][network.name].contracts.DRecruitV1.address,
+        abis[strChainId][network.name].contracts.DRecruitV1.abi,
         signer
       );
       console.log(strChainId, network.name, network.chainId);

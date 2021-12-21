@@ -1,8 +1,8 @@
 import '@nomiclabs/hardhat-ethers';
 import '@nomiclabs/hardhat-waffle';
-import * as fs from 'fs';
-import * as chalk from 'chalk';
-import * as hre from 'hardhat';
+import fs from 'fs';
+import chalk from 'chalk';
+import hre from 'hardhat';
 import { ContractJson } from '../helpers/types/hardhat-type-extensions';
 import path from 'path';
 

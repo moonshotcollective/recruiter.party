@@ -4,8 +4,9 @@ import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from
 import { Web3Context } from "../../contexts/Web3Provider";
 import useCustomColor from "../../core/hooks/useCustomColor";
 import NETWORKS from "../../core/networks";
-import { YourContract } from "@scaffold-eth/hardhat-ts/generated/contract-types/YourContract";
+import { DRecruitV1 } from "@scaffold-eth/hardhat-ts/generated/contract-types/DRecruitV1";
 import { useWeb3React } from '@web3-react/core';
+import { BigNumber, BigNumberish } from 'ethers';
 
 type Block = {
   inputs?: Array<Object>;
@@ -16,45 +17,44 @@ type Block = {
 };
 
 function ContractFields({ ...others }: any) {
-  const { contracts } = useContext(Web3Context);
+  const { contracts, account } = useContext(Web3Context);
   const { chainId } = useWeb3React();
   const [abi, setAbi] = useState([]);
   const { coloredText } = useCustomColor();
-  const [purpose, setPurpose] = useState("");
-  const [purposeInput, setPurposeInput] = useState("");
-  const [yourReadContract, setYourReadContract] = useState<YourContract>();
-  const [yourWriteContract, setYourWriteContract] = useState<YourContract>();
+  const [fee, setFee] = useState<string>();
+  const [tokenIdInput, setTokenIdInput] = useState<string>();
+  const [yourReadContract, setYourReadContract] = useState<DRecruitV1>();
+  const [yourWriteContract, setYourWriteContract] = useState<DRecruitV1>();
 
-  const readPurpose = useCallback(
+  const readFee = useCallback(
     async () => {
       if (yourReadContract) {
-        const res = await yourReadContract.purpose();
-        setPurpose(res);
+        const res = await yourReadContract.fee();
+        console.log({ res })
+        setFee(res.toString());
       }
     },
-    [purposeInput, yourReadContract, contracts],
+    [yourReadContract, contracts],
   )
 
-  const writePurpose = useCallback(
+  const writeFee = useCallback(
     async () => {
-      if (yourWriteContract) {
-        const transaction = await yourWriteContract.setPurpose(purposeInput);
+      if (yourWriteContract && account && tokenIdInput) {
+        const transaction = await yourWriteContract.approveRequest(tokenIdInput, account);
         await transaction.wait();
-        await readPurpose();
+        await readFee();
       }
     },
-    [purposeInput, yourWriteContract, contracts],
+    [tokenIdInput, yourWriteContract, contracts],
   )
 
   useEffect(() => {
     if (chainId && contracts) {
-      setPurpose("");
-      setPurposeInput("");
       const strChainId = chainId.toString() as keyof typeof NETWORKS;
       const network = NETWORKS[strChainId];
       const abis = ABIS as Record<string, any>;
       if (abis[strChainId]) {
-        const abi = abis[strChainId][network.name].contracts.YourContract.abi;
+        const abi = abis[strChainId][network.name].contracts.DRecruitV1.abi;
         setAbi(abi);
         setYourReadContract(contracts.yourReadContract);
         setYourWriteContract(contracts.yourWriteContract);
@@ -62,8 +62,8 @@ function ContractFields({ ...others }: any) {
     }
   }, [chainId, contracts]);
 
-  const handlePurposeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setPurposeInput(e.target.value);
+  const handleTokenIdChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setTokenIdInput(e.target.value);
   }
 
   return (
@@ -89,10 +89,10 @@ function ContractFields({ ...others }: any) {
               <HStack key={el.name}>
                 <Text>{el.name}</Text>
                 <Input
-                  value={purposeInput}
-                  onChange={handlePurposeChange}
+                  value={tokenIdInput}
+                  onChange={handleTokenIdChange}
                 />
-                <Button onClick={() => el.name && writePurpose()}>Call</Button>
+                <Button onClick={() => el.name && writeFee()}>Call</Button>
               </HStack>
             );
           }
@@ -100,8 +100,8 @@ function ContractFields({ ...others }: any) {
             return (
               <HStack key={el.name}>
                 <Text>{el.name}</Text>
-                <Text color={coloredText}>{purpose}</Text>
-                <Button onClick={readPurpose}>Call</Button>
+                <Text color={coloredText}>{fee}</Text>
+                <Button onClick={readFee}>Call</Button>
               </HStack>
             );
           }

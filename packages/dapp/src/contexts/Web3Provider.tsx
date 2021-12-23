@@ -22,6 +22,8 @@ import { State, Web3Reducer } from "./Web3Reducer";
 
 export const supportedNetworks = Object.keys(ABIS);
 
+const { NEXT_PUBLIC_INFURA_ID } = process.env;
+
 const injected = new InjectedConnector({
   supportedChainIds: supportedNetworks.map((net) => parseInt(net, 10)),
 });
@@ -31,12 +33,18 @@ const walletconnect = new WalletConnectConnector({
   qrcode: true,
 });
 
+const staticProvider = new ethers.providers.StaticJsonRpcProvider(
+  `http://localhost:8545`
+);
+
 const initialState = {
   loading: false,
   account: undefined,
   provider: undefined,
   contracts: undefined,
+  staticProvider,
   chainId: undefined,
+  targetNetwork: undefined,
 } as State;
 
 const providerOptions = {
@@ -55,7 +63,7 @@ const providerOptions = {
 
 const Web3Context = createContext(initialState);
 
-const Web3Provider = ({ children }: { children: any }) => {
+const Web3Provider = ({ children, networkChainId = "31337", }: { children: any, networkChainId?: string }) => {
   const web3Modal = new Web3Modal({
     providerOptions,
     cacheProvider: false,
@@ -65,6 +73,15 @@ const Web3Provider = ({ children }: { children: any }) => {
   const { chainId, activate, library } = useWeb3React();
   const { active, account } = useActiveWeb3React();
   console.log({ active, account });
+
+  const targetNetwork = NETWORKS[networkChainId?.toString() as keyof typeof NETWORKS];
+
+  const setTargetNetwork = (targetNetwork: any) => {
+    dispatch({
+      type: "SET_TARGET_NETWORK",
+      payload: targetNetwork,
+    });
+  };
 
   const setAccount = (account?: null | string) => {
     dispatch({
@@ -134,6 +151,11 @@ const Web3Provider = ({ children }: { children: any }) => {
         setContracts({ yourReadContract, yourWriteContract });
       }
     }
+
+    console.log('setting targetNetwork');
+    setTargetNetwork(
+      chainId ? NETWORKS[chainId.toString() as keyof typeof NETWORKS] : "31337"
+    );
   }
 
   // Reload contracts globally on network change
@@ -188,6 +210,11 @@ const Web3Provider = ({ children }: { children: any }) => {
       setContracts({ yourReadContract, yourWriteContract });
     }
 
+    console.log('setting targetNetwork');
+    setTargetNetwork(
+      chainId ? NETWORKS[chainId.toString() as keyof typeof NETWORKS] : "31337"
+    );
+
     setAccount(account);
 
   }, [ABIS, chainId]);
@@ -197,6 +224,7 @@ const Web3Provider = ({ children }: { children: any }) => {
       value={{
         ...state,
         connectWeb3,
+        targetNetwork,
         logout,
       }}
     >

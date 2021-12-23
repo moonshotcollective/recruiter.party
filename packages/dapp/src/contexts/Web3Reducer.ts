@@ -10,6 +10,7 @@ export type State = {
   contracts?: any;
   connectWeb3?: any;
   logout?: any;
+  targetNetwork?: any;
 };
 export const Web3Reducer = (state: State, action: Record<string, any>) => {
   switch (action.type) {
@@ -32,6 +33,12 @@ export const Web3Reducer = (state: State, action: Record<string, any>) => {
       return {
         ...state,
         contracts: action.payload,
+      };
+
+    case "SET_TARGET_NETWORK":
+      return {
+        ...state,
+        targetNetwork: action.payload,
       };
     default:
       return state;

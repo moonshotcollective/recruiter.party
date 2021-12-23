@@ -1282,6 +1282,11 @@
     uint8arrays "^2.0.5"
     varint "^6.0.0"
 
+"@ceramicstudio/idx-constants@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@ceramicstudio/idx-constants/-/idx-constants-1.0.0.tgz#51ca1cd6cf93d39639eff9106691bd0c74bb5cb0"
+  integrity sha512-bBCnOSABGmHOBkF1XZoyHrf5ZMv5Mv8RODY6I3uAT35DzkNojymcITUTSlmZsMqDXmvaa4INV5xSXP/lX3YErQ==
+
 "@chakra-ui/accordion@1.3.10":
   version "1.3.10"
   resolved "https://registry.yarnpkg.com/@chakra-ui/accordion/-/accordion-1.3.10.tgz#0872a5a076825de5d2a08294a3152087dee8697a"

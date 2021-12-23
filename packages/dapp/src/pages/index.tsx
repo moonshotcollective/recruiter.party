@@ -54,7 +54,7 @@ const Home = () => {
   }, [account, library]);
 
   const init = async () => {
-    console.log("provider from it", provider);
+    console.log("provider from init", provider);
     if (provider && provider.getSigner()) {
       try {
         console.log("init executing");

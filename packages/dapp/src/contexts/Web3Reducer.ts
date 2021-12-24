@@ -8,6 +8,7 @@ export type State = {
   provider?: ethers.providers.Web3Provider;
   ens?: string;
   contracts?: any;
+  tokenContract: any;
   connectWeb3?: any;
   logout?: any;
   targetNetwork?: any;
@@ -34,7 +35,11 @@ export const Web3Reducer = (state: State, action: Record<string, any>) => {
         ...state,
         contracts: action.payload,
       };
-
+      case "SET_TOKEN_CONTRACT":
+        return {
+          ...state,
+          contracts: action.payload,
+        };
     case "SET_TARGET_NETWORK":
       return {
         ...state,

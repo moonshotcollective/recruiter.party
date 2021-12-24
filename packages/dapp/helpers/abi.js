@@ -1,4 +1,4 @@
-export const abis = {
+export const TokenContractAbis = {
   ERC20: [
     {
       constant: true,

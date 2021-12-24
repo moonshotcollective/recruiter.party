@@ -12,11 +12,12 @@ import React, {
   useCallback,
 } from "react";
 import Web3Modal from "web3modal";
+import { TokenContractAbis } from "../../helpers/abi";
 
-import { NETWORK_URLS } from '../core/connectors';
-import { ALL_SUPPORTED_CHAIN_IDS } from '../core/connectors/chains';
-import getLibrary from '../core/connectors/getLibrary';
-import { useActiveWeb3React } from '../core/hooks/web3';
+import { NETWORK_URLS } from "../core/connectors";
+import { ALL_SUPPORTED_CHAIN_IDS } from "../core/connectors/chains";
+import getLibrary from "../core/connectors/getLibrary";
+import { useActiveWeb3React } from "../core/hooks/web3";
 import NETWORKS from "../core/networks";
 import { State, Web3Reducer } from "./Web3Reducer";
 
@@ -44,6 +45,7 @@ const initialState = {
   contracts: undefined,
   staticProvider,
   chainId: undefined,
+  tokenContract: undefined,
   targetNetwork: undefined,
 } as State;
 
@@ -63,7 +65,13 @@ const providerOptions = {
 
 const Web3Context = createContext(initialState);
 
-const Web3Provider = ({ children, networkChainId = "31337", }: { children: any, networkChainId?: string }) => {
+const Web3Provider = ({
+  children,
+  networkChainId = "31337",
+}: {
+  children: any;
+  networkChainId?: string;
+}) => {
   const web3Modal = new Web3Modal({
     providerOptions,
     cacheProvider: false,
@@ -74,7 +82,8 @@ const Web3Provider = ({ children, networkChainId = "31337", }: { children: any, 
   const { active, account } = useActiveWeb3React();
   console.log({ active, account });
 
-  const targetNetwork = NETWORKS[networkChainId?.toString() as keyof typeof NETWORKS];
+  const targetNetwork =
+    NETWORKS[networkChainId?.toString() as keyof typeof NETWORKS];
 
   const setTargetNetwork = (targetNetwork: any) => {
     dispatch({
@@ -97,6 +106,13 @@ const Web3Provider = ({ children, networkChainId = "31337", }: { children: any, 
     });
   };
 
+  const setTokenContracts = (contracts: null | any) => {
+    dispatch({
+      type: "SET_TOKEN_CONTRACT",
+      payload: contracts,
+    });
+  };
+
   const setENS = (ens: null | string) => {
     dispatch({
       type: "SET_ENS",
@@ -107,7 +123,7 @@ const Web3Provider = ({ children, networkChainId = "31337", }: { children: any, 
   useEffect(() => {
     async function handleActiveAccount() {
       if (active) {
-        setAccount(account)
+        setAccount(account);
         // Get ens
         let ens = null;
         try {
@@ -119,12 +135,12 @@ const Web3Provider = ({ children, networkChainId = "31337", }: { children: any, 
         }
       }
     }
-    handleActiveAccount()
+    handleActiveAccount();
     return () => {
-      setAccount(null)
-      setENS(null)
-    }
-  }, [account])
+      setAccount(null);
+      setENS(null);
+    };
+  }, [account]);
 
   async function updateState() {
     if (chainId && library) {
@@ -137,6 +153,22 @@ const Web3Provider = ({ children, networkChainId = "31337", }: { children: any, 
         const network = NETWORKS[strChainId as keyof typeof NETWORKS];
         console.log({ network });
         const abis = ABIS as Record<string, any>;
+      const tokenContractAbis = TokenContractAbis as Record<string, any>;
+
+        
+        const yourReadTokenContract = new ethers.Contract(
+          tokenContractAbis[strChainId][network.name].contracts.YourToken.address,
+          tokenContractAbis[strChainId][network.name].contracts.YourToken.abi,
+          signer
+        );
+        const yourWriteTokenContract = new ethers.Contract(
+          tokenContractAbis[strChainId][network.name].contracts.YourToken.address,
+          tokenContractAbis[strChainId][network.name].contracts.YourToken.abi,
+          signer
+        );
+
+        setTokenContracts({ yourReadTokenContract, yourWriteTokenContract });
+
         const yourReadContract = new ethers.Contract(
           abis[strChainId][network.name].contracts.DRecruitV1.address,
           abis[strChainId][network.name].contracts.DRecruitV1.abi,
@@ -152,7 +184,7 @@ const Web3Provider = ({ children, networkChainId = "31337", }: { children: any, 
       }
     }
 
-    console.log('setting targetNetwork');
+    console.log("setting targetNetwork");
     setTargetNetwork(
       chainId ? NETWORKS[chainId.toString() as keyof typeof NETWORKS] : "31337"
     );
@@ -172,10 +204,8 @@ const Web3Provider = ({ children, networkChainId = "31337", }: { children: any, 
   const connectWeb3 = useCallback(async () => {
     // Set up Web3 Modal
     const provider = await web3Modal.connect();
-    const lib = new ethers.providers.Web3Provider(provider)
-    activate(
-      lib?.connection.url === "metamask" ? injected : walletconnect
-    );
+    const lib = new ethers.providers.Web3Provider(provider);
+    activate(lib?.connection.url === "metamask" ? injected : walletconnect);
 
     const signer = lib.getSigner();
     const account = await signer.getAddress();
@@ -210,13 +240,12 @@ const Web3Provider = ({ children, networkChainId = "31337", }: { children: any, 
       setContracts({ yourReadContract, yourWriteContract });
     }
 
-    console.log('setting targetNetwork');
+    console.log("setting targetNetwork");
     setTargetNetwork(
       chainId ? NETWORKS[chainId.toString() as keyof typeof NETWORKS] : "31337"
     );
 
     setAccount(account);
-
   }, [ABIS, chainId]);
 
   return (

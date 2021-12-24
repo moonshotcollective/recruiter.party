@@ -17,14 +17,13 @@ import { ceramicCoreFactory } from "core/ceramic";
 import { Contract } from "ethers";
 
 const Home = () => {
-  const { account, provider, targetNetwork } = useContext(Web3Context);
+  const { account, contracts, tokenContract } = useContext(Web3Context);
   const context = useContext(Web3Context);
   const [isAlertOpen, setIsAlertOpen] = React.useState(false);
   const { library } = useWeb3React();
   const { coloredText, accentColor } = useCustomColor();
   const [yourBalance, setYourBalance] = useState("");
   const [dRecruitContract, setDRecruitContract] = useState<Contract | undefined>();
-  const [tokenContract, setTokenContract] = useState<Contract | undefined>();
   const [tokenMetadata, setTokenMetadata] = useState({
     name: null,
     symbol: null,
@@ -54,31 +53,26 @@ const Home = () => {
   }, [account, library]);
 
   const init = async () => {
-    console.log("provider from init", provider);
-    if (provider && provider.getSigner()) {
+    console.log("library from init", library);
+    if (library && library.getSigner()) {
       try {
         console.log("init executing");
-        const signer = provider.getSigner();
+        const signer = library.getSigner();
         console.log("signer", {signer});
-        const contract = await loadDRecruitV1Contract(targetNetwork, signer);
-        console.log("contract", {contract});
-        const tokenAddress = await contract.address;
+        console.log("contract", {contracts});
+        const tokenAddress = await contracts.address;
         console.log("tokenAddress", {tokenAddress});
-        const tokenContract = await loadTokenContract(tokenAddress, signer);
-        console.log("tokenContract", {tokenContract});
-        setDRecruitContract(contract);
-        setTokenContract(tokenContract);
         const tokenName = await tokenContract.name();
         console.log("tokenName", {tokenName});
         const tokenSymbol = await tokenContract.symbol();
         console.log("tokenSymbol", {tokenSymbol});
         setTokenMetadata({ name: tokenName, symbol: tokenSymbol });
-        const lastTokenId = await contract.tokenId();
+        const lastTokenId = await contracts.tokenId();
         console.log("lastTokenId", {lastTokenId});
         const tokenIds = [...Array(parseInt(lastTokenId, 10)).keys()];
         console.log("tokenIds", {tokenIds});
         const tokenURIs = await Promise.all(
-          tokenIds.map(async (id) => contract.uri(id))
+          tokenIds.map(async (id) => contracts.uri(id))
         );
         const developersDID = [
           ...new Set(tokenURIs.map((uri) => getDidFromTokenURI(uri).did)),

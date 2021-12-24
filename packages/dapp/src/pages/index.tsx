@@ -9,8 +9,6 @@ import { Web3Context } from "../contexts/Web3Provider";
 import { hexToString } from "../core/helpers";
 import useCustomColor from "../core/hooks/useCustomColor";
 import {
-  loadDRecruitV1Contract,
-  loadTokenContract,
   getDidFromTokenURI,
 } from "../../helpers";
 import { ceramicCoreFactory } from "core/ceramic";

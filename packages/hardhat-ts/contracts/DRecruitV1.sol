@@ -31,7 +31,7 @@
         / /___/ /_/ / /___/ /___/ /___/ /___  / / _/ /  | |/ / /___
         \____/\____/_____/_____/_____/\____/ /_/ /___/  |___/_____/
 */
-pragma solidity ^0.8.10;
+pragma solidity ^0.8.11;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -138,7 +138,7 @@ contract DRecruitV1 is
         emit URI(tokenUri, tokenId.current() - 1);
     }
 
-    function request(uint256 id, uint256 stake) external payable {
+    function request(uint256 id, uint256 stake) external {
         require(id < tokenId.current(), "NOT_MINTED_YET");
         require(stake >= fee, "UNPAID_FEE");
         require(requests[id][msg.sender] == 0, "ALREADY_REQUESTED");
@@ -146,6 +146,20 @@ contract DRecruitV1 is
         requesters[id].add(msg.sender);
         token.safeTransferFrom(msg.sender, address(this), stake);
         emit RequestResume(msg.sender, id, stake);
+    }
+
+    function bulkRequest(uint256[] calldata ids, uint256[] calldata stakes) external {
+        require(ids.length == stakes.length, "ARRAY_LENGTH_MISMATCH");
+        for(uint256 i = 0; i < ids.length; i++)
+        {
+            require(ids[i] < tokenId.current(), "NOT_MINTED_YET");
+            require(stakes[i] >= fee, "UNPAID_FEE");
+            require(requests[ids[i]][msg.sender] == 0, "ALREADY_REQUESTED");
+            requests[ids[i]][msg.sender] = stakes[i];
+            requesters[ids[i]].add(msg.sender);
+            token.safeTransferFrom(msg.sender, address(this), stakes[i]);
+            emit RequestResume(msg.sender, ids[i], stakes[i]);
+        }
     }
 
     function approveRequest(uint256 id, address account) external {

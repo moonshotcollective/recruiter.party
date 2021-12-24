@@ -50,7 +50,7 @@ const getMnemonic = () => {
 const { INFURA_KEY } = process.env;
 
 if (!INFURA_KEY) {
-  throw new Error('No value found for INFURA_KEY in .env');
+  console.error('INFURA_KEY missing in .env');
 }
 const config: HardhatUserConfig = {
   defaultNetwork,
@@ -130,38 +130,11 @@ const config: HardhatUserConfig = {
   solidity: {
     compilers: [
       {
-        version: '0.8.10',
+        version: '0.8.11',
         settings: {
           optimizer: {
             enabled: true,
-            runs: 200,
-          },
-        },
-      },
-      {
-        version: '0.8.6',
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 200,
-          },
-        },
-      },
-      {
-        version: '0.7.6',
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 200,
-          },
-        },
-      },
-      {
-        version: '0.6.7',
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 200,
+            runs: 9999,
           },
         },
       },

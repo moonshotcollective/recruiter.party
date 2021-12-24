@@ -50,7 +50,7 @@ const getMnemonic = () => {
 const { INFURA_KEY } = process.env;
 
 if (!INFURA_KEY) {
-  throw new Error('No value found for INFURA_KEY in .env');
+  console.error('INFURA_KEY missing in .env');
 }
 const config: HardhatUserConfig = {
   defaultNetwork,

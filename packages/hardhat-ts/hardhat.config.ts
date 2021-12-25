@@ -120,7 +120,7 @@ const config: HardhatUserConfig = {
       },
     },
     mumbai: {
-      url: `https://polygon-mumbai.infura.io/v3/${INFURA_KEY}`,
+      url: `https://polygon-rpc.com/`,
       gasPrice: 1000000000,
       accounts: {
         mnemonic: getMnemonic(),

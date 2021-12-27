@@ -12,11 +12,12 @@ import React, {
   useCallback,
 } from "react";
 import Web3Modal from "web3modal";
+import { ERC20ABI } from "../../helpers/abi";
 
-import { NETWORK_URLS } from '../core/connectors';
-import { ALL_SUPPORTED_CHAIN_IDS } from '../core/connectors/chains';
-import getLibrary from '../core/connectors/getLibrary';
-import { useActiveWeb3React } from '../core/hooks/web3';
+import { NETWORK_URLS } from "../core/connectors";
+import { ALL_SUPPORTED_CHAIN_IDS } from "../core/connectors/chains";
+import getLibrary from "../core/connectors/getLibrary";
+import { useActiveWeb3React } from "../core/hooks/web3";
 import NETWORKS from "../core/networks";
 import { State, Web3Reducer } from "./Web3Reducer";
 
@@ -37,6 +38,7 @@ const initialState = {
   provider: undefined,
   contracts: undefined,
   chainId: undefined,
+  tokenContract: undefined,
 } as State;
 
 const providerOptions = {
@@ -80,6 +82,13 @@ const Web3Provider = ({ children }: { children: any }) => {
     });
   };
 
+  const setTokenContract = (contract: null | any) => {
+    dispatch({
+      type: "SET_TOKEN_CONTRACT",
+      payload: contract,
+    });
+  };
+
   const setENS = (ens: null | string) => {
     dispatch({
       type: "SET_ENS",
@@ -90,7 +99,7 @@ const Web3Provider = ({ children }: { children: any }) => {
   useEffect(() => {
     async function handleActiveAccount() {
       if (active) {
-        setAccount(account)
+        setAccount(account);
         // Get ens
         let ens = null;
         try {
@@ -102,12 +111,12 @@ const Web3Provider = ({ children }: { children: any }) => {
         }
       }
     }
-    handleActiveAccount()
+    handleActiveAccount();
     return () => {
-      setAccount(null)
-      setENS(null)
-    }
-  }, [account])
+      setAccount(null);
+      setENS(null);
+    };
+  }, [account]);
 
   async function updateState() {
     if (chainId && library) {
@@ -120,18 +129,32 @@ const Web3Provider = ({ children }: { children: any }) => {
         const network = NETWORKS[strChainId as keyof typeof NETWORKS];
         console.log({ network });
         const abis = ABIS as Record<string, any>;
-        const yourReadContract = new ethers.Contract(
+        const readDrecruitContract = new ethers.Contract(
           abis[strChainId][network.name].contracts.DRecruitV1.address,
           abis[strChainId][network.name].contracts.DRecruitV1.abi,
           // TODO: replace this with static provider and rpc url based on chainId
           signer
         );
-        const yourWriteContract = new ethers.Contract(
+        const writeDrecruitContract = new ethers.Contract(
           abis[strChainId][network.name].contracts.DRecruitV1.address,
           abis[strChainId][network.name].contracts.DRecruitV1.abi,
           signer
         );
-        setContracts({ yourReadContract, yourWriteContract });
+
+        setContracts({ readDrecruitContract, writeDrecruitContract });
+        const tokenAddress = await readDrecruitContract.token();
+        console.log('tokenAddress: ', { tokenAddress });
+        const readTokenContract = new ethers.Contract(
+          tokenAddress,
+          ERC20ABI,
+          signer
+        );
+        const writeTokenContract = new ethers.Contract(
+          tokenAddress,
+          ERC20ABI,
+          signer
+        );
+        setTokenContract({ readTokenContract, writeTokenContract });
       }
     }
   }
@@ -150,10 +173,8 @@ const Web3Provider = ({ children }: { children: any }) => {
   const connectWeb3 = useCallback(async () => {
     // Set up Web3 Modal
     const provider = await web3Modal.connect();
-    const lib = new ethers.providers.Web3Provider(provider)
-    activate(
-      lib?.connection.url === "metamask" ? injected : walletconnect
-    );
+    const lib = new ethers.providers.Web3Provider(provider);
+    activate(lib?.connection.url === "metamask" ? injected : walletconnect);
 
     const signer = lib.getSigner();
     const account = await signer.getAddress();
@@ -189,7 +210,6 @@ const Web3Provider = ({ children }: { children: any }) => {
     }
 
     setAccount(account);
-
   }, [ABIS, chainId]);
 
   return (

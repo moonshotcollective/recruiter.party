@@ -23,7 +23,7 @@ interface DevProfiles {
 }
 
 const Home = () => {
-  const { account, contracts } = useContext(Web3Context);
+  const { account, contracts, tokenContract } = useContext(Web3Context);
   const { library } = useWeb3React();
   const { coloredText, accentColor } = useCustomColor();
   const [yourBalance, setYourBalance] = useState("");
@@ -44,26 +44,14 @@ const Home = () => {
   };
 
   const init = async () => {
-    if (library && library.getSigner() && contracts) {
+    if (library && library.getSigner() && contracts && tokenContract) {
       try {
-        const signer = library.getSigner();
-        const tokenAddress = await contracts.yourReadContract.token();
-        console.log(`tokenAddress`, tokenAddress);
-
-        const tokenContract = new ethers.Contract(
-          tokenAddress,
-          ERC20ABI,
-          signer
-        );
-
-        console.log(`tokenContract: `, { tokenContract });
-
-        const tokenName = await tokenContract.name();
+        const tokenName = await tokenContract.readTokenContract.name();
         console.log(`tokenName: `, { tokenName });
-        const tokenSymbol = await tokenContract.symbol();
+        const tokenSymbol = await tokenContract.readTokenContract.symbol();
         console.log(`tokenSymbol: `, { tokenSymbol });
         setTokenMetadata({ name: tokenName, symbol: tokenSymbol });
-        const lastTokenId = await contracts.yourReadContract.tokenId();
+        const lastTokenId = await contracts.readDrecruitContract.tokenId();
         const tokenIds = [...Array(parseInt(lastTokenId, 10)).keys()];
         const tokenURIs = await Promise.all(
           tokenIds.map(async (id) => contracts.uri(id))
@@ -94,9 +82,8 @@ const Home = () => {
   };
 
   useEffect(() => {
-    console.log("contracts", contracts);
     init();
-  }, [contracts]);
+  }, [contracts ,tokenContract]);
 
   useEffect(() => {
     getEthBalance();

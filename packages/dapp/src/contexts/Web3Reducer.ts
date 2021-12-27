@@ -10,7 +10,9 @@ export type State = {
   contracts?: any;
   connectWeb3?: any;
   logout?: any;
+  tokenContract?: any;
 };
+
 export const Web3Reducer = (state: State, action: Record<string, any>) => {
   switch (action.type) {
     case "SET_ACCOUNT":
@@ -32,6 +34,11 @@ export const Web3Reducer = (state: State, action: Record<string, any>) => {
       return {
         ...state,
         contracts: action.payload,
+      };
+      case "SET_TOKEN_CONTRACT":
+      return {
+        ...state,
+        tokenContract: action.payload,
       };
     default:
       return state;

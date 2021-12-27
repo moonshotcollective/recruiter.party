@@ -2,5 +2,6 @@
   "mumbai_YourContractAddress": "0x7F1933E4D383e474696DcB545C607Ac8784Cc5CE",
   "localhost_YourContractAddress": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
   "kovan_DRecruitV1Address": "0x6f322458CcB384144baAfA208c2D2Ab3AE704EC4",
-  "rinkeby_DRecruitV1Address": "0x9855bB05566c89E72d9c031FF6ac4cC4Cdc75f94"
+  "rinkeby_DRecruitV1Address": "0x9855bB05566c89E72d9c031FF6ac4cC4Cdc75f94",
+  "mumbai_DRecruitV1Address": "0x07d35Acd3176220122074a8dfC62A21D7eAd29AD"
 }

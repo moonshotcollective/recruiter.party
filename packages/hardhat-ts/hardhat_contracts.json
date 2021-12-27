@@ -2211,13 +2211,13 @@
       }
     }
   },
-  "31337": {
-    "hardhat": {
-      "name": "hardhat",
-      "chainId": "31337",
+  "80001": {
+    "mumbai": {
+      "name": "mumbai",
+      "chainId": "80001",
       "contracts": {
         "DRecruitV1": {
-          "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+          "address": "0x07d35Acd3176220122074a8dfC62A21D7eAd29AD",
           "abi": [
             {
               "inputs": [],
@@ -2728,6 +2728,24 @@
             {
               "inputs": [
                 {
+                  "internalType": "uint256[]",
+                  "name": "ids",
+                  "type": "uint256[]"
+                },
+                {
+                  "internalType": "uint256[]",
+                  "name": "stakes",
+                  "type": "uint256[]"
+                }
+              ],
+              "name": "bulkRequest",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
                   "internalType": "address",
                   "name": "account",
                   "type": "address"
@@ -3032,7 +3050,7 @@
               ],
               "name": "request",
               "outputs": [],
-              "stateMutability": "payable",
+              "stateMutability": "nonpayable",
               "type": "function"
             },
             {

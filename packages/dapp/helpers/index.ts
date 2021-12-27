@@ -1,4 +1,4 @@
-export const getDidFromTokenURI = tokenURI => {
+export const getDidFromTokenURI = (tokenURI: any) => {
   const [ipfsWithColon, _, cid, didFilename] = tokenURI.split("/");
   const [did] = didFilename.split(".json");
   return {

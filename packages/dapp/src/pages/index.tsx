@@ -13,21 +13,21 @@ import { ERC20ABI } from "../../helpers/abi";
 import useCustomColor from "../core/hooks/useCustomColor";
 import { ethers } from "ethers";
 
+interface DevProfiles {
+  did: any;
+  basicProfile: any;
+  cryptoAccounts: any;
+  webAccounts: any;
+  publicProfile: any;
+  privateProfile: any;
+}
+
 const Home = () => {
   const { account, contracts } = useContext(Web3Context);
   const { library } = useWeb3React();
   const { coloredText, accentColor } = useCustomColor();
   const [yourBalance, setYourBalance] = useState("");
-  const [developerProfiles, setDeveloperProfiles] = useState<
-    {
-      did: any;
-      basicProfile: any;
-      cryptoAccounts: any;
-      webAccounts: any;
-      publicProfile: any;
-      privateProfile: any;
-    }[]
-  >([]);
+  const [developerProfiles, setDeveloperProfiles] = useState<DevProfiles[]>([]);
   const [tokenMetadata, setTokenMetadata] = useState({
     name: null,
     symbol: null,
@@ -56,11 +56,12 @@ const Home = () => {
           signer
         );
 
-        console.log(`tokenContract: `, {tokenContract});
+        console.log(`tokenContract: `, { tokenContract });
 
         const tokenName = await tokenContract.name();
-        console.log(`tokenName: `, {tokenName});
+        console.log(`tokenName: `, { tokenName });
         const tokenSymbol = await tokenContract.symbol();
+        console.log(`tokenSymbol: `, { tokenSymbol });
         setTokenMetadata({ name: tokenName, symbol: tokenSymbol });
         const lastTokenId = await contracts.yourReadContract.tokenId();
         const tokenIds = [...Array(parseInt(lastTokenId, 10)).keys()];

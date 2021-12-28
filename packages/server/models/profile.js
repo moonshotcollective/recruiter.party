@@ -41,6 +41,8 @@ const profileSchema = new mongoose.Schema({
   }
 })
 
+profileSchema.index({ '$**': 'text' })
+
 const Profile = mongoose.model('Profile', profileSchema)
 
 module.exports = { Profile }

@@ -5,7 +5,7 @@ const { Ed25519Provider } = require('key-did-provider-ed25519')
 const { getResolver } = require('key-did-resolver')
 const { fromString } = require('uint8arrays')
 const crypto = require('crypto')
-const model = require('@scaffold-eth/schemas/lib/model.json')
+const model = require('@scaffold-eth/schemas/lib/model.json') // eslint-disable-line node/no-extraneous-require
 
 const CERAMIC_TESTNET_NODE_URL = 'https://ceramic-clay.3boxlabs.com'
 

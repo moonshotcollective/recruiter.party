@@ -12,11 +12,12 @@ import React, {
   useCallback,
 } from "react";
 import Web3Modal from "web3modal";
+import { ERC20ABI } from "../../helpers/abi";
 
-import { NETWORK_URLS } from '../core/connectors';
-import { ALL_SUPPORTED_CHAIN_IDS } from '../core/connectors/chains';
-import getLibrary from '../core/connectors/getLibrary';
-import { useActiveWeb3React } from '../core/hooks/web3';
+import { NETWORK_URLS } from "../core/connectors";
+import { ALL_SUPPORTED_CHAIN_IDS } from "../core/connectors/chains";
+import getLibrary from "../core/connectors/getLibrary";
+import { useActiveWeb3React } from "../core/hooks/web3";
 import NETWORKS from "../core/networks";
 import { State, Web3Reducer } from "./Web3Reducer";
 
@@ -90,7 +91,7 @@ const Web3Provider = ({ children }: { children: any }) => {
   useEffect(() => {
     async function handleActiveAccount() {
       if (active) {
-        setAccount(account)
+        setAccount(account);
         // Get ens
         let ens = null;
         try {
@@ -102,12 +103,12 @@ const Web3Provider = ({ children }: { children: any }) => {
         }
       }
     }
-    handleActiveAccount()
+    handleActiveAccount();
     return () => {
-      setAccount(null)
-      setENS(null)
-    }
-  }, [account])
+      setAccount(null);
+      setENS(null);
+    };
+  }, [account]);
 
   async function updateState() {
     if (chainId && library) {
@@ -120,18 +121,37 @@ const Web3Provider = ({ children }: { children: any }) => {
         const network = NETWORKS[strChainId as keyof typeof NETWORKS];
         console.log({ network });
         const abis = ABIS as Record<string, any>;
-        const yourReadContract = new ethers.Contract(
+        const readDrecruitContract = new ethers.Contract(
           abis[strChainId][network.name].contracts.DRecruitV1.address,
           abis[strChainId][network.name].contracts.DRecruitV1.abi,
           // TODO: replace this with static provider and rpc url based on chainId
           signer
         );
-        const yourWriteContract = new ethers.Contract(
+        const writeDrecruitContract = new ethers.Contract(
           abis[strChainId][network.name].contracts.DRecruitV1.address,
           abis[strChainId][network.name].contracts.DRecruitV1.abi,
           signer
         );
-        setContracts({ yourReadContract, yourWriteContract });
+
+        const tokenAddress = await readDrecruitContract.token();
+        console.log("tokenAddress: ", { tokenAddress });
+
+        const readTokenContract = new ethers.Contract(
+          tokenAddress,
+          ERC20ABI,
+          signer
+        );
+        const writeTokenContract = new ethers.Contract(
+          tokenAddress,
+          ERC20ABI,
+          signer
+        );
+        setContracts({
+          readDrecruitContract,
+          writeDrecruitContract,
+          readTokenContract,
+          writeTokenContract,
+        });
       }
     }
   }
@@ -150,10 +170,8 @@ const Web3Provider = ({ children }: { children: any }) => {
   const connectWeb3 = useCallback(async () => {
     // Set up Web3 Modal
     const provider = await web3Modal.connect();
-    const lib = new ethers.providers.Web3Provider(provider)
-    activate(
-      lib?.connection.url === "metamask" ? injected : walletconnect
-    );
+    const lib = new ethers.providers.Web3Provider(provider);
+    activate(lib?.connection.url === "metamask" ? injected : walletconnect);
 
     const signer = lib.getSigner();
     const account = await signer.getAddress();
@@ -173,23 +191,40 @@ const Web3Provider = ({ children }: { children: any }) => {
     if (supportedNetworks.includes(strChainId)) {
       const network = NETWORKS[strChainId as keyof typeof NETWORKS];
       const abis = ABIS as Record<string, any>;
-      const yourReadContract = new ethers.Contract(
+      const readDrecruitContract = new ethers.Contract(
+        abis[strChainId][network.name].contracts.DRecruitV1.address,
+        abis[strChainId][network.name].contracts.DRecruitV1.abi,
+        // TODO: replace this with static provider and rpc url based on chainId
+        signer
+      );
+      const writeDrecruitContract = new ethers.Contract(
         abis[strChainId][network.name].contracts.DRecruitV1.address,
         abis[strChainId][network.name].contracts.DRecruitV1.abi,
         signer
       );
-      const yourWriteContract = new ethers.Contract(
-        abis[strChainId][network.name].contracts.DRecruitV1.address,
-        abis[strChainId][network.name].contracts.DRecruitV1.abi,
+
+      const tokenAddress = await readDrecruitContract.token();
+      console.log("tokenAddress: ", { tokenAddress });
+
+      const readTokenContract = new ethers.Contract(
+        tokenAddress,
+        ERC20ABI,
         signer
       );
-      console.log(strChainId, network.name, network.chainId);
-      console.log({ yourReadContract, yourWriteContract });
-      setContracts({ yourReadContract, yourWriteContract });
+      const writeTokenContract = new ethers.Contract(
+        tokenAddress,
+        ERC20ABI,
+        signer
+      );
+      setContracts({
+        readDrecruitContract,
+        writeDrecruitContract,
+        readTokenContract,
+        writeTokenContract,
+      });
     }
 
     setAccount(account);
-
   }, [ABIS, chainId]);
 
   return (

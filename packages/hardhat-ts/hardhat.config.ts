@@ -121,7 +121,6 @@ const config: HardhatUserConfig = {
     },
     mumbai: {
       url: `https://polygon-mumbai.infura.io/v3/${INFURA_KEY}`,
-      gasPrice: 1000000000,
       accounts: {
         mnemonic: getMnemonic(),
       },
@@ -151,7 +150,7 @@ const config: HardhatUserConfig = {
   etherscan: {
     // Your API key for Etherscan
     // Obtain one at https://etherscan.io/
-    apiKey: 'PSW8C433Q667DVEX5BCRMGNAH9FSGFZ7Q8',
+    apiKey: process.env.BLOCK_EXPLORER_API_KEY,
   },
 };
 export default config;

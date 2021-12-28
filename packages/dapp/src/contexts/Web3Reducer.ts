@@ -11,6 +11,7 @@ export type State = {
   connectWeb3?: any;
   logout?: any;
 };
+
 export const Web3Reducer = (state: State, action: Record<string, any>) => {
   switch (action.type) {
     case "SET_ACCOUNT":

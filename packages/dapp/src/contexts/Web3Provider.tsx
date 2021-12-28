@@ -81,13 +81,6 @@ const Web3Provider = ({ children }: { children: any }) => {
     });
   };
 
-  const setTokenContract = (contract: null | any) => {
-    dispatch({
-      type: "SET_TOKEN_CONTRACT",
-      payload: contract,
-    });
-  };
-
   const setENS = (ens: null | string) => {
     dispatch({
       type: "SET_ENS",

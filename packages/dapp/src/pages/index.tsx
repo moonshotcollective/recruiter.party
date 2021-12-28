@@ -54,7 +54,7 @@ const Home = () => {
         const lastTokenId = await contracts.readDrecruitContract.tokenId();
         const tokenIds = [...Array(parseInt(lastTokenId, 10)).keys()];
         const tokenURIs = await Promise.all(
-          tokenIds.map(async (id) => contracts.uri(id))
+          tokenIds.map(async (id) => contracts.readDrecruitContract.uri(id))
         );
         const developersDID = [
           ...new Set(tokenURIs.map((uri) => getDidFromTokenURI(uri).did)),

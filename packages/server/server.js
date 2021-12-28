@@ -24,7 +24,7 @@ fastify.register(require('./routes'))
 fastify.register(mercurius, {
   schema,
   resolvers,
-  graphiql: true,
+  graphiql: true
 })
 
 // Run the server!
@@ -37,7 +37,7 @@ const start = async () => {
     await fastify.listen(port, host)
   } catch (err) {
     fastify.log.error(err)
-    process.exit(1)
+    throw Error(err)
   }
 }
 

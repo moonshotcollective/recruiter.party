@@ -1,3 +1,4 @@
+/* eslint-disable */ // WIP
 const { dRecruitContract } = require('../helpers/contract')
 const { Profile } = require('../models')
 

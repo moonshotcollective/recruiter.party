@@ -8,6 +8,9 @@
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "author": "dRecruit (Moonshot Collective)",
   "license": "Apache-2.0",
   "dependencies": {
@@ -27,9 +30,11 @@
     "mongoose": "^6.0.11",
     "nanoid": "^3.1.30",
     "near-api-js": "^0.43.1",
-    "secure-json-parse": "^2.4.0"
+    "secure-json-parse": "^2.4.0",
+    "uint8arrays": "^3.0.0"
   },
   "devDependencies": {
+    "eslint": "^8.5.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-node": "^11.1.0",

@@ -23,7 +23,7 @@ interface DevProfiles {
 }
 
 const Home = () => {
-  const { account, contracts, tokenContract } = useContext(Web3Context);
+  const { account, contracts } = useContext(Web3Context);
   const { library } = useWeb3React();
   const { coloredText, accentColor } = useCustomColor();
   const [yourBalance, setYourBalance] = useState("");
@@ -44,11 +44,11 @@ const Home = () => {
   };
 
   const init = async () => {
-    if (library && library.getSigner() && contracts && tokenContract) {
+    if (library && library.getSigner() && contracts) {
       try {
-        const tokenName = await tokenContract.readTokenContract.name();
+        const tokenName = await contracts.readTokenContract.name();
         console.log(`tokenName: `, { tokenName });
-        const tokenSymbol = await tokenContract.readTokenContract.symbol();
+        const tokenSymbol = await contracts.readTokenContract.symbol();
         console.log(`tokenSymbol: `, { tokenSymbol });
         setTokenMetadata({ name: tokenName, symbol: tokenSymbol });
         const lastTokenId = await contracts.readDrecruitContract.tokenId();
@@ -83,7 +83,7 @@ const Home = () => {
 
   useEffect(() => {
     init();
-  }, [contracts ,tokenContract]);
+  }, [contracts]);
 
   useEffect(() => {
     getEthBalance();

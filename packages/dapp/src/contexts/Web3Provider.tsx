@@ -38,7 +38,6 @@ const initialState = {
   provider: undefined,
   contracts: undefined,
   chainId: undefined,
-  tokenContract: undefined,
 } as State;
 
 const providerOptions = {
@@ -141,9 +140,9 @@ const Web3Provider = ({ children }: { children: any }) => {
           signer
         );
 
-        setContracts({ readDrecruitContract, writeDrecruitContract });
         const tokenAddress = await readDrecruitContract.token();
-        console.log('tokenAddress: ', { tokenAddress });
+        console.log("tokenAddress: ", { tokenAddress });
+
         const readTokenContract = new ethers.Contract(
           tokenAddress,
           ERC20ABI,
@@ -154,7 +153,12 @@ const Web3Provider = ({ children }: { children: any }) => {
           ERC20ABI,
           signer
         );
-        setTokenContract({ readTokenContract, writeTokenContract });
+        setContracts({
+          readDrecruitContract,
+          writeDrecruitContract,
+          readTokenContract,
+          writeTokenContract,
+        });
       }
     }
   }
@@ -194,19 +198,37 @@ const Web3Provider = ({ children }: { children: any }) => {
     if (supportedNetworks.includes(strChainId)) {
       const network = NETWORKS[strChainId as keyof typeof NETWORKS];
       const abis = ABIS as Record<string, any>;
-      const yourReadContract = new ethers.Contract(
+      const readDrecruitContract = new ethers.Contract(
+        abis[strChainId][network.name].contracts.DRecruitV1.address,
+        abis[strChainId][network.name].contracts.DRecruitV1.abi,
+        // TODO: replace this with static provider and rpc url based on chainId
+        signer
+      );
+      const writeDrecruitContract = new ethers.Contract(
         abis[strChainId][network.name].contracts.DRecruitV1.address,
         abis[strChainId][network.name].contracts.DRecruitV1.abi,
         signer
       );
-      const yourWriteContract = new ethers.Contract(
-        abis[strChainId][network.name].contracts.DRecruitV1.address,
-        abis[strChainId][network.name].contracts.DRecruitV1.abi,
+
+      const tokenAddress = await readDrecruitContract.token();
+      console.log("tokenAddress: ", { tokenAddress });
+
+      const readTokenContract = new ethers.Contract(
+        tokenAddress,
+        ERC20ABI,
         signer
       );
-      console.log(strChainId, network.name, network.chainId);
-      console.log({ yourReadContract, yourWriteContract });
-      setContracts({ yourReadContract, yourWriteContract });
+      const writeTokenContract = new ethers.Contract(
+        tokenAddress,
+        ERC20ABI,
+        signer
+      );
+      setContracts({
+        readDrecruitContract,
+        writeDrecruitContract,
+        readTokenContract,
+        writeTokenContract,
+      });
     }
 
     setAccount(account);

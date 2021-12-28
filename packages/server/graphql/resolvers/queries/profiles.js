@@ -20,9 +20,7 @@ const QueryProfiles = {
       filters.score = { $meta: 'textScore' }
       sort.score = { $meta: 'textScore' }
     }
-    console.log(filters, sort, options)
     const profiles = await Profile.find(filters, sort, options).lean()
-    console.log(profiles)
     return profiles
   },
 

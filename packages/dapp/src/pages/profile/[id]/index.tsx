@@ -25,6 +25,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useRouter } from "next/router";
 import { ceramicCoreFactory } from "core/ceramic";
 import { IPFS_GATEWAY } from "core/constants/index";
+import axios from "axios";
 
 const Home = () => {
   const { contracts } = useContext(Web3Context);

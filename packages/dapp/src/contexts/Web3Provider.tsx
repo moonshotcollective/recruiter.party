@@ -20,6 +20,7 @@ import getLibrary from "../core/connectors/getLibrary";
 import { useActiveWeb3React } from "../core/hooks/web3";
 import NETWORKS from "../core/networks";
 import { State, Web3Reducer } from "./Web3Reducer";
+import axios from "axios";
 
 export const supportedNetworks = Object.keys(ABIS);
 
@@ -165,6 +166,7 @@ const Web3Provider = ({ children }: { children: any }) => {
     setAccount(null);
     setContracts(null);
     localStorage.setItem("defaultWallet", "");
+    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/logout`, { withCredentials: true });
   };
 
   const connectWeb3 = useCallback(async () => {
@@ -184,6 +186,24 @@ const Web3Provider = ({ children }: { children: any }) => {
     } catch (error) {
       console.log({ error });
       setENS(null);
+    }
+
+    const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/nonce/${account}`);
+    const signature = await lib.provider.request({
+      method: "personal_sign",
+      params: [data.message, account],
+    });
+    const verifyResponse = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/verify/${account}`,
+      {
+        signature,
+      },
+      {
+        withCredentials: true,
+      },
+    );
+    if (verifyResponse.status !== 200) {
+      throw new Error("Unauthorized");
     }
 
     // check if supported network

@@ -13,6 +13,7 @@ import React, { useContext } from "react";
 import { AiFillSetting } from "react-icons/ai";
 import { BsFillPersonLinesFill } from "react-icons/bs";
 import { Web3Context } from "../../contexts/Web3Provider";
+import { useActiveWeb3React } from "core/hooks/web3";
 import Address from "../custom/Address";
 
 // const MenuOptions = (logout: any) => (
@@ -45,7 +46,7 @@ import Address from "../custom/Address";
 
 function ConnectButton({ w }: { w?: string }) {
   const { account, connectWeb3, logout } = useContext(Web3Context);
-  const { active } = useWeb3React();
+  const { active } = useActiveWeb3React();
 
   return (
     <HStack w="full">
@@ -58,7 +59,7 @@ function ConnectButton({ w }: { w?: string }) {
             fontSize="18px"
             size="short"
           />
-          {/* <Button onClick={logout}>Logout</Button> */}
+          <Button onClick={logout}>Logout</Button>
           {/* <MenuOptions /> */}
         </>
       ) : active && (

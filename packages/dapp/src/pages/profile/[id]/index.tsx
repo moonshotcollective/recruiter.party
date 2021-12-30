@@ -26,10 +26,10 @@ import { useRouter } from "next/router";
 import { ceramicCoreFactory } from "core/ceramic";
 import { IPFS_GATEWAY } from "core/constants/index";
 import axios from "axios";
+import UnlockProfile from "components/Profile/Unlock";
 
 const Home = () => {
   const { contracts } = useContext(Web3Context);
-  const { library } = useWeb3React();
   const router = useRouter();
   const did = router.query.id;
   const [basicProfile, setBasicProfile] = useState();
@@ -53,18 +53,20 @@ const Home = () => {
         const privateProfile = await core.get("privateProfile", did);
         console.log("privateProfile: ", privateProfile);
         setPrivateProfile(privateProfile);
-        setLoading(false);
         try {
           const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/unlock/${privateProfile.tokenId}`, {
             withCredentials: true,
           });
           if (response.status !== 200) {
+            setLoading(false);
             return setCanView(false);
           }
           setCanView(true);
           setDecryptedData(response.data.decryptedProfile);
+          setLoading(false);
         } catch (error) {
           setCanView(false);
+          setLoading(false);
         }
       }
     })();
@@ -199,8 +201,8 @@ const Home = () => {
               <Text fontSize="lg" color="purple.200">
                 <Icon as={FaTwitter} /> {decryptedData ? decryptedData.twitter : "Locked"}
               </Text>
-              {!decryptedData && (
-                <Button bgColor="yellow.200" style={{margin: "0 auto", marginTop: 20}}>Unlock Contact</Button>
+              {!canView && (
+                <UnlockProfile privateProfile={privateProfile} />
               )}
             </VStack>
           </Box>

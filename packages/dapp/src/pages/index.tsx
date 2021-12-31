@@ -133,94 +133,92 @@ const Home = () => {
 
   return (
     <>
-      <Container>
-        <VStack w="full" p="8" align="start" spacing="8">
-          <HStack
-            style={{ display: "flex", gap: "20px", justifyContent: "center" }}
-          >
-            <Heading fontSize="4xl" color={accentColor}>
-              Recruiter.Party{" "}
-            </Heading>
-            <NextImage src="/white-circle.png" width="50px" height="50px" />
-          </HStack>
-          <Heading
-            fontSize="xl"
-            color={coloredText}
-            width="600px"
-            lineHeight="8"
-            fontWeight={"normal"}
-          >
-            Lorem ipsum dolor sit amet
-            <br />
-            consectetur adipisicing elit
+      <VStack w="full" p="8" align="start" spacing="8">
+        <HStack
+          style={{ display: "flex", gap: "20px", justifyContent: "center" }}
+        >
+          <Heading fontSize="4xl" color={accentColor}>
+            Recruiter.Party{" "}
           </Heading>
-          <HStack>
-            <Button textTransform="none" bgColor={accentColor}>
-              Join as a Developer
-            </Button>
-            <Button
-              textTransform="none"
-              textColor={accentColor}
-              borderColor={accentColor}
-              variant="outline"
-            >
-              View Requests
-            </Button>
-          </HStack>
+          <NextImage src="/white-circle.png" width="50px" height="50px" />
+        </HStack>
+        <Heading
+          fontSize="xl"
+          color={coloredText}
+          width="600px"
+          lineHeight="8"
+          fontWeight={"normal"}
+        >
+          Lorem ipsum dolor sit amet
+          <br />
+          consectetur adipisicing elit
+        </Heading>
+        <HStack>
+          <Button textTransform="none" bgColor={accentColor}>
+            Join as a Developer
+          </Button>
+          <Button
+            textTransform="none"
+            textColor={accentColor}
+            borderColor={accentColor}
+            variant="outline"
+          >
+            View Requests
+          </Button>
+        </HStack>
 
-          <Divider />
+        <Divider />
 
-          <HStack align="start" justify="space-between" width="100%">
-            <VStack align="start" maxWidth="50%">
-              <Heading fontSize="2xl" color={accentColor}>
-                Browse Developers
-              </Heading>
-              <Heading fontSize="md" color={coloredText} fontWeight="normal">
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit
-              </Heading>
-            </VStack>
-            <Input borderColor={coloredText} placeholder="Search" width="30%" />
-          </HStack>
+        <HStack align="start" justify="space-between" width="100%">
+          <VStack align="start" maxWidth="50%">
+            <Heading fontSize="2xl" color={accentColor}>
+              Browse Developers
+            </Heading>
+            <Heading fontSize="md" color={coloredText} fontWeight="normal">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit
+            </Heading>
+          </VStack>
+          <Input borderColor={coloredText} placeholder="Search" width="30%" />
+        </HStack>
 
-          {error && (
-            <Text color="red">An error has occured. Please try again.</Text>
-          )}
+        {error && (
+          <Text color="red">An error has occured. Please try again.</Text>
+        )}
 
-          {profilesLoading ? (
-            <Spinner />
-          ) : (
-            <SimpleGrid width="100%" columns={3} spacing={6}>
-              {developerProfiles.map((profile) => (
-                <ProfileCard
-                  key={profile.basicProfile.image?.original?.src}
-                  avatarSrc={
-                    profile.basicProfile.image
-                      ? IPFS_GATEWAY +
-                        profile.basicProfile.image.original.src.split("//")[1]
-                      : "https://source.unsplash.com/random"
-                  }
-                  name={profile.basicProfile.name}
-                  city={profile.basicProfile.homeLocation}
-                  country={profile.basicProfile.residenceCountry}
-                  description={profile.basicProfile.description}
-                  coverSrc={
-                    profile.basicProfile.background
-                      ? IPFS_GATEWAY +
-                        profile.basicProfile.background?.original.src.split(
-                          "//"
-                        )[1]
-                      : "https://source.unsplash.com/random"
-                  }
-                  emoji={profile.basicProfile.emoji}
-                  isUnlocked={false}
-                  skills={["React", "GraphQL"]}
-                  did={profile.did}
-                />
-              ))}
-            </SimpleGrid>
-          )}
-        </VStack>
-      </Container>
+        {profilesLoading ? (
+          <Spinner />
+        ) : (
+          <SimpleGrid width="100%" columns={3} spacing={6}>
+            {developerProfiles.map((profile) => (
+              <ProfileCard
+                key={profile.did}
+                avatarSrc={
+                  profile.basicProfile && profile.basicProfile.image
+                    ? IPFS_GATEWAY +
+                      profile.basicProfile.image.original.src.split("//")[1]
+                    : "https://source.unsplash.com/random"
+                }
+                name={profile.basicProfile ? profile.basicProfile.name : "Anonymous"}
+                city={profile.basicProfile && profile.basicProfile.homeLocation}
+                country={profile.basicProfile && profile.basicProfile.residenceCountry}
+                description={profile.basicProfile && profile.basicProfile.description}
+                coverSrc={
+                  profile.basicProfile && profile.basicProfile.background
+                    ? IPFS_GATEWAY +
+                      profile.basicProfile.background?.original.src.split(
+                        "//"
+                      )[1]
+                    : "https://source.unsplash.com/random"
+                }
+                emoji={profile.basicProfile && profile.basicProfile.emoji}
+                isUnlocked={false}
+                skills={["React", "GraphQL"]}
+                did={profile.did}
+              />
+            ))}
+          </SimpleGrid>
+        )}
+      </VStack>
 
       <Faucet />
     </>

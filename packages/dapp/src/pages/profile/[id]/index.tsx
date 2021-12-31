@@ -35,11 +35,11 @@ import { IPFS_GATEWAY } from "core/constants/index";
 import axios from "axios";
 import NextLink from "next/link";
 import useCustomColor from "core/hooks/useCustomColor";
+import UnlockProfile from "components/Profile/Unlock";
 
 const Home = () => {
   const { accentColor } = useCustomColor();
   const { contracts } = useContext(Web3Context);
-  const { library } = useWeb3React();
   const router = useRouter();
   const did = router.query.id;
   const [basicProfile, setBasicProfile] = useState();
@@ -63,7 +63,6 @@ const Home = () => {
         const privateProfile = await core.get("privateProfile", did);
         console.log("privateProfile: ", privateProfile);
         setPrivateProfile(privateProfile);
-        setLoading(false);
         try {
           const response = await axios.get(
             `${process.env.NEXT_PUBLIC_API_URL}/unlock/${privateProfile.tokenId}`,
@@ -72,12 +71,15 @@ const Home = () => {
             }
           );
           if (response.status !== 200) {
+            setLoading(false);
             return setCanView(false);
           }
           setCanView(true);
           setDecryptedData(response.data.decryptedProfile);
+          setLoading(false);
         } catch (error) {
           setCanView(false);
+          setLoading(false);
         }
       }
     })();
@@ -245,13 +247,8 @@ const Home = () => {
                     <Icon as={FaTwitter} />{" "}
                     {decryptedData ? decryptedData.twitter : "Locked"}
                   </Text>
-                  {!decryptedData && (
-                    <Button
-                      bgColor="yellow.200"
-                      style={{ margin: "0 auto", marginTop: 20 }}
-                    >
-                      Unlock Contact
-                    </Button>
+                  {!canView && (
+                    <UnlockProfile privateProfile={privateProfile} />
                   )}
                 </VStack>
               </Box>

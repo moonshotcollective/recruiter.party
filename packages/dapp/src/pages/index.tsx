@@ -8,6 +8,8 @@ import {
   SimpleGrid,
   VStack,
   Spinner,
+  Text,
+  Image,
 } from "@chakra-ui/react";
 import { useWeb3React } from "@web3-react/core";
 import React, { useContext, useEffect, useState } from "react";
@@ -19,6 +21,7 @@ import { getDidFromTokenURI } from "../../helpers";
 import useCustomColor from "../core/hooks/useCustomColor";
 import { ProfileCard } from "components/ProfileCard";
 import { IPFS_GATEWAY } from "core/constants";
+import NextImage from "next/image";
 
 interface DevProfiles {
   did: string;
@@ -67,6 +70,7 @@ const Home = () => {
   });
   const [isAlertOpen, setIsAlertOpen] = React.useState(false);
   const [profilesLoading, setProfilesLoading] = React.useState(true);
+  const [error, setError] = React.useState<unknown>();
 
   const getEthBalance = async () => {
     if (library && account) {
@@ -94,6 +98,7 @@ const Home = () => {
           ...new Set(tokenURIs.map((uri) => getDidFromTokenURI(uri).did)),
         ];
         const core = ceramicCoreFactory();
+        // @ts-expect-error
         const devProfiles: DevProfiles[] = await Promise.all(
           developersDID.map(async (did) => ({
             did,
@@ -110,6 +115,7 @@ const Home = () => {
         setDeveloperProfiles(devProfiles);
       } catch (error) {
         console.log("Error in init function: ", error);
+        setError(error);
         setIsAlertOpen(true);
       } finally {
         setProfilesLoading(false);
@@ -129,9 +135,14 @@ const Home = () => {
     <>
       <Container>
         <VStack w="full" p="8" align="start" spacing="8">
-          <Heading fontSize="4xl" mb={-6} color={accentColor}>
-            Recruiter.Party <span className="dot"></span>
-          </Heading>
+          <HStack
+            style={{ display: "flex", gap: "20px", justifyContent: "center" }}
+          >
+            <Heading fontSize="4xl" color={accentColor}>
+              Recruiter.Party{" "}
+            </Heading>
+            <NextImage src="/white-circle.png" width="50px" height="50px" />
+          </HStack>
           <Heading
             fontSize="xl"
             color={coloredText}
@@ -170,6 +181,10 @@ const Home = () => {
             </VStack>
             <Input borderColor={coloredText} placeholder="Search" width="30%" />
           </HStack>
+
+          {error && (
+            <Text color="red">An error has occured. Please try again.</Text>
+          )}
 
           {profilesLoading ? (
             <Spinner />

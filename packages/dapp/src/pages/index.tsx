@@ -1,22 +1,55 @@
-import { RepeatIcon } from "@chakra-ui/icons";
-import { HStack, IconButton, Text, VStack } from "@chakra-ui/react";
-import { Title } from "@scaffold-eth/ui";
+import {
+  Button,
+  Container,
+  Divider,
+  Heading,
+  HStack,
+  Input,
+  SimpleGrid,
+  VStack,
+  Spinner,
+} from "@chakra-ui/react";
 import { useWeb3React } from "@web3-react/core";
-import ContractFields from "components/custom/ContractFields";
 import React, { useContext, useEffect, useState } from "react";
 import Faucet from "../components/custom/Faucet";
 import { Web3Context } from "../contexts/Web3Provider";
 import { hexToString } from "../core/helpers";
 import { ceramicCoreFactory } from "core/ceramic";
 import { getDidFromTokenURI } from "../../helpers";
-import { ERC20ABI } from "../../helpers/abi";
 import useCustomColor from "../core/hooks/useCustomColor";
-import { ethers } from "ethers";
+import { ProfileCard } from "components/ProfileCard";
+import { IPFS_GATEWAY } from "core/constants";
 
 interface DevProfiles {
-  did: any;
-  basicProfile: any;
-  cryptoAccounts: any;
+  did: string;
+  basicProfile: {
+    birthDate: string;
+    description: string;
+    emoji: string;
+    homeLocation: string;
+    image: {
+      original: {
+        src: string;
+        height: number;
+        width: number;
+        mimeType: string;
+      };
+    };
+    background?: {
+      original: {
+        src: string;
+        height: number;
+        width: number;
+        mimeType: string;
+      };
+    };
+    name: string;
+    residenceCountry: string;
+    url: string;
+  };
+  cryptoAccounts: {
+    [key: string]: string;
+  };
   webAccounts: any;
   publicProfile: any;
   privateProfile: any;
@@ -33,6 +66,7 @@ const Home = () => {
     symbol: null,
   });
   const [isAlertOpen, setIsAlertOpen] = React.useState(false);
+  const [profilesLoading, setProfilesLoading] = React.useState(true);
 
   const getEthBalance = async () => {
     if (library && account) {
@@ -60,7 +94,7 @@ const Home = () => {
           ...new Set(tokenURIs.map((uri) => getDidFromTokenURI(uri).did)),
         ];
         const core = ceramicCoreFactory();
-        const devProfiles = await Promise.all(
+        const devProfiles: DevProfiles[] = await Promise.all(
           developersDID.map(async (did) => ({
             did,
             basicProfile: await core.get("basicProfile", did),
@@ -77,6 +111,8 @@ const Home = () => {
       } catch (error) {
         console.log("Error in init function: ", error);
         setIsAlertOpen(true);
+      } finally {
+        setProfilesLoading(false);
       }
     }
   };
@@ -90,33 +126,89 @@ const Home = () => {
   }, [account, library]);
 
   return (
-    <VStack>
-      <HStack align="center" w="full">
-        <Title color={accentColor}>Title</Title>
-      </HStack>
-      <Text textStyle="h2">
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dignissimos
-        esse rerum doloremque eligendi tenetur reprehenderit consequuntur
-        adipisci officia amet quam architecto, commodi deserunt neque debitis
-        porro non iusto asperiores molestiae!
-      </Text>
-      <Text color={coloredText}>
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dignissimos
-        esse rerum doloremque eligendi tenetur reprehenderit consequuntur
-        adipisci officia amet quam architecto, commodi deserunt neque debitis
-        porro non iusto asperiores molestiae!
-      </Text>
-      <HStack>
-        <Text>Your Balance: {yourBalance}Ξ</Text>
-        <IconButton
-          onClick={getEthBalance}
-          aria-label="refresh"
-          icon={<RepeatIcon />}
-        />
-      </HStack>
-      <ContractFields />
+    <>
+      <Container>
+        <VStack w="full" p="8" align="start" spacing="8">
+          <Heading fontSize="4xl" mb={-6} color={accentColor}>
+            Recruiter.Party <span className="dot"></span>
+          </Heading>
+          <Heading
+            fontSize="xl"
+            color={coloredText}
+            width="600px"
+            lineHeight="8"
+            fontWeight={"normal"}
+          >
+            Lorem ipsum dolor sit amet
+            <br />
+            consectetur adipisicing elit
+          </Heading>
+          <HStack>
+            <Button textTransform="none" bgColor={accentColor}>
+              Join as a Developer
+            </Button>
+            <Button
+              textTransform="none"
+              textColor={accentColor}
+              borderColor={accentColor}
+              variant="outline"
+            >
+              View Requests
+            </Button>
+          </HStack>
+
+          <Divider />
+
+          <HStack align="start" justify="space-between" width="100%">
+            <VStack align="start" maxWidth="50%">
+              <Heading fontSize="2xl" color={accentColor}>
+                Browse Developers
+              </Heading>
+              <Heading fontSize="md" color={coloredText} fontWeight="normal">
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit
+              </Heading>
+            </VStack>
+            <Input borderColor={coloredText} placeholder="Search" width="30%" />
+          </HStack>
+
+          {profilesLoading ? (
+            <Spinner />
+          ) : (
+            <SimpleGrid width="100%" columns={3} spacing={6}>
+              {developerProfiles.map((profile) => (
+                <ProfileCard
+                  key={profile.basicProfile.image?.original?.src}
+                  avatarSrc={
+                    profile.basicProfile.image
+                      ? IPFS_GATEWAY +
+                        profile.basicProfile.image.original.src.split("//")[1]
+                      : "https://source.unsplash.com/random"
+                  }
+                  name={profile.basicProfile.name}
+                  city={profile.basicProfile.homeLocation}
+                  country={profile.basicProfile.residenceCountry}
+                  description={profile.basicProfile.description}
+                  coverSrc={
+                    profile.basicProfile.background
+                      ? IPFS_GATEWAY +
+                        profile.basicProfile.background?.original.src.split(
+                          "//"
+                        )[1]
+                      : "https://source.unsplash.com/random"
+                  }
+                  emoji={profile.basicProfile.emoji}
+                  isUnlocked={false}
+                  skills={["React", "GraphQL"]}
+                  did={profile.did}
+                />
+              ))}
+            </SimpleGrid>
+          )}
+        </VStack>
+      </Container>
+
       <Faucet />
-    </VStack>
+    </>
   );
 };
 

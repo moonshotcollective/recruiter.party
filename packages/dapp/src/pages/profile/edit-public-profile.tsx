@@ -4,21 +4,29 @@ import {
   Divider,
   Flex,
   FormControl,
+  FormLabel,
   Heading,
   HStack,
   Input,
-  InputGroup, Spacer,
+  InputGroup,
+  Spacer,
   Stack,
   Tag,
   TagCloseButton,
   TagLabel,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import useCustomColor from "core/hooks/useCustomColor";
-import React from "react";
+import React, { useState } from "react";
 
 const EditPublicProfile = () => {
   const { accentColor, coloredText, primaryColor } = useCustomColor();
+  const [title, setTitle] = useState<string>("");
+  const [skills, setSkills] = useState<string[]>([]);
+  const [newSkill, setNewSkill] = useState<string>("");
+  const [experience, setExperience] = useState<string[]>([]);
+  const [education, setEducation] = useState<string[]>([]);
+
   return (
     <div>
       <Button pl={2} backgroundColor={"transparent"} color={accentColor}>
@@ -28,44 +36,71 @@ const EditPublicProfile = () => {
         Build your profile
       </Heading>
       <FormControl mt={2} mb={2}>
-        <Text>Title</Text>
+        <FormLabel>Title</FormLabel>
         <Text mb={2} fontSize="sm">
           Description
         </Text>
-        <Input mb={4} borderColor="neutralDark" placeholder="Title" />
+        <Input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          mb={4}
+          borderColor="neutralDark"
+          placeholder="Title"
+        />
       </FormControl>
       <Divider />
       <FormControl mt={2} mb={2}>
-        <Text>Skills</Text>
+        <FormLabel>Skills</FormLabel>
         <Text mb={2} fontSize="sm">
           Description
         </Text>
-        <HStack
-          mb={2}
-          spacing={4}
-          borderRadius={"md"}
-          p={2}
-          borderWidth={1}
-          borderColor="neutralDark"
-        >
-          {["sm", "md", "lg"].map((size) => (
-            <Tag
-              size="lg"
-              key={size}
-              borderRadius="md"
-              variant="solid"
-              colorScheme="teal"
-              color="white"
-            >
-              <TagLabel>React</TagLabel>
-              <TagCloseButton />
-            </Tag>
-          ))}
-        </HStack>
+        {skills.length > 0 && (
+          <HStack
+            mb={2}
+            spacing={4}
+            borderRadius={"md"}
+            p={2}
+            borderWidth={1}
+            borderColor="neutralDark"
+          >
+            {skills.map((skill, index) => (
+              <Tag
+                size="lg"
+                key={index}
+                borderRadius="md"
+                variant="solid"
+                colorScheme="teal"
+                color="white"
+              >
+                <TagLabel>{skill}</TagLabel>
+                <TagCloseButton
+                  onClick={() => {
+                    setSkills((prevSkills) =>
+                      [...prevSkills].filter((currSkill) => currSkill !== skill)
+                    );
+                  }}
+                />
+              </Tag>
+            ))}
+          </HStack>
+        )}
         <Stack>
           <InputGroup>
-            <Input mb={4} borderColor="neutralDark" placeholder="Add Skill" />
-            <Button ml={5}>
+            <Input
+              value={newSkill}
+              onChange={(e) => setNewSkill(e.target.value)}
+              mb={4}
+              borderColor="neutralDark"
+              placeholder="Add Skill"
+            />
+            <Button
+              onClick={() => {
+                if (newSkill === "") return;
+                setSkills((skills) => [...skills, newSkill]);
+                setNewSkill("");
+              }}
+              ml={5}
+            >
               <AddIcon mr={2} color="white" />
               Add Skill
             </Button>
@@ -74,51 +109,94 @@ const EditPublicProfile = () => {
       </FormControl>
       <Divider />
       <FormControl mt={2} mb={2}>
-        <Text>Experience</Text>
+        <FormLabel>Experience</FormLabel>
         <Text mb={2} fontSize="sm">
           Description
         </Text>
-        {["developer", "designer", "marketer"].map((experience) => (
+        {experience.map((exp, index) => (
           <InputGroup mb={2}>
-            <Input borderColor="neutralDark" placeholder={experience} />
-            <Button ml={2} backgroundColor="transparent">
+            <Input
+              borderColor="neutralDark"
+              placeholder="Add experience"
+              value={exp}
+              onChange={(e) => {
+                const newExperience = [...experience];
+                newExperience[index] = e.target.value;
+                setExperience(newExperience);
+              }}
+            />
+            <Button
+              onClick={() => {
+                setExperience((experience) =>
+                  [...experience].filter((currExp) => currExp !== exp)
+                );
+              }}
+              ml={2}
+              backgroundColor="transparent"
+            >
               <CloseIcon color={accentColor} w={4} h={4} />
             </Button>
           </InputGroup>
         ))}
-        <Button m={2} ml={0}>
+        <Button
+          onClick={() => {
+            setExperience((experience) => [...experience, ""]);
+          }}
+          m={2}
+          ml={0}
+        >
           <AddIcon mr={3} color="white" />
           Add experience
         </Button>
       </FormControl>
       <Divider />
       <FormControl mt={2} mb={2}>
-        <Text>Education</Text>
+        <FormLabel>Education</FormLabel>
         <Text mb={2} fontSize="sm">
           Description
         </Text>
-        {["developer", "designer", "marketer"].map((education) => (
+        {education.map((edu, index) => (
           <InputGroup mb={2}>
-            <Input borderColor="neutralDark" placeholder="education" />
-            <Button ml={2} backgroundColor="transparent">
+            <Input
+              value={edu}
+              onChange={(e) => {
+                const newEducation = [...education];
+                newEducation[index] = e.target.value;
+                setEducation(newEducation);
+              }}
+              borderColor="neutralDark"
+              placeholder="education"
+            />
+            <Button
+              onClick={() =>
+                setEducation((educations) =>
+                  [...educations].filter((currEdu) => currEdu !== edu)
+                )
+              }
+              ml={2}
+              backgroundColor="transparent"
+            >
               <CloseIcon color={accentColor} w={4} h={4} />
             </Button>
           </InputGroup>
         ))}
-        <Button m={2} ml={0}>
+        <Button
+          onClick={() => setEducation((educations) => [...educations, ""])}
+          m={2}
+          ml={0}
+        >
           <AddIcon mr={3} color="white" />
           Add education
         </Button>
       </FormControl>
       <Flex>
         <Spacer />
-        <Button
-          mr={2}
-          backgroundColor={"transparent"} color={accentColor}>Back</Button>
-          <Button
-          mr={2}
-          backgroundColor={accentColor}
-          color='neutralDark'>Next</Button>
+        <Button mr={2} backgroundColor={"transparent"} color={accentColor}>
+          Back
+        </Button>
+        <Button mr={2} backgroundColor={accentColor} color="neutralDark">
+          Next
+        </Button>
       </Flex>
     </div>
   );

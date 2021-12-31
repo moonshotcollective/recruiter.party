@@ -22,6 +22,7 @@ import useCustomColor from "../core/hooks/useCustomColor";
 import { ProfileCard } from "components/ProfileCard";
 import { IPFS_GATEWAY } from "core/constants";
 import NextImage from "next/image";
+import { gql, useQuery } from "@apollo/client";
 
 interface DevProfiles {
   did: string;
@@ -71,6 +72,7 @@ const Home = () => {
   const [isAlertOpen, setIsAlertOpen] = React.useState(false);
   const [profilesLoading, setProfilesLoading] = React.useState(true);
   const [error, setError] = React.useState<unknown>();
+  const [searchProfilesText, setSearchProfilesText] = React.useState("");
 
   const getEthBalance = async () => {
     if (library && account) {
@@ -131,6 +133,23 @@ const Home = () => {
     getEthBalance();
   }, [account, library]);
 
+  const GET_PROFILES_QUERY = gql`
+    query GetProfiles($searchText: String) {
+      profiles(search: $searchText) {
+        tokenId
+        name
+        residenceCity
+        residenceCountry
+        description
+        skills
+      }
+    }
+  `;
+
+  const queryResult = useQuery(GET_PROFILES_QUERY, {
+    variables: { searchText: searchProfilesText }
+  });
+
   return (
     <>
       <VStack w="full" p="8" align="start" spacing="8">
@@ -178,46 +197,78 @@ const Home = () => {
               Lorem ipsum dolor, sit amet consectetur adipisicing elit
             </Heading>
           </VStack>
-          <Input borderColor={coloredText} placeholder="Search" width="30%" />
+          <Input
+            borderColor={coloredText}
+            placeholder="Search"
+            width="30%"
+            value={searchProfilesText}
+            onChange={e => setSearchProfilesText(e.target.value)}
+          />
         </HStack>
 
         {error && (
           <Text color="red">An error has occured. Please try again.</Text>
         )}
 
-        {profilesLoading ? (
-          <Spinner />
-        ) : (
-          <SimpleGrid width="100%" columns={3} spacing={6}>
-            {developerProfiles.map((profile) => (
-              <ProfileCard
-                key={profile.did}
-                avatarSrc={
-                  profile.basicProfile && profile.basicProfile.image
-                    ? IPFS_GATEWAY +
-                      profile.basicProfile.image.original.src.split("//")[1]
-                    : "https://source.unsplash.com/random"
-                }
-                name={profile.basicProfile ? profile.basicProfile.name : "Anonymous"}
-                city={profile.basicProfile && profile.basicProfile.homeLocation}
-                country={profile.basicProfile && profile.basicProfile.residenceCountry}
-                description={profile.basicProfile && profile.basicProfile.description}
-                coverSrc={
-                  profile.basicProfile && profile.basicProfile.background
-                    ? IPFS_GATEWAY +
-                      profile.basicProfile.background?.original.src.split(
-                        "//"
-                      )[1]
-                    : "https://source.unsplash.com/random"
-                }
-                emoji={profile.basicProfile && profile.basicProfile.emoji}
-                isUnlocked={false}
-                skills={["React", "GraphQL"]}
-                did={profile.did}
-              />
-            ))}
-          </SimpleGrid>
-        )}
+        {searchProfilesText === "" ?
+          profilesLoading ? (
+            <Spinner />
+          ) : (
+            <SimpleGrid width="100%" columns={3} spacing={6}>
+              {developerProfiles.map((profile) => (
+                <ProfileCard
+                  key={profile.did}
+                  avatarSrc={
+                    profile.basicProfile && profile.basicProfile.image
+                      ? IPFS_GATEWAY +
+                        profile.basicProfile.image.original.src.split("//")[1]
+                      : "https://source.unsplash.com/random"
+                  }
+                  name={profile.basicProfile ? profile.basicProfile.name : "Anonymous"}
+                  city={profile.basicProfile && profile.basicProfile.homeLocation}
+                  country={profile.basicProfile && profile.basicProfile.residenceCountry}
+                  description={profile.basicProfile && profile.basicProfile.description}
+                  coverSrc={
+                    profile.basicProfile && profile.basicProfile.background
+                      ? IPFS_GATEWAY +
+                        profile.basicProfile.background?.original.src.split(
+                          "//"
+                        )[1]
+                      : "https://source.unsplash.com/random"
+                  }
+                  emoji={profile.basicProfile && profile.basicProfile.emoji}
+                  isUnlocked={false}
+                  skills={["React", "GraphQL"]}
+                  did={profile.did}
+                />
+              ))}
+            </SimpleGrid>
+          )
+        :
+          queryResult.loading ? (
+            <Spinner />
+          ) :
+            queryResult.data.profiles.length > 0 ? (
+              <SimpleGrid width="100%" columns={3} spacing={6}>
+                {queryResult.data.profiles.map((profile) => (
+                  <ProfileCard
+                    key={profile.tokenId}
+                    avatarSrc="https://source.unsplash.com/random"
+                    name={profile.name ? profile.name : "Anonymous"}
+                    city={profile.residenceCity}
+                    country={profile.residenceCountry}
+                    description={profile.description}
+                    coverSrc="https://source.unsplash.com/random"
+                    isUnlocked={false}
+                    skills={profile.skills}
+                    did={profile.tokenId}
+                  />
+                ))}
+              </SimpleGrid>
+            ) : (
+              <Text color={accentColor}>No Results.</Text>
+            )
+          }
       </VStack>
 
       <Faucet />

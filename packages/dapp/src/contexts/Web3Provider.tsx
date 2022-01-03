@@ -166,7 +166,7 @@ const Web3Provider = ({ children }: { children: any }) => {
     setAccount(null);
     setContracts(null);
     localStorage.setItem("defaultWallet", "");
-    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/logout`, { withCredentials: true });
+    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {}, { withCredentials: true });
   };
 
   const connectWeb3 = useCallback(async () => {

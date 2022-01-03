@@ -4,11 +4,13 @@ import {
   Divider,
   Flex,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Heading,
   HStack,
   Input,
   InputGroup,
+  SimpleGrid,
   Spacer,
   Stack,
   Tag,
@@ -18,14 +20,48 @@ import {
 } from "@chakra-ui/react";
 import useCustomColor from "core/hooks/useCustomColor";
 import React, { useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
 
 const EditPublicProfile = () => {
-  const { accentColor, coloredText, primaryColor } = useCustomColor();
+  const { accentColor } = useCustomColor();
   const [title, setTitle] = useState<string>("");
-  const [skills, setSkills] = useState<string[]>([]);
-  const [newSkill, setNewSkill] = useState<string>("");
-  const [experience, setExperience] = useState<string[]>([]);
-  const [education, setEducation] = useState<string[]>([]);
+
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isSubmitting },
+    setValue,
+    control,
+  } = useForm();
+
+  const {
+    fields: xpFields,
+    append: xpAppend,
+    remove: xpRemove,
+  } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormContext)
+    name: "experiences", // unique name for your Field Array
+    // keyName: "id", default to "id", you can change the key name
+  });
+
+  const {
+    fields: skillFields,
+    append: skillAppend,
+    remove: skillRemove,
+  } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormContext)
+    name: "skillTags", // unique name for your Field Array
+    // keyName: "id", default to "id", you can change the key name
+  });
+
+  const {
+    fields: eduFields,
+    append: eduAppend,
+    remove: eduRemove,
+  } = useFieldArray({
+    control,
+    name: "education",
+  });
 
   return (
     <div>
@@ -49,88 +85,80 @@ const EditPublicProfile = () => {
         />
       </FormControl>
       <Divider />
-      <FormControl mt={2} mb={2}>
+      <FormControl isInvalid={errors.skillTags} mt={2} mb={2}>
         <FormLabel>Skills</FormLabel>
         <Text mb={2} fontSize="sm">
           Description
         </Text>
-        {skills.length > 0 && (
-          <HStack
-            mb={2}
+        {skillFields.length > 0 && (
+          <SimpleGrid
+            w="full"
+            border="purple.500"
+            borderRadius="md"
+            p={1}
+            borderWidth="2px"
+            columns={4}
             spacing={4}
-            borderRadius={"md"}
-            p={2}
-            borderWidth={1}
-            borderColor="neutralDark"
           >
-            {skills.map((skill, index) => (
+            {skillFields.map((item, index) => (
               <Tag
-                size="lg"
-                key={index}
-                borderRadius="md"
-                variant="solid"
-                colorScheme="teal"
+                size="md"
+                key={item.id}
                 color="white"
+                borderRadius="md"
+                backgroundColor="purple.500"
               >
-                <TagLabel>{skill}</TagLabel>
-                <TagCloseButton
-                  onClick={() => {
-                    setSkills((prevSkills) =>
-                      [...prevSkills].filter((currSkill) => currSkill !== skill)
-                    );
-                  }}
-                />
+                <TagLabel>
+                  <Input
+                    placeholder="TypeScript"
+                    border="none"
+                    _focus={{
+                      border: "none",
+                    }}
+                    {...register(`skillTags.${index}.value`, {
+                      maxLength: {
+                        value: 450,
+                        message: "Maximum length should be 450",
+                      },
+                    })}
+                  />
+                </TagLabel>
+                <TagCloseButton onClick={() => skillRemove(index)} />
               </Tag>
             ))}
-          </HStack>
+          </SimpleGrid>
         )}
-        <Stack>
-          <InputGroup>
-            <Input
-              value={newSkill}
-              onChange={(e) => setNewSkill(e.target.value)}
-              mb={4}
-              borderColor="neutralDark"
-              placeholder="Add Skill"
-            />
-            <Button
-              onClick={() => {
-                if (newSkill === "") return;
-                setSkills((skills) => [...skills, newSkill]);
-                setNewSkill("");
-              }}
-              ml={5}
-            >
-              <AddIcon mr={2} color="white" />
-              Add Skill
-            </Button>
-          </InputGroup>
-        </Stack>
+
+        <Button onClick={() => skillAppend("")} mt={5} mb={5}>
+          <AddIcon mr={2} color="white" />
+          Add Skill
+        </Button>
+        <FormErrorMessage>
+          {errors.skillTags && errors.skillTags.message}
+        </FormErrorMessage>
       </FormControl>
       <Divider />
-      <FormControl mt={2} mb={2}>
-        <FormLabel>Experience</FormLabel>
+      <FormControl isInvalid={errors.experiences} mt={2} mb={2}>
+        <FormLabel htmlFor="experiences" fontWeight="bold">
+          Experience
+        </FormLabel>
         <Text mb={2} fontSize="sm">
           Description
         </Text>
-        {experience.map((exp, index) => (
-          <InputGroup mb={2}>
+        {xpFields.map((item, index) => (
+          <InputGroup key={item.id} mb={2}>
             <Input
               borderColor="neutralDark"
               placeholder="Add experience"
-              value={exp}
-              onChange={(e) => {
-                const newExperience = [...experience];
-                newExperience[index] = e.target.value;
-                setExperience(newExperience);
-              }}
+              {...register(`experiences.${index}.value`, {
+                maxLength: {
+                  value: 150,
+                  message: "Maximum length should be 150",
+                },
+              })}
             />
             <Button
-              onClick={() => {
-                setExperience((experience) =>
-                  [...experience].filter((currExp) => currExp !== exp)
-                );
-              }}
+              onClick={() => xpRemove(index)}
               ml={2}
               backgroundColor="transparent"
             >
@@ -138,41 +166,37 @@ const EditPublicProfile = () => {
             </Button>
           </InputGroup>
         ))}
-        <Button
-          onClick={() => {
-            setExperience((experience) => [...experience, ""]);
-          }}
-          m={2}
-          ml={0}
-        >
+        <Button onClick={() => xpAppend("")} m={2} ml={0}>
           <AddIcon mr={3} color="white" />
           Add experience
         </Button>
+        <FormErrorMessage>
+          {errors.experiences && errors.experiences.message}
+        </FormErrorMessage>
       </FormControl>
       <Divider />
+
       <FormControl mt={2} mb={2}>
-        <FormLabel>Education</FormLabel>
+        <FormLabel htmlFor="education" fontWeight="bold">
+          Education
+        </FormLabel>
         <Text mb={2} fontSize="sm">
           Description
         </Text>
-        {education.map((edu, index) => (
-          <InputGroup mb={2}>
+        {eduFields.map((item, index) => (
+          <InputGroup key={item.id} mb={2}>
             <Input
-              value={edu}
-              onChange={(e) => {
-                const newEducation = [...education];
-                newEducation[index] = e.target.value;
-                setEducation(newEducation);
-              }}
-              borderColor="neutralDark"
+              {...register(`education.${index}.value`, {
+                maxLength: {
+                  value: 450,
+                  message: "Maximum length should be 450",
+                },
+              })}
+              color="white"
               placeholder="education"
             />
             <Button
-              onClick={() =>
-                setEducation((educations) =>
-                  [...educations].filter((currEdu) => currEdu !== edu)
-                )
-              }
+              onClick={() => eduRemove(index)}
               ml={2}
               backgroundColor="transparent"
             >
@@ -180,21 +204,30 @@ const EditPublicProfile = () => {
             </Button>
           </InputGroup>
         ))}
-        <Button
-          onClick={() => setEducation((educations) => [...educations, ""])}
-          m={2}
-          ml={0}
-        >
+        <Button onClick={() => eduAppend("")} m={2} ml={0}>
           <AddIcon mr={3} color="white" />
           Add education
         </Button>
+        <FormErrorMessage>
+          {errors.education && errors.education.message}
+        </FormErrorMessage>
       </FormControl>
       <Flex>
         <Spacer />
         <Button mr={2} backgroundColor={"transparent"} color={accentColor}>
           Back
         </Button>
-        <Button mr={2} backgroundColor={accentColor} color="neutralDark">
+        <Button
+          _hover={{
+            backgroundColor: "transparent",
+            borderColor: accentColor,
+            borderWidth: "1px",
+            color: accentColor,
+          }}
+          mr={2}
+          backgroundColor={accentColor}
+          color="purple.500"
+        >
           Next
         </Button>
       </Flex>

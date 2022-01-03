@@ -19,7 +19,7 @@ import { hexToString } from "../core/helpers";
 import { ceramicCoreFactory } from "core/ceramic";
 import { getDidFromTokenURI } from "../../helpers";
 import useCustomColor from "../core/hooks/useCustomColor";
-import { ProfileCard } from "components/ProfileCard";
+import { ProfileCard } from "components/Profile/Card";
 import { IPFS_GATEWAY } from "core/constants";
 import NextImage from "next/image";
 import { gql, useQuery } from "@apollo/client";

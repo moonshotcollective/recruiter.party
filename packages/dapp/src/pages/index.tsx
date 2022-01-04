@@ -1,22 +1,59 @@
-import { RepeatIcon } from "@chakra-ui/icons";
-import { HStack, IconButton, Text, VStack } from "@chakra-ui/react";
-import { Title } from "@scaffold-eth/ui";
+import {
+  Button,
+  Container,
+  Divider,
+  Heading,
+  HStack,
+  Input,
+  SimpleGrid,
+  VStack,
+  Spinner,
+  Text,
+  Image,
+} from "@chakra-ui/react";
 import { useWeb3React } from "@web3-react/core";
-import ContractFields from "components/custom/ContractFields";
 import React, { useContext, useEffect, useState } from "react";
 import Faucet from "../components/custom/Faucet";
 import { Web3Context } from "../contexts/Web3Provider";
 import { hexToString } from "../core/helpers";
 import { ceramicCoreFactory } from "core/ceramic";
 import { getDidFromTokenURI } from "../../helpers";
-import { ERC20ABI } from "../../helpers/abi";
 import useCustomColor from "../core/hooks/useCustomColor";
-import { ethers } from "ethers";
+import { ProfileCard } from "components/Profile/Card";
+import { IPFS_GATEWAY } from "core/constants";
+import NextImage from "next/image";
+import { gql, useQuery } from "@apollo/client";
 
 interface DevProfiles {
-  did: any;
-  basicProfile: any;
-  cryptoAccounts: any;
+  did: string;
+  basicProfile: {
+    birthDate: string;
+    description: string;
+    emoji: string;
+    homeLocation: string;
+    image: {
+      original: {
+        src: string;
+        height: number;
+        width: number;
+        mimeType: string;
+      };
+    };
+    background?: {
+      original: {
+        src: string;
+        height: number;
+        width: number;
+        mimeType: string;
+      };
+    };
+    name: string;
+    residenceCountry: string;
+    url: string;
+  };
+  cryptoAccounts: {
+    [key: string]: string;
+  };
   webAccounts: any;
   publicProfile: any;
   privateProfile: any;
@@ -33,6 +70,9 @@ const Home = () => {
     symbol: null,
   });
   const [isAlertOpen, setIsAlertOpen] = React.useState(false);
+  const [profilesLoading, setProfilesLoading] = React.useState(true);
+  const [error, setError] = React.useState<unknown>();
+  const [searchProfilesText, setSearchProfilesText] = React.useState("");
 
   const getEthBalance = async () => {
     if (library && account) {
@@ -60,7 +100,8 @@ const Home = () => {
           ...new Set(tokenURIs.map((uri) => getDidFromTokenURI(uri).did)),
         ];
         const core = ceramicCoreFactory();
-        const devProfiles = await Promise.all(
+        // @ts-expect-error
+        const devProfiles: DevProfiles[] = await Promise.all(
           developersDID.map(async (did) => ({
             did,
             basicProfile: await core.get("basicProfile", did),
@@ -76,7 +117,10 @@ const Home = () => {
         setDeveloperProfiles(devProfiles);
       } catch (error) {
         console.log("Error in init function: ", error);
+        setError(error);
         setIsAlertOpen(true);
+      } finally {
+        setProfilesLoading(false);
       }
     }
   };
@@ -89,34 +133,146 @@ const Home = () => {
     getEthBalance();
   }, [account, library]);
 
+  const GET_PROFILES_QUERY = gql`
+    query GetProfiles($searchText: String) {
+      profiles(search: $searchText) {
+        tokenId
+        name
+        residenceCity
+        residenceCountry
+        description
+        skills
+      }
+    }
+  `;
+
+  const queryResult = useQuery(GET_PROFILES_QUERY, {
+    variables: { searchText: searchProfilesText }
+  });
+
   return (
-    <VStack>
-      <HStack align="center" w="full">
-        <Title color={accentColor}>Title</Title>
-      </HStack>
-      <Text textStyle="h2">
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dignissimos
-        esse rerum doloremque eligendi tenetur reprehenderit consequuntur
-        adipisci officia amet quam architecto, commodi deserunt neque debitis
-        porro non iusto asperiores molestiae!
-      </Text>
-      <Text color={coloredText}>
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dignissimos
-        esse rerum doloremque eligendi tenetur reprehenderit consequuntur
-        adipisci officia amet quam architecto, commodi deserunt neque debitis
-        porro non iusto asperiores molestiae!
-      </Text>
-      <HStack>
-        <Text>Your Balance: {yourBalance}Ξ</Text>
-        <IconButton
-          onClick={getEthBalance}
-          aria-label="refresh"
-          icon={<RepeatIcon />}
-        />
-      </HStack>
-      <ContractFields />
+    <>
+      <VStack w="full" p="8" align="start" spacing="8">
+        <HStack
+          style={{ display: "flex", gap: "20px", justifyContent: "center" }}
+        >
+          <Heading fontSize="4xl" color={accentColor}>
+            Recruiter.Party{" "}
+          </Heading>
+          <NextImage src="/white-circle.png" width="50px" height="50px" />
+        </HStack>
+        <Heading
+          fontSize="xl"
+          color={coloredText}
+          width="600px"
+          lineHeight="8"
+          fontWeight={"normal"}
+        >
+          Lorem ipsum dolor sit amet
+          <br />
+          consectetur adipisicing elit
+        </Heading>
+        <HStack>
+          <Button textTransform="none" bgColor={accentColor}>
+            Join as a Developer
+          </Button>
+          <Button
+            textTransform="none"
+            textColor={accentColor}
+            borderColor={accentColor}
+            variant="outline"
+          >
+            View Requests
+          </Button>
+        </HStack>
+
+        <Divider />
+
+        <HStack align="start" justify="space-between" width="100%">
+          <VStack align="start" maxWidth="50%">
+            <Heading fontSize="2xl" color={accentColor}>
+              Browse Developers
+            </Heading>
+            <Heading fontSize="md" color={coloredText} fontWeight="normal">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit
+            </Heading>
+          </VStack>
+          <Input
+            borderColor={coloredText}
+            placeholder="Search"
+            width="30%"
+            value={searchProfilesText}
+            onChange={e => setSearchProfilesText(e.target.value)}
+          />
+        </HStack>
+
+        {error && (
+          <Text color="red">An error has occured. Please try again.</Text>
+        )}
+
+        {searchProfilesText === "" ?
+          profilesLoading ? (
+            <Spinner />
+          ) : (
+            <SimpleGrid width="100%" columns={3} spacing={6}>
+              {developerProfiles.map((profile) => (
+                <ProfileCard
+                  key={profile.did}
+                  avatarSrc={
+                    profile.basicProfile && profile.basicProfile.image
+                      ? IPFS_GATEWAY +
+                        profile.basicProfile.image.original.src.split("//")[1]
+                      : "https://source.unsplash.com/random"
+                  }
+                  name={profile.basicProfile ? profile.basicProfile.name : "Anonymous"}
+                  city={profile.basicProfile && profile.basicProfile.homeLocation}
+                  country={profile.basicProfile && profile.basicProfile.residenceCountry}
+                  description={profile.basicProfile && profile.basicProfile.description}
+                  coverSrc={
+                    profile.basicProfile && profile.basicProfile.background
+                      ? IPFS_GATEWAY +
+                        profile.basicProfile.background?.original.src.split(
+                          "//"
+                        )[1]
+                      : "https://source.unsplash.com/random"
+                  }
+                  emoji={profile.basicProfile && profile.basicProfile.emoji}
+                  isUnlocked={false}
+                  skills={["React", "GraphQL"]}
+                  did={profile.did}
+                />
+              ))}
+            </SimpleGrid>
+          )
+        :
+          queryResult.loading ? (
+            <Spinner />
+          ) :
+            queryResult.data.profiles.length > 0 ? (
+              <SimpleGrid width="100%" columns={3} spacing={6}>
+                {queryResult.data.profiles.map((profile) => (
+                  <ProfileCard
+                    key={profile.tokenId}
+                    avatarSrc="https://source.unsplash.com/random"
+                    name={profile.name ? profile.name : "Anonymous"}
+                    city={profile.residenceCity}
+                    country={profile.residenceCountry}
+                    description={profile.description}
+                    coverSrc="https://source.unsplash.com/random"
+                    isUnlocked={false}
+                    skills={profile.skills}
+                    did={profile.tokenId}
+                  />
+                ))}
+              </SimpleGrid>
+            ) : (
+              <Text color={accentColor}>No Results.</Text>
+            )
+          }
+      </VStack>
+
       <Faucet />
-    </VStack>
+    </>
   );
 };
 

@@ -8,7 +8,6 @@ module.exports = {
         key: process.env.COOKIE_KEY,
         cookie: {
           // options for setCookie, see https://github.com/fastify/fastify-cookie
-          secure: true,
           httpOnly: true,
           path: '/',
           sameSite: 'Lax',

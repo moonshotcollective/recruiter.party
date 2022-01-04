@@ -13,7 +13,7 @@ import {
   Textarea
 } from "@chakra-ui/react";
 import useCustomColor from "core/hooks/useCustomColor";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { emojis } from "../../../helpers";
 import { COUNTRIES } from "../../../helpers/countries";
@@ -59,6 +59,11 @@ const EditBasicProfile = ({ nextStep, prevStep, activeStep }: EditBasicProfilePr
     });
     reader.readAsDataURL(file);
   }, []);
+
+  // fetch data from ceramic
+  useEffect(() => {
+    
+  }, [])
 
   return (
         <Box as="main" w={'full'}>

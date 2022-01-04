@@ -1,5 +1,8 @@
 import ABIS from "@scaffold-eth/hardhat-ts/hardhat_contracts.json";
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import { EthereumAuthProvider } from "@3id/connect";
+import { SelfID } from "@self.id/web";
+import modelAliases from "../../model.json";
 import { useWeb3React } from "@web3-react/core";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
@@ -21,6 +24,7 @@ import { useActiveWeb3React } from "../core/hooks/web3";
 import NETWORKS from "../core/networks";
 import { State, Web3Reducer } from "./Web3Reducer";
 import axios from "axios";
+import { CERAMIC_TESTNET } from "core/ceramic";
 
 export const supportedNetworks = Object.keys(ABIS);
 
@@ -39,6 +43,7 @@ const initialState = {
   provider: undefined,
   contracts: undefined,
   chainId: undefined,
+  did: undefined,
 } as State;
 
 const providerOptions = {
@@ -86,6 +91,13 @@ const Web3Provider = ({ children }: { children: any }) => {
     dispatch({
       type: "SET_ENS",
       payload: ens,
+    });
+  };
+
+  const setDid = (did: null | string) => {
+    dispatch({
+      type: "SET_DID",
+      payload: did,
     });
   };
 
@@ -166,7 +178,9 @@ const Web3Provider = ({ children }: { children: any }) => {
     setAccount(null);
     setContracts(null);
     localStorage.setItem("defaultWallet", "");
-    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/logout`, { withCredentials: true });
+    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {
+      withCredentials: true,
+    });
   };
 
   const connectWeb3 = useCallback(async () => {
@@ -178,6 +192,16 @@ const Web3Provider = ({ children }: { children: any }) => {
     const signer = lib.getSigner();
     const account = await signer.getAddress();
 
+    // get did
+    const mySelf = await SelfID.authenticate({
+      authProvider: new EthereumAuthProvider(lib, account),
+      ceramic: CERAMIC_TESTNET,
+      connectNetwork: CERAMIC_TESTNET,
+      model: modelAliases,
+    });
+
+    console.log("myself", { mySelf });
+
     // Get ens
     let ens = null;
     try {
@@ -188,7 +212,10 @@ const Web3Provider = ({ children }: { children: any }) => {
       setENS(null);
     }
 
-    const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/nonce/${account}`);
+    const { data } = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/nonce/${account}`
+    );
+    // @ts-expect-error
     const signature = await lib.provider.request({
       method: "personal_sign",
       params: [data.message, account],
@@ -200,7 +227,7 @@ const Web3Provider = ({ children }: { children: any }) => {
       },
       {
         withCredentials: true,
-      },
+      }
     );
     if (verifyResponse.status !== 200) {
       throw new Error("Unauthorized");

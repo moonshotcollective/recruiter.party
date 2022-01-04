@@ -18,6 +18,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@3id/connect": "^0.2.5",
     "@apollo/client": "^3.4.17",
     "@chakra-ui/anatomy": "^1.0.1",
     "@chakra-ui/icons": "^1.0.16",
@@ -33,6 +34,7 @@
     "@fontsource/poppins": "^4.5.0",
     "@fontsource/space-mono": "^4.5.0",
     "@gnosis.pm/safe-apps-web3-react": "^0.6.7",
+    "@self.id/web": "^0.2.0",
     "@walletconnect/web3-provider": "^1.6.6",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",

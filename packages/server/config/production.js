@@ -11,6 +11,7 @@ module.exports = {
           domain: process.env.DOMAIN,
           secure: true,
           httpOnly: true,
+          sameSite: 'Lax',
           path: '/',
           maxAge: 144 * 60 * 60 // 6 days
         }

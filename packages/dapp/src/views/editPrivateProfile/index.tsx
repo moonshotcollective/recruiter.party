@@ -11,8 +11,9 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { Web3Context } from "contexts/Web3Provider";
+import { ceramicCoreFactory } from "core/ceramic";
 import useCustomColor from "core/hooks/useCustomColor";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 interface EditPrivateProfileProps {
@@ -30,46 +31,92 @@ const EditPrivateProfile = ({
 }: EditPrivateProfileProps) => {
   const { accentColor } = useCustomColor();
   const { contracts } = useContext(Web3Context);
+  const did =
+    "did:3:kjzl6cwe1jw149z5serhpr3dmdrg5h67bdwe259m2o7z7pn8d7e6cuc0stz7z0s";
+    const core = ceramicCoreFactory();
 
-  const {
-    handleSubmit,
-    register,
-    formState: { errors, isSubmitting },
-    setValue,
-  } = useForm();
+    const {
+      handleSubmit,
+      register,
+      formState: { errors, isSubmitting },
+      setValue,
+    } = useForm();
+
+  useEffect(() => {
+    const getProfiles = async () => {
+      if (contracts) {
+        // @ts-expect-error
+        const privateProfile = await core.get("privateProfile", did);
+        console.log("privateProfile: ", { privateProfile });
+        if (privateProfile) {
+          const decrypted = await core.ceramic.did?.decryptDagJWE(
+            // @ts-expect-error
+            JSON.parse(privateProfile.encrypted)
+          );
+          if (decrypted) {
+            Object.entries(decrypted).forEach(([key, value]) => {
+              console.log({ key, value });
+              if (["image"].includes(key)) {
+                const {
+                  original: { src: url },
+                } = value;
+                const match = url.match(/^ipfs:\/\/(.+)$/);
+                if (match) {
+                  const ipfsUrl = `//ipfs.io/ipfs/${match[1]}`;
+                  if (key === "image") {
+                    console.log("image url: ", ipfsUrl);
+                  }
+                }
+              } else {
+                setValue(key, value);
+              }
+            });
+          }
+        }
+      }
+    };
+    getProfiles();
+  }, []);
 
   const onSubmit = async (values: any) => {
-    const { data: appDid } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/did`);
-
-    // @ts-expect-error
-    const encryptedData = await self.client.ceramic.did?.createDagJWE(values, [
-      // logged-in user,
-      // @ts-expect-error
-      self.id,
-      // backend ceramic did
-      appDid,
-    ]);
-
-    const developerTokenURI = await fetch("/api/json-storage", {
-      method: "POST",
-      body: JSON.stringify({
-        // @ts-expect-error
-        did: self.id,
-      }),
-    })
-      .then(r => r.json())
-      .then(({ cid, fileName }) => {
-        console.log({ cid, fileName });
-        return `ipfs://${cid}/${fileName}`;
-      });
-    console.log({ developerTokenURI });
+    console.log("values from PrivateProfile: ", values);
     try {
-      const tx = await contracts.writeDrecruitContract.mint(developerTokenURI, 0);
+      const { data: appDid } = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/did`
+      );
+
+      // @ts-expect-error
+      const encryptedData = await core.client.ceramic.did?.createDagJWE(
+        values,
+        [
+          // logged-in user,
+          did,
+          // backend ceramic did
+          appDid,
+        ]
+      );
+
+      const developerTokenURI = await fetch("/api/json-storage", {
+        method: "POST",
+        body: JSON.stringify({
+          did,
+        }),
+      })
+        .then((r) => r.json())
+        .then(({ cid, fileName }) => {
+          console.log({ cid, fileName });
+          return `ipfs://${cid}/${fileName}`;
+        });
+      console.log({ developerTokenURI });
+      const tx = await contracts.writeDrecruitContract.mint(
+        developerTokenURI,
+        0
+      );
       const receipt = await tx.wait();
       console.log({ receipt });
       const tokenId = receipt.events[0].args.id.toString();
-      // @ts-expect-error
-      await self.client.dataStore.set("privateProfile", {
+
+      await core.ceramic.did.set("privateProfile", {
         tokenURI: developerTokenURI,
         tokenId: parseInt(tokenId, 10),
         encrypted: JSON.stringify(encryptedData),
@@ -155,36 +202,35 @@ const EditPrivateProfile = ({
           <FormErrorMessage>
             {errors.physicalAddress && errors.physicalAddress.message}
           </FormErrorMessage>
+          <Flex mt={5}>
+            <Spacer />
+
+            <Button
+              onClick={prevStep}
+              mr={2}
+              backgroundColor={"transparent"}
+              color={accentColor}
+            >
+              Back
+            </Button>
+
+            <Button
+              type="submit"
+              isLoading={isSubmitting}
+              _hover={{
+                backgroundColor: "transparent",
+                borderColor: accentColor,
+                borderWidth: "1px",
+                color: accentColor,
+              }}
+              // width="full"
+              color="neutralDark"
+              backgroundColor={accentColor}
+            >
+              Save
+            </Button>
+          </Flex>
         </FormControl>
-        <Flex mt={5}>
-          <Spacer />
-
-          <Button
-            onClick={prevStep}
-            mr={2}
-            backgroundColor={"transparent"}
-            color={accentColor}
-          >
-            Back
-          </Button>
-
-          <Button
-            type="submit"
-            isLoading={isSubmitting}
-            _hover={{
-              backgroundColor: "transparent",
-              borderColor: accentColor,
-              borderWidth: "1px",
-              color: accentColor,
-            }}
-            // width="full"
-            color="neutralDark"
-            backgroundColor={accentColor}
-            onClick={nextStep}
-          >
-            Save
-          </Button>
-        </Flex>
       </Stack>
     </Box>
   );

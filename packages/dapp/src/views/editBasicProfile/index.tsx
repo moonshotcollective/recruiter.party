@@ -25,8 +25,6 @@ import React, {
 import { useForm } from "react-hook-form";
 import { emojis } from "../../../helpers";
 import { COUNTRIES } from "../../../helpers/countries";
-import { useRouter } from "next/router";
-
 interface EditBasicProfileProps {
   nextStep: () => void;
   prevStep: () => void;
@@ -38,13 +36,15 @@ const EditBasicProfile = ({
   prevStep,
   activeStep,
 }: EditBasicProfileProps) => {
-  const router = useRouter();
   const { contracts } = useContext(Web3Context);
   const { accentColor } = useCustomColor();
   const [imageURL, setImageURL] = useState<string>("");
   const [backgroundURL, setBackgroundURL] = useState<string>("");
   const image = useRef(null);
   const background = useRef(null);
+  const core = ceramicCoreFactory();
+  const did =
+    "did:3:kjzl6cwe1jw149z5serhpr3dmdrg5h67bdwe259m2o7z7pn8d7e6cuc0stz7z0s";
 
   const {
     handleSubmit,
@@ -79,28 +79,38 @@ const EditBasicProfile = ({
   useEffect(() => {
     const getProfiles = async () => {
       if (contracts) {
-        const did =
-          "did:3:kjzl6cwe1jw149z5serhpr3dmdrg5h67bdwe259m2o7z7pn8d7e6cuc0stz7z0s";
-
-        const core = ceramicCoreFactory();
         const basicProfile = await core.get("basicProfile", did);
         console.log("basicProfile: ", { basicProfile });
-
-        // @ts-expect-error
-        const publicProfile = await core.get("publicProfile", did);
-        console.log("publicProfile: ", { publicProfile });
-
-        // @ts-expect-error
-        const privateProfile = await core.get("privateProfile", did);
-        console.log("privateProfile: ", { privateProfile });
+        if (!basicProfile) return;
+        Object.entries(basicProfile).forEach(([key, value]) => {
+          console.log({ key, value });
+          if (["image", "background"].includes(key)) {
+            const {
+              // @ts-expect-error
+              original: { src: url },
+            } = value;
+            const match = url.match(/^ipfs:\/\/(.+)$/);
+            if (match) {
+              const ipfsUrl = `//ipfs.io/ipfs/${match[1]}`;
+              if (key === "image") {
+                setImageURL(ipfsUrl);
+              }
+              if (key === "background") {
+                setBackgroundURL(ipfsUrl);
+              }
+            }
+          } else {
+            setValue(key, value);
+          }
+        });
       }
     };
     getProfiles();
   }, []);
 
   const onSubmit = async (values: any) => {
+    console.log("values from onSubmit: ", { values });
     try {
-      console.log(values);
       const formData = new FormData();
       formData.append("type", "image/*");
       const [imageFile] = values.image;
@@ -153,10 +163,8 @@ const EditBasicProfile = ({
         delete values["background"];
       }
 
-      // @ts-expect-error
-      await self.client.dataStore.merge("basicProfile", values);
+      await core.merge("basicProfile", did, values);
       nextStep();
-      // return router.push("/profile/edit-private-profile");
     } catch (error) {
       console.log("Error while saving BasicProfile: ", error);
       alert("Error while saving data");
@@ -164,7 +172,7 @@ const EditBasicProfile = ({
   };
 
   return (
-    <Box as="main" w={"full"}>
+    <Box as="main" w="full">
       <Stack as="form" onSubmit={handleSubmit(onSubmit)}>
         <FormControl isInvalid={errors.name}>
           <FormLabel htmlFor="name">Name</FormLabel>
@@ -187,13 +195,15 @@ const EditBasicProfile = ({
           <FormLabel htmlFor="image">Profile Image</FormLabel>
           <Image ref={image} src={imageURL} />
           <Input
-            // name="image"
             borderColor="purple.500"
             type="file"
             defaultValue=""
-            // onChange={onFileChange}
+            // @ts-expect-error
+            ref={register}
             placeholder="image"
-            {...(register("image"), (onchange = onFileChange))}
+            {...register("image")}
+            name="image"
+            onChange={onFileChange}
           />
           <FormErrorMessage>
             {errors.image && errors.image.message}
@@ -204,10 +214,12 @@ const EditBasicProfile = ({
           <FormLabel htmlFor="background">Header Background</FormLabel>
           <Image ref={background} src={backgroundURL} />
           <Input
+            type="file"
+            {...register("background")}
             borderColor="purple.500"
-            type={"file"}
+            defaultValue=""
+            onChange={onFileChange}
             placeholder="background"
-            {...(register("background"), (onchange = onFileChange))}
           />
           <FormErrorMessage>
             {errors.background && errors.background.message}
@@ -254,9 +266,19 @@ const EditBasicProfile = ({
 
         <FormControl isInvalid={errors.birthDate}>
           <FormLabel htmlFor="birthDate">Birthdate</FormLabel>
-          <Input
+          <input
+            style={{
+              color: "white",
+              borderColor: "#6A39EC",
+              borderWidth: "2px",
+              width: "100%",
+              background: "transparent",
+              padding: "2px",
+              paddingRight: "6px",
+              fontSize: "1.2rem",
+              borderRadius: "8px",
+            }}
             type="date"
-            borderColor="purple.500"
             placeholder="birthDate"
             {...register("birthDate")}
           />
@@ -310,25 +332,25 @@ const EditBasicProfile = ({
             {errors.residenceCountry && errors.residenceCountry.message}
           </FormErrorMessage>
         </FormControl>
+        <Flex mt={6}>
+          <Spacer />
+          <Button
+            type="submit"
+            isLoading={isSubmitting}
+            _hover={{
+              backgroundColor: "transparent",
+              borderColor: accentColor,
+              borderWidth: "1px",
+              color: accentColor,
+            }}
+            mr={2}
+            backgroundColor={accentColor}
+            color="purple.500"
+          >
+            Next
+          </Button>
+        </Flex>
       </Stack>
-      <Flex mt={6}>
-        <Spacer />
-        <Button
-          type="submit"
-          isLoading={isSubmitting}
-          _hover={{
-            backgroundColor: "transparent",
-            borderColor: accentColor,
-            borderWidth: "1px",
-            color: accentColor,
-          }}
-          mr={2}
-          backgroundColor={accentColor}
-          color="purple.500"
-        >
-          Next
-        </Button>
-      </Flex>
     </Box>
   );
 };

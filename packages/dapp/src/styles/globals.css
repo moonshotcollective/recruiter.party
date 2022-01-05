@@ -17,3 +17,7 @@
 .chakra-emotion-css-16nmcg6[aria-current=step] {
   border-color: #EEB111!important;
 }
+
+::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}

@@ -38,6 +38,10 @@ const EditPublicProfile = ({
   const { account, contracts } = useContext(Web3Context);
   const { accentColor } = useCustomColor();
   const [title, setTitle] = useState<string>("");
+  const did =
+    "did:3:kjzl6cwe1jw149z5serhpr3dmdrg5h67bdwe259m2o7z7pn8d7e6cuc0stz7z0s";
+
+  const core = ceramicCoreFactory();
 
   const {
     handleSubmit,
@@ -80,34 +84,34 @@ const EditPublicProfile = ({
     // get initial state from Ceramic
     (async () => {
       if (contracts) {
-        const core = ceramicCoreFactory();
-        // const publicProfile = await core.get("publicProfile");
-        // const publicProfile = await self.client.dataStore.get("publicProfile");
-        // console.log({ publicProfile });
-        // if (!publicProfile) return;
-        // Object.entries(publicProfile).forEach(([key, value]) => {
-        //   setValue(
-        //     key,
-        //     value.map(val => ({ value: val })),
-        //   );
-        // });
+        // @ts-expect-error
+        const publicProfile = await core.get("publicProfile", did);
+        console.log("PublicProfile: ", { publicProfile });
+        if (!publicProfile) return;
+        Object.entries(publicProfile).forEach(([key, value]) => {
+          setValue(
+            key,
+            value.map((val: any) => ({ value: val }))
+          );
+        });
       }
     })();
-  }, [self]);
+  }, []);
 
   const onSubmit = async (values: any) => {
+    console.log("values from PublicProfile onSubmit: ", values);
     try {
       const skillTags = values.skillTags.map((skill: any) => skill.value);
       const experiences = values.experiences.map((xp: any) => xp.value);
 
       // @ts-expect-error
-      await self.client.dataStore.set("publicProfile", {
+      await core.set("publicProfile", {
         skillTags,
         experiences,
       });
 
       // @ts-expect-error
-      const me = await self.client.dataStore.get("publicProfile");
+      const me = await core.get("publicProfile", did);
       nextStep();
     } catch (error) {
       console.log("Error while submitting data: ", error);

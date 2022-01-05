@@ -25,6 +25,7 @@ import React, {
 import { useForm } from "react-hook-form";
 import { emojis } from "../../../helpers";
 import { COUNTRIES } from "../../../helpers/countries";
+import { useRouter } from "next/router";
 
 interface EditBasicProfileProps {
   nextStep: () => void;
@@ -37,6 +38,7 @@ const EditBasicProfile = ({
   prevStep,
   activeStep,
 }: EditBasicProfileProps) => {
+  const router = useRouter();
   const { contracts } = useContext(Web3Context);
   const { accentColor } = useCustomColor();
   const [imageURL, setImageURL] = useState<string>("");
@@ -96,9 +98,74 @@ const EditBasicProfile = ({
     getProfiles();
   }, []);
 
+  const onSubmit = async (values: any) => {
+    try {
+      console.log(values);
+      const formData = new FormData();
+      formData.append("type", "image/*");
+      const [imageFile] = values.image;
+      const [backgroundFile] = values.background;
+      if (imageFile || backgroundFile) {
+        if (image && imageFile) {
+          formData.append("image", imageFile);
+        }
+        if (background && backgroundFile) {
+          formData.append("background", backgroundFile);
+        }
+        const cids = await fetch("/api/image-storage", {
+          method: "POST",
+          body: formData,
+        })
+          .then((r) => r.json())
+          .then((response) => {
+            return response.cids;
+          });
+        const refs = { image: image.current, background: background.current };
+
+        ["image", "background"].forEach((key) => {
+          console.log(cids[key]);
+          if (cids[key]) {
+            values[key] = {
+              original: {
+                src: `ipfs://${cids[key]}`,
+                mimeType: "image/*",
+                // TODO: change hardcoded width & height
+                width: 200,
+                height: 200,
+              },
+            };
+          } else {
+            delete values[key];
+          }
+        });
+      }
+
+      if (values["residenceCountry"] === "") {
+        delete values["residenceCountry"];
+      }
+      if (values["birthDate"] === "") {
+        delete values["birthDate"];
+      }
+      if (!imageFile) {
+        delete values["image"];
+      }
+      if (!backgroundFile) {
+        delete values["background"];
+      }
+
+      // @ts-expect-error
+      await self.client.dataStore.merge("basicProfile", values);
+      nextStep();
+      // return router.push("/profile/edit-private-profile");
+    } catch (error) {
+      console.log("Error while saving BasicProfile: ", error);
+      alert("Error while saving data");
+    }
+  };
+
   return (
     <Box as="main" w={"full"}>
-      <Stack as="form" onSubmit={() => {}}>
+      <Stack as="form" onSubmit={handleSubmit(onSubmit)}>
         <FormControl isInvalid={errors.name}>
           <FormLabel htmlFor="name">Name</FormLabel>
           <Input
@@ -247,13 +314,14 @@ const EditBasicProfile = ({
       <Flex mt={6}>
         <Spacer />
         <Button
+          type="submit"
+          isLoading={isSubmitting}
           _hover={{
             backgroundColor: "transparent",
             borderColor: accentColor,
             borderWidth: "1px",
             color: accentColor,
           }}
-          onClick={nextStep}
           mr={2}
           backgroundColor={accentColor}
           color="purple.500"

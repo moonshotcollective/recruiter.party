@@ -1,6 +1,6 @@
 import ABIS from "@scaffold-eth/hardhat-ts/hardhat_contracts.json";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { EthereumAuthProvider } from "@3id/connect";
+// import { EthereumAuthProvider } from "@3id/connect";
 import { SelfID } from "@self.id/web";
 import modelAliases from "../../model.json";
 import { useWeb3React } from "@web3-react/core";
@@ -193,14 +193,14 @@ const Web3Provider = ({ children }: { children: any }) => {
     const account = await signer.getAddress();
 
     // get did
-    const mySelf = await SelfID.authenticate({
-      authProvider: new EthereumAuthProvider(lib, account),
-      ceramic: CERAMIC_TESTNET,
-      connectNetwork: CERAMIC_TESTNET,
-      model: modelAliases,
-    });
+    // const mySelf = await SelfID.authenticate({
+    //   authProvider: new EthereumAuthProvider(lib, account),
+    //   ceramic: CERAMIC_TESTNET,
+    //   connectNetwork: CERAMIC_TESTNET,
+    //   model: modelAliases,
+    // });
 
-    console.log("myself", { mySelf });
+    // console.log("myself", { mySelf });
 
     // Get ens
     let ens = null;

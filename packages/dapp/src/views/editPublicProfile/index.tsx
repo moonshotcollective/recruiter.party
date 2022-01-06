@@ -92,7 +92,7 @@ const EditPublicProfile = ({
         });
       }
     })();
-  }, []);
+  }, [mySelf]);
 
   const onSubmit = async (values: any) => {
     console.log("values from PublicProfile onSubmit: ", values);

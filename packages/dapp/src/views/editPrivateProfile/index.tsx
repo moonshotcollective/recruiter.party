@@ -41,7 +41,7 @@ const EditPrivateProfile = ({
 
   useEffect(() => {
     const getProfiles = async () => {
-      if (account && mySelf) {
+      if (mySelf) {
         const privateProfile = await mySelf.get("privateProfile");
         console.log("privateProfile: ", { privateProfile });
         if (privateProfile) {
@@ -72,7 +72,7 @@ const EditPrivateProfile = ({
       }
     };
     getProfiles();
-  }, []);
+  }, [mySelf]);
 
   const onSubmit = async (values: any) => {
     console.log("values from PrivateProfile: ", values);

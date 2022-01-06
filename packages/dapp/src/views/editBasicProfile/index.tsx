@@ -36,7 +36,7 @@ const EditBasicProfile = ({
   prevStep,
   activeStep,
 }: EditBasicProfileProps) => {
-  const { contracts, mySelf } = useContext(Web3Context);
+  const { mySelf } = useContext(Web3Context);
   const { accentColor } = useCustomColor();
   const [imageURL, setImageURL] = useState<string>("");
   const [backgroundURL, setBackgroundURL] = useState<string>("");
@@ -76,7 +76,7 @@ const EditBasicProfile = ({
   // fetch data from ceramic
   useEffect(() => {
     const getProfiles = async () => {
-      if (contracts) {
+      if (mySelf) {
         const basicProfile = await mySelf.get("basicProfile");
         console.log("basicProfile: ", { basicProfile });
         if (!basicProfile) return;
@@ -104,7 +104,7 @@ const EditBasicProfile = ({
       }
     };
     getProfiles();
-  }, []);
+  }, [mySelf]);
 
   const onSubmit = async (values: any) => {
     console.log("values from onSubmit: ", { values });

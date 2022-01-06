@@ -23,6 +23,7 @@ import { ProfileCard } from "components/Profile/Card";
 import { IPFS_GATEWAY } from "core/constants";
 import NextImage from "next/image";
 import { gql, useQuery } from "@apollo/client";
+import { useRouter } from 'next/router'
 
 interface DevProfiles {
   did: string;
@@ -61,6 +62,7 @@ interface DevProfiles {
 
 const Home = () => {
   const { account, contracts } = useContext(Web3Context);
+  const router = useRouter()
   const { library } = useWeb3React();
   const { coloredText, accentColor } = useCustomColor();
   const [yourBalance, setYourBalance] = useState("");
@@ -173,7 +175,11 @@ const Home = () => {
           consectetur adipisicing elit
         </Heading>
         <HStack>
-          <Button textTransform="none" bgColor={accentColor}>
+          <Button
+            textTransform="none"
+            bgColor={accentColor}
+            onClick={() => router.push("/profile/edit")}
+          >
             Join as a Developer
           </Button>
           <Button

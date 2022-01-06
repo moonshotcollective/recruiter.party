@@ -30,10 +30,7 @@ const EditPrivateProfile = ({
   activeStep,
 }: EditPrivateProfileProps) => {
   const { accentColor } = useCustomColor();
-  const { contracts } = useContext(Web3Context);
-  const did =
-    "did:3:kjzl6cwe1jw149z5serhpr3dmdrg5h67bdwe259m2o7z7pn8d7e6cuc0stz7z0s";
-    const core = ceramicCoreFactory();
+  const { contracts, mySelf, account, did } = useContext(Web3Context);
 
     const {
       handleSubmit,
@@ -44,13 +41,11 @@ const EditPrivateProfile = ({
 
   useEffect(() => {
     const getProfiles = async () => {
-      if (contracts) {
-        // @ts-expect-error
-        const privateProfile = await core.get("privateProfile", did);
+      if (account && mySelf) {
+        const privateProfile = await mySelf.get("privateProfile");
         console.log("privateProfile: ", { privateProfile });
         if (privateProfile) {
-          const decrypted = await core.ceramic.did?.decryptDagJWE(
-            // @ts-expect-error
+          const decrypted = await mySelf.client.ceramic.did?.decryptDagJWE(
             JSON.parse(privateProfile.encrypted)
           );
           if (decrypted) {
@@ -58,6 +53,7 @@ const EditPrivateProfile = ({
               console.log({ key, value });
               if (["image"].includes(key)) {
                 const {
+                  // @ts-expect-error
                   original: { src: url },
                 } = value;
                 const match = url.match(/^ipfs:\/\/(.+)$/);
@@ -85,16 +81,12 @@ const EditPrivateProfile = ({
         `${process.env.NEXT_PUBLIC_API_URL}/did`
       );
 
-      // @ts-expect-error
-      const encryptedData = await core.client.ceramic.did?.createDagJWE(
-        values,
-        [
-          // logged-in user,
-          did,
-          // backend ceramic did
-          appDid,
-        ]
-      );
+      const encryptedData = await mySelf.client.ceramic.did?.createDagJWE(values, [
+        // logged-in user,
+        did,
+        // backend ceramic did
+        appDid,
+      ]);
 
       const developerTokenURI = await fetch("/api/json-storage", {
         method: "POST",
@@ -108,6 +100,7 @@ const EditPrivateProfile = ({
           return `ipfs://${cid}/${fileName}`;
         });
       console.log({ developerTokenURI });
+      
       const tx = await contracts.writeDrecruitContract.mint(
         developerTokenURI,
         0
@@ -116,7 +109,7 @@ const EditPrivateProfile = ({
       console.log({ receipt });
       const tokenId = receipt.events[0].args.id.toString();
 
-      await core.ceramic.did.set("privateProfile", {
+      await mySelf.client.dataStore.set("privateProfile", {
         tokenURI: developerTokenURI,
         tokenId: parseInt(tokenId, 10),
         encrypted: JSON.stringify(encryptedData),

@@ -35,13 +35,9 @@ const EditPublicProfile = ({
   prevStep,
   activeStep,
 }: EditPublicProfileProps) => {
-  const { account, contracts } = useContext(Web3Context);
+  const { account, contracts, mySelf } = useContext(Web3Context);
   const { accentColor } = useCustomColor();
   const [title, setTitle] = useState<string>("");
-  const did =
-    "did:3:kjzl6cwe1jw149z5serhpr3dmdrg5h67bdwe259m2o7z7pn8d7e6cuc0stz7z0s";
-
-  const core = ceramicCoreFactory();
 
   const {
     handleSubmit,
@@ -83,14 +79,14 @@ const EditPublicProfile = ({
   useEffect(() => {
     // get initial state from Ceramic
     (async () => {
-      if (contracts) {
-        // @ts-expect-error
-        const publicProfile = await core.get("publicProfile", did);
+      if (mySelf) {
+        const publicProfile = await mySelf.client.dataStore.get("publicProfile");
         console.log("PublicProfile: ", { publicProfile });
         if (!publicProfile) return;
         Object.entries(publicProfile).forEach(([key, value]) => {
           setValue(
             key,
+            // @ts-expect-error
             value.map((val: any) => ({ value: val }))
           );
         });
@@ -104,14 +100,11 @@ const EditPublicProfile = ({
       const skillTags = values.skillTags.map((skill: any) => skill.value);
       const experiences = values.experiences.map((xp: any) => xp.value);
 
-      // @ts-expect-error
-      await core.set("publicProfile", {
+      await mySelf.client.dataStore.set("publicProfile", {
         skillTags,
         experiences,
       });
-
-      // @ts-expect-error
-      const me = await core.get("publicProfile", did);
+      const me = await mySelf.client.dataStore.get("publicProfile");
       nextStep();
     } catch (error) {
       console.log("Error while submitting data: ", error);

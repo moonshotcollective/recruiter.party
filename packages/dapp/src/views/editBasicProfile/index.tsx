@@ -36,15 +36,13 @@ const EditBasicProfile = ({
   prevStep,
   activeStep,
 }: EditBasicProfileProps) => {
-  const { contracts } = useContext(Web3Context);
+  const { contracts, mySelf } = useContext(Web3Context);
   const { accentColor } = useCustomColor();
   const [imageURL, setImageURL] = useState<string>("");
   const [backgroundURL, setBackgroundURL] = useState<string>("");
   const image = useRef(null);
   const background = useRef(null);
-  const core = ceramicCoreFactory();
-  const did =
-    "did:3:kjzl6cwe1jw149z5serhpr3dmdrg5h67bdwe259m2o7z7pn8d7e6cuc0stz7z0s";
+
 
   const {
     handleSubmit,
@@ -79,7 +77,7 @@ const EditBasicProfile = ({
   useEffect(() => {
     const getProfiles = async () => {
       if (contracts) {
-        const basicProfile = await core.get("basicProfile", did);
+        const basicProfile = await mySelf.get("basicProfile");
         console.log("basicProfile: ", { basicProfile });
         if (!basicProfile) return;
         Object.entries(basicProfile).forEach(([key, value]) => {
@@ -163,7 +161,7 @@ const EditBasicProfile = ({
         delete values["background"];
       }
 
-      await core.merge("basicProfile", did, values);
+      await mySelf.client.dataStore.merge("basicProfile", values);
       nextStep();
     } catch (error) {
       console.log("Error while saving BasicProfile: ", error);

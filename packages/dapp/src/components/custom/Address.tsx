@@ -20,8 +20,9 @@ import {
   useDisclosure,
   Text,
 } from "@chakra-ui/react";
-import { useWeb3React } from '@web3-react/core';
+import { useWeb3React } from "@web3-react/core";
 import useCustomColor from "core/hooks/useCustomColor";
+import { useMainnetProvider } from "core/hooks/useMainnetProvider";
 import React, { useContext } from "react";
 import Blockies from "react-blockies";
 import { MdCheckCircle, MdContentCopy } from "react-icons/md";
@@ -55,7 +56,10 @@ function Address({
 }) {
   const { library } = useWeb3React();
   const account = value || address;
-  const ens = useResolveEnsName(library, address);
+  const mainnetProvider = useMainnetProvider(
+    `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`
+  );
+  const ens = useResolveEnsName(mainnetProvider, address);
   const { hasCopied, onCopy } = useClipboard(account);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { coloredText } = useCustomColor();

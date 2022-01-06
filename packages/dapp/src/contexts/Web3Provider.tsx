@@ -1,8 +1,6 @@
 import ABIS from "@scaffold-eth/hardhat-ts/hardhat_contracts.json";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { EthereumAuthProvider } from "@ceramicnetwork/blockchain-utils-linking";
-import { SelfID } from "@self.id/web";
-import modelAliases from "../../model.json";
+import { SelfID, EthereumAuthProvider } from "@self.id/web";
 import { useWeb3React } from "@web3-react/core";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
@@ -15,19 +13,18 @@ import React, {
   useCallback,
 } from "react";
 import Web3Modal from "web3modal";
-import { ERC20ABI } from "../../helpers/abi";
+import axios from "axios";
 
+import modelAliases from "../../model.json";
+import { ERC20ABI } from "../../helpers/abi";
 import { NETWORK_URLS } from "../core/connectors";
 import { ALL_SUPPORTED_CHAIN_IDS } from "../core/connectors/chains";
-import getLibrary from "../core/connectors/getLibrary";
 import { useActiveWeb3React } from "../core/hooks/web3";
 import NETWORKS from "../core/networks";
 import { State, Web3Reducer } from "./Web3Reducer";
-import axios from "axios";
-import { CERAMIC_TESTNET } from "core/ceramic";
+import { CERAMIC_TESTNET } from '../core/ceramic';
 
 export const supportedNetworks = Object.keys(ABIS);
-
 const injected = new InjectedConnector({
   supportedChainIds: supportedNetworks.map((net) => parseInt(net, 10)),
 });
@@ -209,9 +206,9 @@ const Web3Provider = ({ children }: { children: any }) => {
     });
 
     console.log("myself", { mySelf });
-    console.log("DID", mySelf.did.id);
+    console.log("DID", mySelf.id);
 
-    setDid(mySelf.did.id);
+    setDid(mySelf.id);
     setMySelf(mySelf);
 
     // Get ens

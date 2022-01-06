@@ -82,32 +82,15 @@ const Web3Provider = ({ children }: { children: any }) => {
     });
   };
 
-  const setENS = (ens: null | string) => {
-    dispatch({
-      type: "SET_ENS",
-      payload: ens,
-    });
-  };
-
   useEffect(() => {
     async function handleActiveAccount() {
       if (active) {
         setAccount(account);
-        // Get ens
-        let ens = null;
-        try {
-          ens = await library.lookupAddress(account);
-          setENS(ens);
-        } catch (error) {
-          console.log({ error });
-          setENS(null);
-        }
       }
     }
     handleActiveAccount();
     return () => {
       setAccount(null);
-      setENS(null);
     };
   }, [account]);
 
@@ -166,7 +149,11 @@ const Web3Provider = ({ children }: { children: any }) => {
     setAccount(null);
     setContracts(null);
     localStorage.setItem("defaultWallet", "");
-    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {}, { withCredentials: true });
+    await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/logout`,
+      {},
+      { withCredentials: true }
+    );
   };
 
   const connectWeb3 = useCallback(async () => {
@@ -182,13 +169,13 @@ const Web3Provider = ({ children }: { children: any }) => {
     let ens = null;
     try {
       ens = await lib.lookupAddress(account);
-      setENS(ens);
     } catch (error) {
       console.log({ error });
-      setENS(null);
     }
 
-    const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/nonce/${account}`);
+    const { data } = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/nonce/${account}`
+    );
     const signature = await lib.provider.request({
       method: "personal_sign",
       params: [data.message, account],
@@ -200,7 +187,7 @@ const Web3Provider = ({ children }: { children: any }) => {
       },
       {
         withCredentials: true,
-      },
+      }
     );
     if (verifyResponse.status !== 200) {
       throw new Error("Unauthorized");

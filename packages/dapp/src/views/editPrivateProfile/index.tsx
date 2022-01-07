@@ -197,7 +197,6 @@ const EditPrivateProfile = ({
           </FormErrorMessage>
           <Flex mt={5}>
             <Spacer />
-
             <Button
               onClick={prevStep}
               mr={2}

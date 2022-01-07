@@ -37,7 +37,6 @@ const EditPublicProfile = ({
 }: EditPublicProfileProps) => {
   const { account, contracts, mySelf } = useContext(Web3Context);
   const { accentColor } = useCustomColor();
-  const [title, setTitle] = useState<string>("");
 
   const {
     handleSubmit,
@@ -127,24 +126,29 @@ const EditPublicProfile = ({
         <Heading mt={2} mb={2} fontWeight={"medium"} color={accentColor}>
           Build your profile
         </Heading>
-        <FormControl mt={2} mb={2}>
-          <FormLabel>Title</FormLabel>
+        <FormControl isInvalid={errors.title} mt={2} mb={2}>
+          <FormLabel htmlFor="title">Title</FormLabel>
           <Text mb={2} fontSize="sm">
-            Description
+            Enter your title
           </Text>
           <Input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
             mb={4}
+            {...register("title", {
+              maxLength: {
+                value: 50,
+                message: "Maximun length should be 50",
+              }
+            })}
             borderColor="neutralDark"
             placeholder="Title"
           />
+          <FormErrorMessage>{errors.title?.message}</FormErrorMessage>
         </FormControl>
         <Divider />
         <FormControl isInvalid={errors.skillTags} mt={2} mb={2}>
           <FormLabel>Skills</FormLabel>
           <Text mb={2} fontSize="sm">
-            Description
+            Enter skills
           </Text>
           {skillFields.length > 0 && (
             <SimpleGrid
@@ -199,7 +203,7 @@ const EditPublicProfile = ({
             Experience
           </FormLabel>
           <Text mb={2} fontSize="sm">
-            Description
+            Add your experience
           </Text>
           {xpFields.map((item, index) => (
             <InputGroup key={item.id} mb={2}>
@@ -237,7 +241,7 @@ const EditPublicProfile = ({
             Education
           </FormLabel>
           <Text mb={2} fontSize="sm">
-            Description
+            Add your education
           </Text>
           {eduFields.map((item, index) => (
             <InputGroup key={item.id} mb={2}>

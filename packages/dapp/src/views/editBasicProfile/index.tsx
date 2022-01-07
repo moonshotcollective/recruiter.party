@@ -230,8 +230,6 @@ const EditBasicProfile = ({
             borderColor="purple.500"
             type={"text"}
             placeholder="Web3 and Blockchain enthusiast"
-            // value={description}
-            // onChange={(e) => setDescription(e.target.value)}
             {...register("description", {
               maxLength: {
                 value: 420,

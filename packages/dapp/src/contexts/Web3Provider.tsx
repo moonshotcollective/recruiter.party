@@ -110,21 +110,11 @@ const Web3Provider = ({ children }: { children: any }) => {
     async function handleActiveAccount() {
       if (active) {
         setAccount(account);
-        // Get ens
-        let ens = null;
-        try {
-          ens = await library.lookupAddress(account);
-          setENS(ens);
-        } catch (error) {
-          console.log({ error });
-          setENS(null);
-        }
       }
     }
     handleActiveAccount();
     return () => {
       setAccount(null);
-      setENS(null);
     };
   }, [account]);
 
@@ -183,9 +173,11 @@ const Web3Provider = ({ children }: { children: any }) => {
     setAccount(null);
     setContracts(null);
     localStorage.setItem("defaultWallet", "");
-    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {
-      withCredentials: true,
-    });
+    await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/logout`,
+      {},
+      { withCredentials: true }
+    );
   };
 
   const connectWeb3 = useCallback(async () => {
@@ -215,10 +207,8 @@ const Web3Provider = ({ children }: { children: any }) => {
     let ens = null;
     try {
       ens = await lib.lookupAddress(account);
-      setENS(ens);
     } catch (error) {
       console.log({ error });
-      setENS(null);
     }
 
     const { data } = await axios.get(

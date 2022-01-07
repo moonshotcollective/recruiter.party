@@ -8,9 +8,9 @@ module.exports = {
         key: process.env.COOKIE_KEY,
         cookie: {
           // options for setCookie, see https://github.com/fastify/fastify-cookie
-          secure: false,
           httpOnly: true,
           path: '/',
+          sameSite: 'Lax',
           maxAge: 144 * 60 * 60 // 6 days
         }
       },
@@ -19,7 +19,8 @@ module.exports = {
         origin: function (origin, callback) {
           const validPatternRegexes = [
             /^(.*)staging.recruiter.party(\/(.*)|)$/,
-            /^http:\/\/localhost:[0-9]{4}$/
+            /^http:\/\/localhost:[0-9]{4}$/,
+            /^http:\/\/127.0.0.1:[0-9]{4}$/,
           ]
           if (validPatternRegexes.some((rx) => rx.test(origin)) || !origin) {
             callback(null, true)

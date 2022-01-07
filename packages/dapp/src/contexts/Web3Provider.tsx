@@ -1,5 +1,6 @@
 import ABIS from "@scaffold-eth/hardhat-ts/hardhat_contracts.json";
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import { SelfID, EthereumAuthProvider } from "@self.id/web";
 import { useWeb3React } from "@web3-react/core";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
@@ -12,18 +13,18 @@ import React, {
   useCallback,
 } from "react";
 import Web3Modal from "web3modal";
-import { ERC20ABI } from "../../helpers/abi";
+import axios from "axios";
 
+import modelAliases from "../../model.json";
+import { ERC20ABI } from "../../helpers/abi";
 import { NETWORK_URLS } from "../core/connectors";
 import { ALL_SUPPORTED_CHAIN_IDS } from "../core/connectors/chains";
-import getLibrary from "../core/connectors/getLibrary";
 import { useActiveWeb3React } from "../core/hooks/web3";
 import NETWORKS from "../core/networks";
 import { State, Web3Reducer } from "./Web3Reducer";
-import axios from "axios";
+import { CERAMIC_TESTNET } from '../core/ceramic';
 
 export const supportedNetworks = Object.keys(ABIS);
-
 const injected = new InjectedConnector({
   supportedChainIds: supportedNetworks.map((net) => parseInt(net, 10)),
 });
@@ -39,6 +40,8 @@ const initialState = {
   provider: undefined,
   contracts: undefined,
   chainId: undefined,
+  did: undefined,
+  mySelf: undefined,
 } as State;
 
 const providerOptions = {
@@ -79,6 +82,27 @@ const Web3Provider = ({ children }: { children: any }) => {
     dispatch({
       type: "SET_CONTRACTS",
       payload: contracts,
+    });
+  };
+
+  const setENS = (ens: null | string) => {
+    dispatch({
+      type: "SET_ENS",
+      payload: ens,
+    });
+  };
+
+  const setDid = (did: null | string) => {
+    dispatch({
+      type: "SET_DID",
+      payload: did,
+    });
+  };
+
+  const setMySelf = (mySelf: null | any) => {
+    dispatch({
+      type: "SET_MY_SELF",
+      payload: mySelf,
     });
   };
 
@@ -165,6 +189,20 @@ const Web3Provider = ({ children }: { children: any }) => {
     const signer = lib.getSigner();
     const account = await signer.getAddress();
 
+    // get did
+    const mySelf = await SelfID.authenticate({
+      authProvider: new EthereumAuthProvider(lib.provider, account),
+      ceramic: CERAMIC_TESTNET,
+      connectNetwork: CERAMIC_TESTNET,
+      model: modelAliases,
+    });
+
+    console.log("myself", { mySelf });
+    console.log("DID", mySelf.id);
+
+    setDid(mySelf.id);
+    setMySelf(mySelf);
+
     // Get ens
     let ens = null;
     try {
@@ -176,6 +214,7 @@ const Web3Provider = ({ children }: { children: any }) => {
     const { data } = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/nonce/${account}`
     );
+    // @ts-expect-error
     const signature = await lib.provider.request({
       method: "personal_sign",
       params: [data.message, account],

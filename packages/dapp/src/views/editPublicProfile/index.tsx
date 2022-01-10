@@ -7,6 +7,8 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  Grid,
+  GridItem,
   Heading,
   Input,
   InputGroup,
@@ -17,6 +19,7 @@ import {
   TagCloseButton,
   TagLabel,
   Text,
+  Textarea,
 } from "@chakra-ui/react";
 import { ceramicCoreFactory } from "core/ceramic";
 import useCustomColor from "core/hooks/useCustomColor";
@@ -47,13 +50,48 @@ const EditPublicProfile = ({
   } = useForm();
 
   const {
-    fields: xpFields,
-    append: xpAppend,
-    remove: xpRemove,
+    fields: xpTitleFields,
+    append: xpTitleAppend,
+    remove: xpTitleRemove,
   } = useFieldArray({
-    control, // control props comes from useForm (optional: if you are using FormContext)
-    name: "experiences", // unique name for your Field Array
-    // keyName: "id", default to "id", you can change the key name
+    control,
+    name: "xpTitle",
+  });
+
+  const {
+    fields: xpDescriptionFields,
+    append: xpDescriptionAppend,
+    remove: xpDescriptionRemove,
+  } = useFieldArray({
+    control,
+    name: "xpDescription",
+  });
+
+  const {
+    fields: xpCompanyFields,
+    append: xpCompanyAppend,
+    remove: xpCompanyRemove,
+  } = useFieldArray({
+    control,
+    name: "company",
+  });
+
+  const {
+    fields: xpStartDateFields,
+    append: xpStartDateAppend,
+    remove: xpStartDateRemove,
+  } = useFieldArray({
+    control,
+    name: "startDate",
+  });
+
+  const {
+    fields: xpEndDateFields,
+    append: xpEndDateAppend,
+    remove: xpEndDateRemove,
+  } = useFieldArray({
+    control,
+    name: "endDate",
   });
 
   const {
@@ -79,7 +117,9 @@ const EditPublicProfile = ({
     // get initial state from Ceramic
     (async () => {
       if (mySelf) {
-        const publicProfile = await mySelf.client.dataStore.get("publicProfile");
+        const publicProfile = await mySelf.client.dataStore.get(
+          "publicProfile"
+        );
         console.log("PublicProfile: ", { publicProfile });
         if (!publicProfile) return;
         Object.entries(publicProfile).forEach(([key, value]) => {
@@ -97,7 +137,17 @@ const EditPublicProfile = ({
     console.log("values from PublicProfile onSubmit: ", values);
     try {
       const skillTags = values.skillTags.map((skill: any) => skill.value);
-      const experiences = values.experiences.map((xp: any) => xp.value);
+      const experiences = values.xpTitle.map((title: any, index: number) => {
+        return {
+          title: title.value,
+          description: values.xpDescription[index].value,
+          company: values.company[index].value,
+          startDate: values.startDate[index].value,
+          endDate: values.endDate[index].value,
+        };
+      });
+
+      console.log("experiences: ", { experiences });
 
       await mySelf.client.dataStore.set("publicProfile", {
         skillTags,
@@ -134,10 +184,11 @@ const EditPublicProfile = ({
           <Input
             mb={4}
             {...register("title", {
+              required: true,
               maxLength: {
                 value: 50,
                 message: "Maximun length should be 50",
-              }
+              },
             })}
             borderColor="neutralDark"
             placeholder="Title"
@@ -198,35 +249,162 @@ const EditPublicProfile = ({
           </FormErrorMessage>
         </FormControl>
         <Divider />
-        <FormControl isInvalid={errors.experiences} mt={2} mb={2}>
+        <FormControl mt={2} mb={2}>
           <FormLabel htmlFor="experiences" fontWeight="bold">
             Experience
           </FormLabel>
           <Text mb={2} fontSize="sm">
             Add your experience
           </Text>
-          {xpFields.map((item, index) => (
-            <InputGroup key={item.id} mb={2}>
-              <Input
-                borderColor="neutralDark"
-                placeholder="Add experience"
-                {...register(`experiences.${index}.value`, {
-                  maxLength: {
-                    value: 150,
-                    message: "Maximum length should be 150",
-                  },
-                })}
-              />
-              <Button
-                onClick={() => xpRemove(index)}
-                ml={2}
-                backgroundColor="transparent"
-              >
-                <CloseIcon color={accentColor} w={4} h={4} />
-              </Button>
-            </InputGroup>
+          {xpTitleFields.map((item, index) => (
+            <Box marginY={5}>
+              <Flex alignItems="center" justifyContent={"space-between"}>
+                <Text mb={2} fontSize="lg">
+                  Experience {index + 1}
+                </Text>
+                <Button
+                  onClick={() => {
+                    xpTitleRemove(index);
+                    xpCompanyRemove(index);
+                    xpStartDateRemove(index);
+                    xpEndDateRemove(index);
+                    xpDescriptionRemove(index);
+                  }}
+                  backgroundColor="transparent"
+                >
+                  <CloseIcon color={accentColor} w={4} h={4} />
+                </Button>
+              </Flex>
+
+              <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+                <GridItem>
+                  <FormControl
+                    isInvalid={errors.xpTitle && errors.xpTitle[index]}
+                  >
+                    <FormLabel htmlFor="title">Title</FormLabel>
+                    <Input
+                      borderColor="neutralDark"
+                      placeholder="Add Title"
+                      {...register(`xpTitle.${index}.value`, {
+                        required: true,
+                        maxLength: {
+                          value: 150,
+                          message: "Maximum length should be 150",
+                        },
+                      })}
+                    />
+                  </FormControl>
+                </GridItem>
+                <GridItem>
+                  <FormControl
+                    isInvalid={errors.company && errors.company[index]}
+                  >
+                    <FormLabel htmlFor="company">Company</FormLabel>
+                    <Input
+                      borderColor="neutralDark"
+                      placeholder="Company"
+                      {...register(`company.${index}.value`, {
+                        required: false,
+                        maxLength: {
+                          value: 150,
+                          message: "Maximum length should be 150",
+                        },
+                      })}
+                    />
+                  </FormControl>
+                </GridItem>
+                <GridItem>
+                  <FormControl
+                    isInvalid={errors.startDate && errors.startDate[index]}
+                  >
+                    <FormLabel htmlFor="startDate">Start Date</FormLabel>
+                    <input
+                      style={{
+                        color: "white",
+                        borderColor: "#6A39EC",
+                        borderWidth: "2px",
+                        width: "100%",
+                        background: "transparent",
+                        padding: "2px",
+                        paddingRight: "6px",
+                        fontSize: "1.2rem",
+                        borderRadius: "8px",
+                      }}
+                      type="date"
+                      placeholder="Enter Start Date"
+                      {...register(`startDate.${index}.value`, {
+                        required: false,
+                        maxLength: {
+                          value: 150,
+                          message: "Maximum length should be 150",
+                        },
+                      })}
+                    />
+                  </FormControl>
+                </GridItem>
+                <GridItem>
+                  <FormControl
+                    isInvalid={errors.endDate && errors.endDate[index]}
+                  >
+                    <FormLabel htmlFor="endDate">End Date</FormLabel>
+                    <input
+                      style={{
+                        color: "white",
+                        borderColor: "#6A39EC",
+                        borderWidth: "2px",
+                        width: "100%",
+                        background: "transparent",
+                        padding: "2px",
+                        paddingRight: "6px",
+                        fontSize: "1.2rem",
+                        borderRadius: "8px",
+                      }}
+                      type="date"
+                      placeholder="Enter End Date"
+                      {...register(`endDate.${index}.value`, {
+                        required: false,
+                        maxLength: {
+                          value: 150,
+                          message: "Maximum length should be 150",
+                        },
+                      })}
+                    />
+                  </FormControl>
+                </GridItem>
+                <GridItem colSpan={2}>
+                  <FormControl
+                    isInvalid={
+                      errors.xpDescription && errors.xpDescription[index]
+                    }
+                  >
+                    <FormLabel htmlFor="description">Description</FormLabel>
+                    <Textarea
+                      borderColor="neutralDark"
+                      placeholder="Description"
+                      {...register(`xpDescription.${index}.value`, {
+                        required: false,
+                        maxLength: {
+                          value: 150,
+                          message: "Maximum length should be 150",
+                        },
+                      })}
+                    />
+                  </FormControl>
+                </GridItem>
+              </Grid>
+            </Box>
           ))}
-          <Button onClick={() => xpAppend("")} m={2} ml={0}>
+          <Button
+            onClick={() => {
+              xpTitleAppend("");
+              xpCompanyAppend("");
+              xpStartDateAppend("");
+              xpEndDateAppend("");
+              xpDescriptionAppend("");
+            }}
+            m={5}
+            ml={0}
+          >
             <AddIcon mr={3} color="white" />
             Add experience
           </Button>

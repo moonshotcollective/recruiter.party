@@ -260,10 +260,25 @@ const EditPublicProfile = ({
             Add your experience
           </Text>
           {xpTitleFields.map((item, index) => (
-            <Box mb={5}>
-              <Text mb={2} fontSize="xl">
-                Experience {index + 1}
-              </Text>
+            <Box marginY={5}>
+              <Flex alignItems="center" justifyContent={"space-between"}>
+                <Text mb={2} fontSize="lg">
+                  Experience {index + 1}
+                </Text>
+                <Button
+                  onClick={() => {
+                    xpTitleRemove(index);
+                    xpCompanyRemove(index);
+                    xpStartDateRemove(index);
+                    xpEndDateRemove(index);
+                    xpDescriptionRemove(index);
+                  }}
+                  backgroundColor="transparent"
+                >
+                  <CloseIcon color={accentColor} w={4} h={4} />
+                </Button>
+              </Flex>
+
               <Grid templateColumns="repeat(2, 1fr)" gap={6}>
                 <GridItem>
                   <FormControl
@@ -360,43 +375,24 @@ const EditPublicProfile = ({
                   </FormControl>
                 </GridItem>
                 <GridItem colSpan={2}>
-                  <Flex w="full" alignItems="center">
-                    <Box w="full">
-                      <FormControl
-                        isInvalid={
-                          errors.xpDescription && errors.xpDescription[index]
-                        }
-                      >
-                        <FormLabel htmlFor="description">Description</FormLabel>
-                        <Textarea
-                          borderColor="neutralDark"
-                          placeholder="Description"
-                          {...register(`xpDescription.${index}.value`, {
-                            required: false,
-                            maxLength: {
-                              value: 150,
-                              message: "Maximum length should be 150",
-                            },
-                          })}
-                        />
-                      </FormControl>
-                    </Box>
-                    <Button
-                      mt={6}
-                      ml={2}
-                      right={0}
-                      onClick={() => {
-                        xpTitleRemove(index);
-                        xpCompanyRemove(index);
-                        xpStartDateRemove(index);
-                        xpEndDateRemove(index);
-                        xpDescriptionRemove(index);
-                      }}
-                      backgroundColor="transparent"
-                    >
-                      <CloseIcon color={accentColor} w={4} h={4} />
-                    </Button>
-                  </Flex>
+                  <FormControl
+                    isInvalid={
+                      errors.xpDescription && errors.xpDescription[index]
+                    }
+                  >
+                    <FormLabel htmlFor="description">Description</FormLabel>
+                    <Textarea
+                      borderColor="neutralDark"
+                      placeholder="Description"
+                      {...register(`xpDescription.${index}.value`, {
+                        required: false,
+                        maxLength: {
+                          value: 150,
+                          message: "Maximum length should be 150",
+                        },
+                      })}
+                    />
+                  </FormControl>
                 </GridItem>
               </Grid>
             </Box>

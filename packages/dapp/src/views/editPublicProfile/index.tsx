@@ -161,10 +161,6 @@ const EditPublicProfile = ({
     }
   };
 
-  useEffect(() => {
-    console.log("errors.xpTitle: ", errors.xpTitle);
-  }, [errors.xpTitle]);
-
   return (
     <Box as="main" w={"full"}>
       <Stack as="form" onSubmit={handleSubmit(onSubmit)}>
@@ -188,6 +184,7 @@ const EditPublicProfile = ({
           <Input
             mb={4}
             {...register("title", {
+              required: true,
               maxLength: {
                 value: 50,
                 message: "Maximun length should be 50",

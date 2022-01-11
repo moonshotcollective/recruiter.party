@@ -187,6 +187,7 @@ const Home = () => {
             textColor={accentColor}
             borderColor={accentColor}
             variant="outline"
+            onClick={() => router.push("/requests")}
           >
             View Requests
           </Button>

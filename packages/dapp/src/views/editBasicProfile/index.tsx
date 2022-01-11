@@ -178,6 +178,7 @@ const EditBasicProfile = ({
             placeholder="anon"
             borderColor="purple.500"
             {...register("name", {
+              required: true,
               maxLength: {
                 value: 150,
                 message: "Maximum length should be 150",

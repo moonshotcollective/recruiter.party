@@ -105,12 +105,48 @@ const EditPublicProfile = ({
   });
 
   const {
-    fields: eduFields,
-    append: eduAppend,
-    remove: eduRemove,
+    fields: eduTitleFields,
+    append: eduTitleAppend,
+    remove: eduTitleRemove,
   } = useFieldArray({
     control,
-    name: "education",
+    name: "eduTitle",
+  });
+
+  const {
+    fields: institutionFields,
+    append: institutionAppend,
+    remove: institutionRemove,
+  } = useFieldArray({
+    control,
+    name: "institution",
+  });
+
+  const {
+    fields: eduStartDateFields,
+    append: eduStartDateAppend,
+    remove: eduStartDateRemove,
+  } = useFieldArray({
+    control,
+    name: "eduStartDate",
+  });
+
+  const {
+    fields: eduEndDateFields,
+    append: eduEndDateAppend,
+    remove: eduEndDateRemove,
+  } = useFieldArray({
+    control,
+    name: "eduEndDate",
+  });
+
+  const {
+    fields: eduDescFields,
+    append: eduDescAppend,
+    remove: eduDescRemove,
+  } = useFieldArray({
+    control,
+    name: "eduDescription",
   });
 
   useEffect(() => {
@@ -146,12 +182,23 @@ const EditPublicProfile = ({
           endDate: values.endDate[index].value,
         };
       });
+      const education = values.eduTitle.map((title: any, index: number) => {
+        return {
+          title: title.value,
+          institution: values.institution[index].value,
+          startDate: values.eduStartDate[index].value,
+          endDate: values.eduEndDate[index].value,
+          description: values.eduDescription[index].value,
+        };
+      });
+      console.log("education", { education });
 
       console.log("experiences: ", { experiences });
 
       await mySelf.client.dataStore.set("publicProfile", {
         skillTags,
         experiences,
+        education
       });
       const me = await mySelf.client.dataStore.get("publicProfile");
       nextStep();
@@ -249,7 +296,7 @@ const EditPublicProfile = ({
           </FormErrorMessage>
         </FormControl>
         <Divider />
-        <FormControl mt={2} mb={2}>
+        <Box mt={2} mb={2}>
           <FormLabel htmlFor="experiences" fontWeight="bold">
             Experience
           </FormLabel>
@@ -408,48 +455,168 @@ const EditPublicProfile = ({
             <AddIcon mr={3} color="white" />
             Add experience
           </Button>
-          <FormErrorMessage>
-            {errors.experiences && errors.experiences.message}
-          </FormErrorMessage>
-        </FormControl>
+        </Box>
         <Divider />
 
-        <FormControl mt={2} mb={2}>
+        <Box mt={2} mb={2}>
           <FormLabel htmlFor="education" fontWeight="bold">
             Education
           </FormLabel>
           <Text mb={2} fontSize="sm">
             Add your education
           </Text>
-          {eduFields.map((item, index) => (
-            <InputGroup key={item.id} mb={2}>
-              <Input
-                {...register(`education.${index}.value`, {
-                  maxLength: {
-                    value: 450,
-                    message: "Maximum length should be 450",
-                  },
-                })}
-                color="white"
-                placeholder="education"
-              />
-              <Button
-                onClick={() => eduRemove(index)}
-                ml={2}
-                backgroundColor="transparent"
-              >
-                <CloseIcon color={accentColor} w={4} h={4} />
-              </Button>
-            </InputGroup>
+          {eduTitleFields.map((item, index) => (
+            <Box marginY={5}>
+              <Flex alignItems="center" justifyContent={"space-between"}>
+                <Text mb={2} fontSize="lg">
+                  Education {index + 1}
+                </Text>
+                <Button
+                  onClick={() => {
+                    eduTitleRemove(index);
+                    eduStartDateRemove(index);
+                    eduEndDateRemove(index);
+                    institutionRemove(index);
+                    eduDescRemove(index);
+                  }}
+                  backgroundColor="transparent"
+                >
+                  <CloseIcon color={accentColor} w={4} h={4} />
+                </Button>
+              </Flex>
+              <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+                <GridItem>
+                  <FormControl
+                    isInvalid={errors.eduTitle && errors.eduTitle[index]}
+                  >
+                    <FormLabel htmlFor="title">Title</FormLabel>
+                    <Input
+                      {...register(`eduTitle.${index}.value`, {
+                        required: true,
+                        maxLength: {
+                          value: 50,
+                          message: "Maximum length should be 50",
+                        },
+                      })}
+                    />
+                  </FormControl>
+                </GridItem>
+                <GridItem>
+                  <FormControl
+                    isInvalid={errors.institution && errors.institution[index]}
+                  >
+                    <FormLabel htmlFor="institution">
+                      School or Institution
+                    </FormLabel>
+                    <Input
+                      {...register(`institution.${index}.value`, {
+                        maxLength: {
+                          value: 150,
+                          message: "Maximum length should be 150",
+                        },
+                      })}
+                    />
+                  </FormControl>
+                </GridItem>
+                <GridItem>
+                  <FormControl
+                    isInvalid={
+                      errors.eduStartDate && errors.eduStartDate[index]
+                    }
+                  >
+                    <FormLabel htmlFor="eduStartDate">Start Date</FormLabel>
+                    <input
+                      style={{
+                        color: "white",
+                        borderColor: "#6A39EC",
+                        borderWidth: "2px",
+                        width: "100%",
+                        background: "transparent",
+                        padding: "2px",
+                        paddingRight: "6px",
+                        fontSize: "1.2rem",
+                        borderRadius: "8px",
+                      }}
+                      type="date"
+                      placeholder="Enter Start Date"
+                      {...register(`eduStartDate.${index}.value`, {
+                        required: false,
+                        maxLength: {
+                          value: 150,
+                          message: "Maximum length should be 150",
+                        },
+                      })}
+                    />
+                  </FormControl>
+                </GridItem>
+                <GridItem>
+                  <FormControl
+                    isInvalid={errors.eduEndDate && errors.eduEndDate[index]}
+                  >
+                    <FormLabel htmlFor="eduEndDate">End Date</FormLabel>
+                    <input
+                      style={{
+                        color: "white",
+                        borderColor: "#6A39EC",
+                        borderWidth: "2px",
+                        width: "100%",
+                        background: "transparent",
+                        padding: "2px",
+                        paddingRight: "6px",
+                        fontSize: "1.2rem",
+                        borderRadius: "8px",
+                      }}
+                      type="date"
+                      placeholder="Enter End Date"
+                      {...register(`eduEndDate.${index}.value`, {
+                        required: false,
+                        maxLength: {
+                          value: 150,
+                          message: "Maximum length should be 150",
+                        },
+                      })}
+                    />
+                  </FormControl>
+                </GridItem>
+                <GridItem>
+                  <FormControl
+                    isInvalid={
+                      errors.eduDescription && errors.eduDescription[index]
+                    }
+                  >
+                    <FormLabel htmlFor="eduDescription">Description</FormLabel>
+                    <Textarea
+                      borderColor="neutralDark"
+                      placeholder="Description"
+                      {...register(`eduDescription.${index}.value`, {
+                        required: false,
+                        maxLength: {
+                          value: 450,
+                          message: "Maximum length should be 450",
+                        },
+                      })}
+                    />
+                  </FormControl>
+                </GridItem>
+              </Grid>
+            </Box>
           ))}
-          <Button onClick={() => eduAppend("")} m={2} ml={0}>
-            <AddIcon mr={3} color="white" />
-            Add education
-          </Button>
-          <FormErrorMessage>
-            {errors.education && errors.education.message}
-          </FormErrorMessage>
-        </FormControl>
+        </Box>
+        <Button
+          onClick={() => {
+            eduTitleAppend("");
+            eduStartDateAppend("");
+            eduEndDateAppend("");
+            eduDescAppend("");
+            institutionAppend("");
+          }}
+          m={5}
+          ml={0}
+          width="fit-content"
+        >
+          <AddIcon mr={3} color="white" />
+          Add education
+        </Button>
         <Flex>
           <Spacer />
           <Button

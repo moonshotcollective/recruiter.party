@@ -140,7 +140,7 @@ const Home = () => {
               </Heading>
               {publicProfile && publicProfile?.skillTags ? (
                 <SimpleGrid columns={6} spacing={4}>
-                  {publicProfile?.skillTags.map(
+                  {publicProfile?.skillTags?.map(
                     (skill: string, index: number) => (
                       <Tag
                         bgColor="purple.600"

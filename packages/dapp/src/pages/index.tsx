@@ -13,7 +13,6 @@ import {
 } from "@chakra-ui/react";
 import { useWeb3React } from "@web3-react/core";
 import React, { useContext, useEffect, useState } from "react";
-import Faucet from "../components/custom/Faucet";
 import { Web3Context } from "../contexts/Web3Provider";
 import { hexToString } from "../core/helpers";
 import { ceramicCoreFactory } from "core/ceramic";
@@ -276,8 +275,6 @@ const Home = () => {
             )
           }
       </VStack>
-
-      <Faucet />
     </>
   );
 };

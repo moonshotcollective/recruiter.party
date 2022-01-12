@@ -14,12 +14,13 @@ const EditProfile = () => {
   });
   const steps = [
     {
-      label: "Basic Profile",
+      label: "Private Profile",
       content: (
-        <EditBasicProfile
+        <EditPrivateProfile
           nextStep={nextStep}
           prevStep={prevStep}
           activeStep={activeStep}
+          reset={reset}
         />
       ),
     },
@@ -33,14 +34,14 @@ const EditProfile = () => {
         />
       ),
     },
+
     {
-      label: "Private Profile",
+      label: "Basic Profile",
       content: (
-        <EditPrivateProfile
+        <EditBasicProfile
           nextStep={nextStep}
           prevStep={prevStep}
           activeStep={activeStep}
-          reset={reset}
         />
       ),
     },

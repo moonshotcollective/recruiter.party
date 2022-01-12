@@ -32,12 +32,12 @@ const EditPrivateProfile = ({
   const { accentColor } = useCustomColor();
   const { contracts, mySelf, account, did } = useContext(Web3Context);
 
-    const {
-      handleSubmit,
-      register,
-      formState: { errors, isSubmitting },
-      setValue,
-    } = useForm();
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isSubmitting },
+    setValue,
+  } = useForm();
 
   useEffect(() => {
     const getProfiles = async () => {
@@ -81,12 +81,15 @@ const EditPrivateProfile = ({
         `${process.env.NEXT_PUBLIC_API_URL}/did`
       );
 
-      const encryptedData = await mySelf.client.ceramic.did?.createDagJWE(values, [
-        // logged-in user,
-        did,
-        // backend ceramic did
-        appDid,
-      ]);
+      const encryptedData = await mySelf.client.ceramic.did?.createDagJWE(
+        values,
+        [
+          // logged-in user,
+          did,
+          // backend ceramic did
+          appDid,
+        ]
+      );
 
       const developerTokenURI = await fetch("/api/json-storage", {
         method: "POST",
@@ -100,7 +103,7 @@ const EditPrivateProfile = ({
           return `ipfs://${cid}/${fileName}`;
         });
       console.log({ developerTokenURI });
-      
+
       const tx = await contracts.writeDrecruitContract.mint(
         developerTokenURI,
         0
@@ -197,15 +200,6 @@ const EditPrivateProfile = ({
           </FormErrorMessage>
           <Flex mt={5}>
             <Spacer />
-            <Button
-              onClick={prevStep}
-              mr={2}
-              backgroundColor={"transparent"}
-              color={accentColor}
-            >
-              Back
-            </Button>
-
             <Button
               type="submit"
               isLoading={isSubmitting}

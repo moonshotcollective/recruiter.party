@@ -43,7 +43,6 @@ const EditBasicProfile = ({
   const image = useRef(null);
   const background = useRef(null);
 
-
   const {
     handleSubmit,
     register,
@@ -330,6 +329,14 @@ const EditBasicProfile = ({
         </FormControl>
         <Flex mt={6}>
           <Spacer />
+          <Button
+            onClick={prevStep}
+            mr={2}
+            backgroundColor={"transparent"}
+            color={accentColor}
+          >
+            Back
+          </Button>
           <Button
             type="submit"
             isLoading={isSubmitting}

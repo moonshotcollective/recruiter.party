@@ -13,7 +13,6 @@ function ApproveUnlockProfile({ currentPrivateProfileTokenId, recruiterAddress }
   const { chainId } = useWeb3React();
   const currentNetwork = NETWORKS[chainId];
   const toast = useToast();
-  const dRecruitContract = contracts.writeDrecruitContract;
   const [approvedStatus, setApprovedStatus] = useState("unapproved");
   const [amount, setAmount] = useState(0);
 
@@ -25,17 +24,19 @@ function ApproveUnlockProfile({ currentPrivateProfileTokenId, recruiterAddress }
 
   useEffect(() => {
     async function exec() {
-      const stakeAmount = await dRecruitContract.requests(currentPrivateProfileTokenId, recruiterAddress);
-      const gweiStakeAmount = ethers.utils.formatUnits(stakeAmount);
-      setAmount(gweiStakeAmount);
+      if (contracts) {
+        const stakeAmount = await contracts.readDrecruitContract.requests(currentPrivateProfileTokenId, recruiterAddress);
+        const gweiStakeAmount = ethers.utils.formatUnits(stakeAmount);
+        setAmount(gweiStakeAmount);
+      }
     }
     exec();
-  }, [currentPrivateProfileTokenId, recruiterAddress]);
+  }, [currentPrivateProfileTokenId, recruiterAddress, contracts]);
 
   const handleApproval = async () => {
     try {
       setApprovedStatus("approving");
-      const tx = await dRecruitContract.approveRequest(currentPrivateProfileTokenId, recruiterAddress);
+      const tx = await contracts.writeDrecruitContract.approveRequest(currentPrivateProfileTokenId, recruiterAddress);
       toast({
         title: "Approval transaction sent",
         description: (

@@ -26,7 +26,7 @@ const Requests = () => {
   const profiles = [];
 
   const init = async () => {
-    if (mySelf) {
+    if (mySelf && contracts) {
       const privateProfile = await mySelf.get("privateProfile");
       if (!privateProfile) {
         return;
@@ -52,6 +52,7 @@ const Requests = () => {
               ...profile,
               avatarSrc: formattedAvatar,
               coverSrc: formattedCover,
+              did: did.value,
             };
           } else {
             return {
@@ -60,12 +61,13 @@ const Requests = () => {
           }
         }),
       );
+      console.log("recruiterProfiles: ", recruiterProfiles);
       setRecruiters(recruiterProfiles);
     }
   };
   useEffect(() => {
     init();
-  }, [account]);
+  }, [account, mySelf, contracts]);
 
   return (
     <Container>

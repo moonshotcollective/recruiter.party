@@ -7,6 +7,15 @@ type Mutation {
     createProfile(data: CreateProfileInput!): Profile!
     updateProfile(data: CreateProfileInput!): Profile!
 }
+type ImageMetadata {
+    src: String
+    size: Int
+    width: Int
+    height: Int
+}
+type Image {
+    original: ImageMetadata
+}
 type Profile {
     tokenId: ID!
     name: String
@@ -20,6 +29,20 @@ type Profile {
     education: [String]
     skills: [String]
     experience: [String]
+    url: String
+    emoji: String
+    image: Image
+    background: Image
+    homeLocation: String
+}
+input ImageMetadataInput {
+    src: String
+    size: Int
+    width: Int
+    height: Int
+}
+input ImageInput {
+    original: ImageMetadataInput
 }
 input CreateProfileInput {
     tokenId: ID!
@@ -34,6 +57,10 @@ input CreateProfileInput {
     education: [String]
     skills: [String]
     experience: [String]
+    url: String
+    emoji: String
+    image: ImageInput
+    homeLocation: String
 }
 `
 

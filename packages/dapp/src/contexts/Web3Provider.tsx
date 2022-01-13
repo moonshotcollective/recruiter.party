@@ -110,9 +110,30 @@ const Web3Provider = ({ children }: { children: any }) => {
     async function handleActiveAccount() {
       if (active) {
         setAccount(account);
+
+        const authenticatedResponse = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/authenticated`,
+          {
+            withCredentials: true,
+          }
+        );
+
+        if (authenticatedResponse.status === 200 && authenticatedResponse.data.authenticated === true) {
+          const provider = await web3Modal.connect();
+          const mySelf = await SelfID.authenticate({
+            authProvider: new EthereumAuthProvider(provider, account),
+            ceramic: CERAMIC_TESTNET,
+            connectNetwork: CERAMIC_TESTNET,
+            model: modelAliases,
+          });
+
+          setDid(mySelf.id);
+          setMySelf(mySelf);
+        }
       }
     }
     handleActiveAccount();
+
     return () => {
       setAccount(null);
     };

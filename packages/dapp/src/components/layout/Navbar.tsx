@@ -44,9 +44,8 @@ const LinkItem = ({ href, children, ...props }: any) => {
 const LinkItems = () => {
   return (
     <>
-      <LinkItem href="/">Contract</LinkItem>
-      <LinkItem href="/example">ExampleUI</LinkItem>
-      <LinkItem href="/subgraph">Subgraph</LinkItem>
+      <LinkItem href="/profile/edit">Profile</LinkItem>
+      <LinkItem href="/requests">Requests</LinkItem>
     </>
   );
 };
@@ -74,7 +73,7 @@ const Navbar = () => {
               textTransform="uppercase"
               size="md"
             >
-              Scaffold
+              Recruiter.Party
             </Link>
           </NextLink>
           <HStack pl="4" spacing="4" display={{ base: "none", lg: "flex" }}>

@@ -211,25 +211,36 @@ const Web3Provider = ({ children }: { children: any }) => {
       console.log({ error });
     }
 
-    const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/nonce/${account}`
-    );
-    // @ts-expect-error
-    const signature = await lib.provider.request({
-      method: "personal_sign",
-      params: [data.message, account],
-    });
-    const verifyResponse = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/verify/${account}`,
-      {
-        signature,
-      },
+    const authResponse = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/authenticated`,
       {
         withCredentials: true,
-      }
+      },
     );
-    if (verifyResponse.status !== 200) {
-      throw new Error("Unauthorized");
+
+    console.log(authResponse.data)
+
+    if (authResponse.data?.address?.toLowerCase() !== account.toLowerCase()) {
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/nonce/${account}`
+      );
+      // @ts-expect-error
+      const signature = await lib.provider.request({
+        method: "personal_sign",
+        params: [data.message, account],
+      });
+      const verifyResponse = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/verify/${account}`,
+        {
+          signature,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      if (verifyResponse.status !== 200) {
+        throw new Error("Unauthorized"); // handle this gracefully with an UI error
+      }
     }
 
     // check if supported network

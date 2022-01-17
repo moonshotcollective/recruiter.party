@@ -29,6 +29,29 @@ export declare const schemas: {
                     type: string;
                     items: {
                         type: string;
+                        properties: {
+                            company: {
+                                type: string;
+                                maxLength: number;
+                            };
+                            title: {
+                                type: string;
+                                maxLength: number;
+                            };
+                            description: {
+                                type: string;
+                            };
+                            startDate: {
+                                type: string;
+                                format: string;
+                                maxLength: number;
+                            };
+                            endDate: {
+                                type: string;
+                                format: string;
+                                maxLength: number;
+                            };
+                        };
                     };
                 };
                 experiences: {
@@ -36,6 +59,29 @@ export declare const schemas: {
                     type: string;
                     items: {
                         type: string;
+                        properties: {
+                            company: {
+                                type: string;
+                                maxLength: number;
+                            };
+                            title: {
+                                type: string;
+                                maxLength: number;
+                            };
+                            description: {
+                                type: string;
+                            };
+                            startDate: {
+                                type: string;
+                                format: string;
+                                maxLength: number;
+                            };
+                            endDate: {
+                                type: string;
+                                format: string;
+                                maxLength: number;
+                            };
+                        };
                     };
                 };
             };

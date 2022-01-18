@@ -27,15 +27,61 @@ export const PublicProfileSchema = {
       title: "SkillTagsList",
       type: "array",
       items: {
-        type: "string",
-      },
+        type: "object",
+        properties: {
+          company: {
+            type: "string",
+            maxLength: 150
+          },
+          title: {
+            type: "string",
+            maxLength: 150
+          },
+          description: {
+            type: "string"
+          },
+          startDate: {
+            type: "string",
+            format: "date",
+            maxLength: 10
+          },
+          endDate: {
+            type: "string",
+            format: "date",
+            maxLength: 10
+          }
+        }
+      }
     },
     experiences: {
       title: "ExperienceList",
       type: "array",
       items: {
-        type: "string",
-      },
-    },
-  },
+        type: "object",
+        properties: {
+          company: {
+            type: "string",
+            maxLength: 150
+          },
+          title: {
+            type: "string",
+            maxLength: 150
+          },
+          description: {
+            type: "string"
+          },
+          startDate: {
+            type: "string",
+            format: "date",
+            maxLength: 10
+          },
+          endDate: {
+            type: "string",
+            format: "date",
+            maxLength: 10
+          }
+        }
+      }
+    }
+  }
 };

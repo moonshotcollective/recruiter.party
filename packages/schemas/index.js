@@ -23,7 +23,7 @@ const createModels = async () => {
   await did.authenticate();
 
   // Connect to the testnet local Ceramic node
-  const ceramic = new CeramicClient("https://ceramic-clay.3boxlabs.com"); // "http://localhost:7007"
+  const ceramic = new CeramicClient(process.env.CERAMIC_URL || "https://ceramic-clay.3boxlabs.com"); // "http://localhost:7007"
   ceramic.did = did;
 
   // Create a manager for the model

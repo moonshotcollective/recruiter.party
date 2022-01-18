@@ -15,7 +15,7 @@ import React, {
 import Web3Modal from "web3modal";
 import axios from "axios";
 
-import modelAliases from "../../model.json";
+import publishedModel from "@scaffold-eth/schemas/lib/model.json"
 import { ERC20ABI } from "../../helpers/abi";
 import { NETWORK_URLS } from "../core/connectors";
 import { ALL_SUPPORTED_CHAIN_IDS } from "../core/connectors/chains";
@@ -124,7 +124,7 @@ const Web3Provider = ({ children }: { children: any }) => {
             authProvider: new EthereumAuthProvider(provider, account),
             ceramic: CERAMIC_TESTNET,
             connectNetwork: CERAMIC_TESTNET,
-            model: modelAliases,
+            model: publishedModel,
           });
 
           setDid(mySelf.id);
@@ -215,7 +215,7 @@ const Web3Provider = ({ children }: { children: any }) => {
       authProvider: new EthereumAuthProvider(lib.provider, account),
       ceramic: CERAMIC_TESTNET,
       connectNetwork: CERAMIC_TESTNET,
-      model: modelAliases,
+      model: publishedModel,
     });
 
     console.log("myself", { mySelf });

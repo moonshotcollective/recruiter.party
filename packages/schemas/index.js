@@ -55,7 +55,7 @@ const createModels = async () => {
   const model = await manager.toPublished();
 
   // Write published model to JSON file
-  await writeFile("./lib/model.json", JSON.stringify(model));
+  await writeFile("../dapp/model.json", JSON.stringify(model));
   return { model, manager, ceramic };
 };
 (async () => {

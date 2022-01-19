@@ -25,6 +25,8 @@ jobs:
           key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: yarn install
+      - name: Build UI package
+        run: cd packages/ui && yarn build
       # - name: Lint code
       #   run: cd packages/dapp && yarn lint
       - name: Build frontend

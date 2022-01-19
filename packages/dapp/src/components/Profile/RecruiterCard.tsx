@@ -25,7 +25,7 @@ export interface RecruiterCardProps {
   did: string;
   address: string;
   approve: boolean;
-  currentPrivateProfileTokenId: integer;
+  currentPrivateProfileTokenId: number;
 }
 
 export const RecruiterCard = ({

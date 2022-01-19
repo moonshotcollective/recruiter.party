@@ -121,7 +121,7 @@ const Web3Provider = ({ children }: { children: any }) => {
         if (authenticatedResponse.status === 200 && authenticatedResponse.data.authenticated === true) {
           const provider = await web3Modal.connect();
           const mySelf = await SelfID.authenticate({
-            authProvider: new EthereumAuthProvider(provider, account),
+            authProvider: new EthereumAuthProvider(provider, account!),
             ceramic: CERAMIC_TESTNET,
             connectNetwork: CERAMIC_TESTNET,
             model: publishedModel,

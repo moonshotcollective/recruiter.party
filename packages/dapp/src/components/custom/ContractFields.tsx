@@ -4,6 +4,7 @@ import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from
 import { Web3Context } from "../../contexts/Web3Provider";
 import useCustomColor from "../../core/hooks/useCustomColor";
 import NETWORKS from "../../core/networks";
+// @ts-expect-error
 import { DRecruitV1 } from "@scaffold-eth/hardhat-ts/generated/contract-types/DRecruitV1";
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber, BigNumberish } from 'ethers';

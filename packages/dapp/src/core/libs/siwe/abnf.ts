@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { apgApi, apgLib } from 'apg-js';
 
 const GRAMMAR = `

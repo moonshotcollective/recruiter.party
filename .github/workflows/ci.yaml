@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+env:
+  NEXT_PUBLIC_INFURA_ID: ${{secrets.NEXT_PUBLIC_INFURA_ID}}
+  WEB3STORAGE_TOKEN: ${{secrets.WEB3STORAGE_TOKEN}}
+
 jobs:
   frontend-lint-build:
     runs-on: ubuntu-latest

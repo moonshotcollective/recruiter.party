@@ -29,6 +29,13 @@ export declare const schemas: {
                     type: string;
                     items: {
                         type: string;
+                    };
+                };
+                experiences: {
+                    title: string;
+                    type: string;
+                    items: {
+                        type: string;
                         properties: {
                             company: {
                                 type: string;
@@ -54,13 +61,13 @@ export declare const schemas: {
                         };
                     };
                 };
-                experiences: {
+                education: {
                     title: string;
                     type: string;
                     items: {
                         type: string;
                         properties: {
-                            company: {
+                            institution: {
                                 type: string;
                                 maxLength: number;
                             };

@@ -1,4 +1,5 @@
 import { Button, HStack, Input, Text, VStack } from "@chakra-ui/react";
+// @ts-ignore
 import ABIS from "@scaffold-eth/hardhat-ts/hardhat_contracts.json";
 import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from "react";
 import { Web3Context } from "../../contexts/Web3Provider";

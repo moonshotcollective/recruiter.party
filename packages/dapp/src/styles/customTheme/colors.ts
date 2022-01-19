@@ -1,4 +1,5 @@
 import { DeepPartial, Theme } from "@chakra-ui/react";
+// @ts-ignore
 import { colors as uiColors } from "@scaffold-eth/ui";
 
 /** extend additional color here */

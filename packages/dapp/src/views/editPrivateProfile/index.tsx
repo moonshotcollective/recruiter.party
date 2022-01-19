@@ -21,6 +21,8 @@ interface EditPrivateProfileProps {
   prevStep: () => void;
   reset: () => void;
   activeStep: number;
+  existingUser: boolean;
+  setExistingUser: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const EditPrivateProfile = ({
@@ -28,6 +30,8 @@ const EditPrivateProfile = ({
   prevStep,
   reset,
   activeStep,
+  existingUser,
+  setExistingUser,
 }: EditPrivateProfileProps) => {
   const { accentColor } = useCustomColor();
   const { contracts, mySelf, account, did } = useContext(Web3Context);
@@ -50,6 +54,7 @@ const EditPrivateProfile = ({
           );
           if (decrypted) {
             Object.entries(decrypted).forEach(([key, value]) => {
+              setExistingUser(true);
               console.log({ key, value });
               if (["image"].includes(key)) {
                 const {
@@ -200,6 +205,22 @@ const EditPrivateProfile = ({
           </FormErrorMessage>
           <Flex mt={5}>
             <Spacer />
+            {existingUser && (
+              <Button
+                mr={2}
+                _hover={{
+                  backgroundColor: "transparent",
+                  borderColor: accentColor,
+                  borderWidth: "1px",
+                  color: accentColor,
+                }}
+                color="neutralDark"
+                backgroundColor={accentColor}
+                onClick={nextStep}
+              >
+                Next
+              </Button>
+            )}
             <Button
               type="submit"
               isLoading={isSubmitting}

@@ -1,7 +1,7 @@
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { Step, Steps, useSteps } from "chakra-ui-steps";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import EditBasicProfile from "../../views/editBasicProfile";
 import EditPrivateProfile from "../../views/editPrivateProfile";
 import EditPublicProfile from "../../views/editPublicProfile";
@@ -9,7 +9,9 @@ import EditPublicProfile from "../../views/editPublicProfile";
 const EditProfile = () => {
   const router = useRouter();
 
-  const { nextStep, prevStep, reset, activeStep } = useSteps({
+  const [existingUser, setExistingUser] = useState<boolean>(false);
+
+  const { nextStep, prevStep, reset, activeStep, setStep } = useSteps({
     initialStep: 0,
   });
   const steps = [
@@ -21,6 +23,8 @@ const EditProfile = () => {
           prevStep={prevStep}
           activeStep={activeStep}
           reset={reset}
+          existingUser={existingUser}
+          setExistingUser={setExistingUser}
         />
       ),
     },
@@ -31,6 +35,7 @@ const EditProfile = () => {
           nextStep={nextStep}
           prevStep={prevStep}
           activeStep={activeStep}
+          existingUser={existingUser}
         />
       ),
     },
@@ -42,6 +47,7 @@ const EditProfile = () => {
           nextStep={nextStep}
           prevStep={prevStep}
           activeStep={activeStep}
+          existingUser={existingUser}
         />
       ),
     },
@@ -52,6 +58,17 @@ const EditProfile = () => {
       <Box margin="8">
         <Box as="main" marginY={22}>
           <Flex flexDir="column" width="100%">
+            {existingUser && <Flex marginY={3} justifyContent='space-between'>
+              <Button onClick={() => setStep(0)}>
+                Edit Private Profile
+              </Button>
+              <Button onClick={() => setStep(1)}>
+                Edit Public Profile
+              </Button>
+              <Button onClick={() => setStep(2)}>
+                Edit Basic Profile
+              </Button>
+              </Flex>}
             <Steps activeStep={activeStep}>
               {steps.map(({ label, content }) => (
                 <Step p={4} label={label} key={label}>

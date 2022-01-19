@@ -31,12 +31,14 @@ interface EditPublicProfileProps {
   nextStep: () => void;
   prevStep: () => void;
   activeStep: number;
+  existingUser: boolean;
 }
 
 const EditPublicProfile = ({
   nextStep,
   prevStep,
   activeStep,
+  existingUser,
 }: EditPublicProfileProps) => {
   const { account, contracts, mySelf } = useContext(Web3Context);
   const { accentColor } = useCustomColor();
@@ -627,6 +629,14 @@ const EditPublicProfile = ({
           >
             Back
           </Button>
+          {existingUser && <Button
+            onClick={nextStep}
+            mr={2}
+            backgroundColor={"transparent"}
+            color={accentColor}
+          >
+            Next
+          </Button>}
           <Button
             type="submit"
             _hover={{
@@ -640,7 +650,7 @@ const EditPublicProfile = ({
             backgroundColor={accentColor}
             color="purple.500"
           >
-            Next
+            Save
           </Button>
         </Flex>
       </Stack>

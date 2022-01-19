@@ -27,6 +27,13 @@ export const PublicProfileSchema = {
       title: "SkillTagsList",
       type: "array",
       items: {
+        type: "string",
+      }
+    },
+    experiences: {
+      title: "ExperienceList",
+      type: "array",
+      items: {
         type: "object",
         properties: {
           company: {
@@ -53,13 +60,13 @@ export const PublicProfileSchema = {
         }
       }
     },
-    experiences: {
-      title: "ExperienceList",
+    education: {
+      title: "EducationList",
       type: "array",
       items: {
         type: "object",
         properties: {
-          company: {
+          institution: {
             type: "string",
             maxLength: 150
           },

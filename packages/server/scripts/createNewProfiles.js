@@ -4,13 +4,9 @@ const config = require('config')
 const { dbUrl } = config.get('API_CONFIG.api')
 
 const createNewProfiles = async () => {
-  try {
-    await mongoose.connect(dbUrl)
-    await updateProfiles()
-    mongoose.disconnect()
-  } catch (err) {
-    throw Error(err)
-  }
+  await mongoose.connect(dbUrl)
+  await updateProfiles()
+  await mongoose.disconnect()
 }
 
 (async () => {

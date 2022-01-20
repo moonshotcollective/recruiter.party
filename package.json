@@ -10,6 +10,7 @@
   ],
   "scripts": {
     "bootstrap": "yarn install; lerna bootstrap;",
-    "start": "lerna run start --parallel"
+    "start": "lerna run start --parallel",
+    "dapp:start": "lerna run dapp:start"
   }
 }

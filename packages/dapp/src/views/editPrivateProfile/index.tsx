@@ -208,14 +208,8 @@ const EditPrivateProfile = ({
             {existingUser && (
               <Button
                 mr={2}
-                _hover={{
-                  backgroundColor: "transparent",
-                  borderColor: accentColor,
-                  borderWidth: "1px",
-                  color: accentColor,
-                }}
-                color="neutralDark"
-                backgroundColor={accentColor}
+                backgroundColor={"transparent"}
+                color={accentColor}
                 onClick={nextStep}
               >
                 Next

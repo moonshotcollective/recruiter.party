@@ -12,5 +12,8 @@
     "bootstrap": "yarn install; lerna bootstrap;",
     "start": "lerna run start --parallel",
     "dapp:start": "lerna run dapp:start"
+  },
+  "engines": {
+    "node": "16.x"
   }
 }

@@ -15,7 +15,8 @@
     "up-latest": "yarn upgrade-interactive --latest",
     "release": "standard-version",
     "push-release": "git push --follow-tags origin main",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "dapp:start": "yarn start"
   },
   "dependencies": {
     "@3id/connect": "^0.2.5",

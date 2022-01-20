@@ -53,6 +53,7 @@ const EditPublicProfile = ({
     fields: xpTitleFields,
     append: xpTitleAppend,
     remove: xpTitleRemove,
+    prepend: xpTitlePrepend,
   } = useFieldArray({
     control,
     name: "xpTitle",
@@ -62,6 +63,7 @@ const EditPublicProfile = ({
     fields: xpDescriptionFields,
     append: xpDescriptionAppend,
     remove: xpDescriptionRemove,
+    prepend: xpDescriptionPrepend,
   } = useFieldArray({
     control,
     name: "xpDescription",
@@ -71,6 +73,7 @@ const EditPublicProfile = ({
     fields: xpCompanyFields,
     append: xpCompanyAppend,
     remove: xpCompanyRemove,
+    prepend: xpCompanyPrepend,
   } = useFieldArray({
     control,
     name: "company",
@@ -80,6 +83,7 @@ const EditPublicProfile = ({
     fields: xpStartDateFields,
     append: xpStartDateAppend,
     remove: xpStartDateRemove,
+    prepend: xpStartDatePrepend,
   } = useFieldArray({
     control,
     name: "startDate",
@@ -89,6 +93,7 @@ const EditPublicProfile = ({
     fields: xpEndDateFields,
     append: xpEndDateAppend,
     remove: xpEndDateRemove,
+    prepend: xpEndDatePrepend,
   } = useFieldArray({
     control,
     name: "endDate",
@@ -108,6 +113,7 @@ const EditPublicProfile = ({
     fields: eduTitleFields,
     append: eduTitleAppend,
     remove: eduTitleRemove,
+    prepend: eduTitlePrepend,
   } = useFieldArray({
     control,
     name: "eduTitle",
@@ -117,6 +123,7 @@ const EditPublicProfile = ({
     fields: institutionFields,
     append: institutionAppend,
     remove: institutionRemove,
+    prepend: institutionPrepend,
   } = useFieldArray({
     control,
     name: "institution",
@@ -126,6 +133,7 @@ const EditPublicProfile = ({
     fields: eduStartDateFields,
     append: eduStartDateAppend,
     remove: eduStartDateRemove,
+    prepend: eduStartDatePrepend,
   } = useFieldArray({
     control,
     name: "eduStartDate",
@@ -135,6 +143,7 @@ const EditPublicProfile = ({
     fields: eduEndDateFields,
     append: eduEndDateAppend,
     remove: eduEndDateRemove,
+    prepend: eduEndDatePrepend,
   } = useFieldArray({
     control,
     name: "eduEndDate",
@@ -144,6 +153,7 @@ const EditPublicProfile = ({
     fields: eduDescFields,
     append: eduDescAppend,
     remove: eduDescRemove,
+    prepend: eduDescPrepend,
   } = useFieldArray({
     control,
     name: "eduDescription",
@@ -158,6 +168,44 @@ const EditPublicProfile = ({
         );
         console.log("PublicProfile: ", { publicProfile });
         if (!publicProfile) return;
+        if (publicProfile?.education.length > 0) {
+          publicProfile.education.slice().reverse().forEach(
+            (edu: {
+              title: string;
+              institution: string;
+              description: string;
+              startDate: string;
+              endDate: string;
+            }) => {
+              console.log("edu: ", { edu });
+              eduTitlePrepend({value: edu.title});
+              institutionPrepend({value: edu.institution});
+              eduDescPrepend({value: edu.description});
+              eduStartDatePrepend({value: edu.startDate});
+              eduEndDatePrepend({value: edu.endDate});
+            }
+          );
+        }
+
+        if (publicProfile?.experiences.length > 0) {
+          publicProfile.experiences.slice().reverse().forEach(
+            (exp: {
+              title: string;
+              company: string;
+              description: string;
+              startDate: string;
+              endDate: string;
+            }) => {
+              console.log("exp: ", { exp });
+              xpTitlePrepend({value: exp.title});
+              xpCompanyPrepend({value: exp.company});
+              xpDescriptionPrepend({value: exp.description});
+              xpStartDatePrepend({value: exp.startDate});
+              xpEndDatePrepend({value: exp.endDate});
+            }
+          );
+        }
+
         Object.entries(publicProfile).forEach(([key, value]) => {
           setValue(
             key,
@@ -198,7 +246,7 @@ const EditPublicProfile = ({
       await mySelf.client.dataStore.set("publicProfile", {
         skillTags,
         experiences,
-        education
+        education,
       });
       const me = await mySelf.client.dataStore.get("publicProfile");
       nextStep();

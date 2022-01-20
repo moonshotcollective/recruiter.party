@@ -1,5 +1,6 @@
 import { CeramicClient } from "@ceramicnetwork/http-client";
 import { AlsoKnownAs, Account } from "@datamodels/identity-accounts-web";
+// @ts-ignore
 import publishedModel from "@scaffold-eth/schemas/lib/model.json";
 import { DataModel } from "@glazed/datamodel";
 import { DIDDataStore } from "@glazed/did-datastore";

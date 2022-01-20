@@ -256,7 +256,7 @@ const Home = () => {
           ) :
             queryResult.data.profiles.length > 0 ? (
               <SimpleGrid width="100%" columns={3} spacing={6}>
-                {queryResult.data.profiles.map((profile) => (
+                {queryResult.data.profiles.map((profile: any) => (
                   <ProfileCard
                     key={profile.tokenId}
                     avatarSrc="https://source.unsplash.com/random"
@@ -268,6 +268,7 @@ const Home = () => {
                     isUnlocked={false}
                     skills={profile.skills}
                     did={profile.tokenId}
+                    emoji='🤓'
                   />
                 ))}
               </SimpleGrid>

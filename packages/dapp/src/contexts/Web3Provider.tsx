@@ -1,3 +1,4 @@
+// @ts-ignore
 import ABIS from "@scaffold-eth/hardhat-ts/hardhat_contracts.json";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { SelfID, EthereumAuthProvider } from "@self.id/web";
@@ -15,6 +16,7 @@ import React, {
 import Web3Modal from "web3modal";
 import axios from "axios";
 
+// @ts-ignore
 import publishedModel from "@scaffold-eth/schemas/lib/model.json"
 import { ERC20ABI } from "../../helpers/abi";
 import { NETWORK_URLS } from "../core/connectors";
@@ -121,7 +123,7 @@ const Web3Provider = ({ children }: { children: any }) => {
         if (authenticatedResponse.status === 200 && authenticatedResponse.data.authenticated === true) {
           const provider = await web3Modal.connect();
           const mySelf = await SelfID.authenticate({
-            authProvider: new EthereumAuthProvider(provider, account),
+            authProvider: new EthereumAuthProvider(provider, account!),
             ceramic: CERAMIC_TESTNET,
             connectNetwork: CERAMIC_TESTNET,
             model: publishedModel,

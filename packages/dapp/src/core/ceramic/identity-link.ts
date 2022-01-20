@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-underscore-dangle */
+// @ts-expect-error
 import type { AlsoKnownAsAccount } from "@ceramicstudio/idx-constants";
 import type { DagJWS } from "dids";
 

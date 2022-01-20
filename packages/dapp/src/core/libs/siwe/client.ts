@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { randomStringForEntropy } from '@stablelib/random';
 // TODO: Figure out how to get types from this lib:
 import { Contract, ethers, utils } from 'ethers';

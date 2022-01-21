@@ -24,7 +24,8 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "acp": "git add . && npm run commit && git push",
-    "semantic-release": "semantic-release --branches main"
+    "semantic-release": "semantic-release --branches main",
+    "ui:build": "yarn build"
   },
   "peerDependencies": {
     "react": ">=16"

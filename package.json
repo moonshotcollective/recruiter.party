@@ -11,8 +11,9 @@
   "scripts": {
     "bootstrap": "yarn install; lerna bootstrap;",
     "start": "lerna run start --parallel",
+    "ui:build": "lerna run ui:build",
     "dapp:start": "lerna run dapp:start",
-    "dapp:build": "lerna run dapp:build"
+    "dapp:build": "yarn ui:build && lerna run dapp:build"
   },
   "engines": {
     "node": "14.x"

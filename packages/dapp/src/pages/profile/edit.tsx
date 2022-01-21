@@ -16,7 +16,19 @@ const EditProfile = () => {
   });
   const steps = [
     {
-      label: "Private Profile",
+      label: (
+        <Box
+          cursor={existingUser ? "pointer" : "default"}
+          onClick={() => {
+            if (!existingUser) {
+              return;
+            }
+            setStep(0);
+          }}
+        >
+          Private Profile
+        </Box>
+      ),
       content: (
         <EditPrivateProfile
           nextStep={nextStep}
@@ -29,7 +41,19 @@ const EditProfile = () => {
       ),
     },
     {
-      label: "Public Profile",
+      label: (
+        <Box
+          cursor={existingUser ? "pointer" : "default"}
+          onClick={() => {
+            if (!existingUser) {
+              return;
+            }
+            setStep(1);
+          }}
+        >
+          Public Profile
+        </Box>
+      ),
       content: (
         <EditPublicProfile
           nextStep={nextStep}
@@ -41,7 +65,19 @@ const EditProfile = () => {
     },
 
     {
-      label: "Basic Profile",
+      label: (
+        <Box
+          cursor={existingUser ? "pointer" : "default"}
+          onClick={() => {
+            if (!existingUser) {
+              return;
+            }
+            setStep(2);
+          }}
+        >
+          Basic Profile
+        </Box>
+      ),
       content: (
         <EditBasicProfile
           nextStep={nextStep}
@@ -58,20 +94,9 @@ const EditProfile = () => {
       <Box margin="8">
         <Box as="main" marginY={22}>
           <Flex flexDir="column" width="100%">
-            {existingUser && <Flex marginY={3} justifyContent='space-between'>
-              <Button onClick={() => setStep(0)}>
-                Edit Private Profile
-              </Button>
-              <Button onClick={() => setStep(1)}>
-                Edit Public Profile
-              </Button>
-              <Button onClick={() => setStep(2)}>
-                Edit Basic Profile
-              </Button>
-              </Flex>}
             <Steps activeStep={activeStep}>
-              {steps.map(({ label, content }) => (
-                <Step p={4} label={label} key={label}>
+              {steps.map(({ label, content }, index) => (
+                <Step p={4} label={label} key={index}>
                   {content}
                 </Step>
               ))}

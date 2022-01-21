@@ -16,7 +16,8 @@
     "release": "standard-version",
     "push-release": "git push --follow-tags origin main",
     "prepare": "husky install",
-    "dapp:start": "yarn start"
+    "dapp:start": "yarn start",
+    "dapp:build": "yarn build"
   },
   "dependencies": {
     "@3id/connect": "^0.2.5",

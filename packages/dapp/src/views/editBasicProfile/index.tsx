@@ -29,12 +29,14 @@ interface EditBasicProfileProps {
   nextStep: () => void;
   prevStep: () => void;
   activeStep: number;
+  existingUser: boolean;
 }
 
 const EditBasicProfile = ({
   nextStep,
   prevStep,
   activeStep,
+  existingUser
 }: EditBasicProfileProps) => {
   const { mySelf } = useContext(Web3Context);
   const { accentColor } = useCustomColor();
@@ -337,6 +339,14 @@ const EditBasicProfile = ({
           >
             Back
           </Button>
+          {existingUser && <Button
+            onClick={nextStep}
+            mr={2}
+            backgroundColor={"transparent"}
+            color={accentColor}
+          >
+            Next
+          </Button>}
           <Button
             type="submit"
             isLoading={isSubmitting}
@@ -350,7 +360,7 @@ const EditBasicProfile = ({
             backgroundColor={accentColor}
             color="purple.500"
           >
-            Next
+            Save
           </Button>
         </Flex>
       </Stack>

@@ -1,7 +1,7 @@
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { Step, Steps, useSteps } from "chakra-ui-steps";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import EditBasicProfile from "../../views/editBasicProfile";
 import EditPrivateProfile from "../../views/editPrivateProfile";
 import EditPublicProfile from "../../views/editPublicProfile";
@@ -9,39 +9,81 @@ import EditPublicProfile from "../../views/editPublicProfile";
 const EditProfile = () => {
   const router = useRouter();
 
-  const { nextStep, prevStep, reset, activeStep } = useSteps({
+  const [existingUser, setExistingUser] = useState<boolean>(false);
+
+  const { nextStep, prevStep, reset, activeStep, setStep } = useSteps({
     initialStep: 0,
   });
   const steps = [
     {
-      label: "Private Profile",
+      label: (
+        <Box
+          cursor={existingUser ? "pointer" : "default"}
+          onClick={() => {
+            if (!existingUser) {
+              return;
+            }
+            setStep(0);
+          }}
+        >
+          Private Profile
+        </Box>
+      ),
       content: (
         <EditPrivateProfile
           nextStep={nextStep}
           prevStep={prevStep}
           activeStep={activeStep}
           reset={reset}
+          existingUser={existingUser}
+          setExistingUser={setExistingUser}
         />
       ),
     },
     {
-      label: "Public Profile",
+      label: (
+        <Box
+          cursor={existingUser ? "pointer" : "default"}
+          onClick={() => {
+            if (!existingUser) {
+              return;
+            }
+            setStep(1);
+          }}
+        >
+          Public Profile
+        </Box>
+      ),
       content: (
         <EditPublicProfile
           nextStep={nextStep}
           prevStep={prevStep}
           activeStep={activeStep}
+          existingUser={existingUser}
         />
       ),
     },
 
     {
-      label: "Basic Profile",
+      label: (
+        <Box
+          cursor={existingUser ? "pointer" : "default"}
+          onClick={() => {
+            if (!existingUser) {
+              return;
+            }
+            setStep(2);
+          }}
+        >
+          Basic Profile
+        </Box>
+      ),
       content: (
         <EditBasicProfile
           nextStep={nextStep}
           prevStep={prevStep}
           activeStep={activeStep}
+          existingUser={existingUser}
         />
       ),
     },
@@ -53,8 +95,8 @@ const EditProfile = () => {
         <Box as="main" marginY={22}>
           <Flex flexDir="column" width="100%">
             <Steps activeStep={activeStep}>
-              {steps.map(({ label, content }) => (
-                <Step p={4} label={label} key={label}>
+              {steps.map(({ label, content }, index) => (
+                <Step p={4} label={label} key={index}>
                   {content}
                 </Step>
               ))}

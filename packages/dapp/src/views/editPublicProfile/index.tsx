@@ -273,26 +273,6 @@ const EditPublicProfile = ({
         <Heading mt={2} mb={2} fontWeight={"medium"} color={accentColor}>
           Build your profile
         </Heading>
-        <FormControl isInvalid={errors.title} mt={2} mb={2}>
-          <FormLabel htmlFor="title">Title</FormLabel>
-          <Text mb={2} fontSize="sm">
-            Enter your title
-          </Text>
-          <Input
-            mb={4}
-            {...register("title", {
-              required: true,
-              maxLength: {
-                value: 50,
-                message: "Maximun length should be 50",
-              },
-            })}
-            borderColor="neutralDark"
-            placeholder="Title"
-          />
-          <FormErrorMessage>{errors.title?.message}</FormErrorMessage>
-        </FormControl>
-        <Divider />
         <FormControl isInvalid={errors.skillTags} mt={2} mb={2}>
           <FormLabel>Skills</FormLabel>
           <Text mb={2} fontSize="sm">

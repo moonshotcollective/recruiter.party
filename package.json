@@ -11,9 +11,11 @@
   "scripts": {
     "bootstrap": "yarn install; lerna bootstrap;",
     "start": "lerna run start --parallel",
-    "dapp:start": "lerna run dapp:start"
+    "ui:build": "lerna run ui:build",
+    "dapp:start": "lerna run dapp:start",
+    "dapp:build": "yarn ui:build && lerna run dapp:build"
   },
   "engines": {
-    "node": "16.x"
+    "node": "14.x"
   }
 }

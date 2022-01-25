@@ -131,11 +131,13 @@ contract DRecruitV1 is
 
     function mint(string memory tokenUri, bytes memory data) external {
         require(owners[msg.sender] == 0, "TOKEN_EXISTS");
-        resumes[tokenId.current()] = Resume(msg.sender, 0, tokenUri);
+        uint256 currId = tokenId.current();
+        resumes[currId] = Resume(msg.sender, 0, tokenUri);
+        owners[msg.sender] = currId;
         tokenId.increment();
-        _mint(msg.sender, tokenId.current() - 1, 1, data);
-        emit NewResume(msg.sender, tokenId.current() - 1);
-        emit URI(tokenUri, tokenId.current() - 1);
+        _mint(msg.sender, currId, 1, data);
+        emit NewResume(msg.sender, currId);
+        emit URI(tokenUri, currId);
     }
 
     function request(uint256 id, uint256 stake) external {

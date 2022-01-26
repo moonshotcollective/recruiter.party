@@ -138,11 +138,27 @@ const Home = () => {
     query GetProfiles($searchText: String) {
       profiles(search: $searchText) {
         tokenId
-        name
-        residenceCity
-        residenceCountry
-        description
-        skills
+        did
+        basicProfile {
+          name
+          homeLocation
+          residenceCountry
+          description
+          background {
+            original {
+              src
+            }
+          }
+          emoji
+          image {
+            original {
+              src
+            }
+          }
+        }
+        publicProfile {
+          skillTags
+        }
       }
     }
   `;
@@ -216,66 +232,43 @@ const Home = () => {
           <Text color="red">An error has occured. Please try again.</Text>
         )}
 
-        {searchProfilesText === "" ?
-          profilesLoading ? (
-            <Spinner />
-          ) : (
-            <SimpleGrid width="100%" columns={3} spacing={6}>
-              {developerProfiles.map((profile) => (
-                <ProfileCard
-                  key={profile.did}
-                  avatarSrc={
-                    profile.basicProfile && profile.basicProfile.image
-                      ? IPFS_GATEWAY +
-                        profile.basicProfile.image.original.src.split("//")[1]
-                      : "https://source.unsplash.com/random"
-                  }
-                  name={profile.basicProfile ? profile.basicProfile.name : "Anonymous"}
-                  city={profile.basicProfile && profile.basicProfile.homeLocation}
-                  country={profile.basicProfile && profile.basicProfile.residenceCountry}
-                  description={profile.basicProfile && profile.basicProfile.description}
-                  coverSrc={
-                    profile.basicProfile && profile.basicProfile.background
-                      ? IPFS_GATEWAY +
-                        profile.basicProfile.background?.original.src.split(
-                          "//"
-                        )[1]
-                      : "https://source.unsplash.com/random"
-                  }
-                  emoji={profile.basicProfile && profile.basicProfile.emoji}
-                  isUnlocked={false}
-                  skills={["React", "GraphQL"]}
-                  did={profile.did}
-                />
-              ))}
-            </SimpleGrid>
-          )
-        :
-          queryResult.loading ? (
+        {queryResult.loading ? (
             <Spinner />
           ) :
-            queryResult.data.profiles.length > 0 ? (
+            queryResult.data?.profiles.length > 0 ? (
               <SimpleGrid width="100%" columns={3} spacing={6}>
                 {queryResult.data.profiles.map((profile: any) => (
                   <ProfileCard
                     key={profile.tokenId}
-                    avatarSrc="https://source.unsplash.com/random"
-                    name={profile.name ? profile.name : "Anonymous"}
-                    city={profile.residenceCity}
-                    country={profile.residenceCountry}
-                    description={profile.description}
-                    coverSrc="https://source.unsplash.com/random"
+                    avatarSrc={
+                      profile.basicProfile && profile.basicProfile.image
+                        ? IPFS_GATEWAY +
+                          profile.basicProfile.image.original.src.split("//")[1]
+                        : "https://source.unsplash.com/random"
+                    }
+                    name={profile.basicProfile ? profile.basicProfile.name : "Anonymous"}
+                    city={profile.basicProfile && profile.basicProfile.homeLocation}
+                    country={profile.basicProfile && profile.basicProfile.residenceCountry}
+                    description={profile.basicProfile && profile.basicProfile.description}
+                    coverSrc={
+                      profile.basicProfile && profile.basicProfile.background
+                        ? IPFS_GATEWAY +
+                          profile.basicProfile.background?.original.src.split(
+                            "//"
+                          )[1]
+                        : "https://source.unsplash.com/random"
+                    }
                     isUnlocked={false}
-                    skills={profile.skills}
-                    did={profile.tokenId}
-                    emoji='🤓'
+                    skills={profile.publicProfile?.skillTags ?? [] }
+                    did={profile.did}
+                    emoji={profile.basicProfile && profile.basicProfile.emoji}
                   />
                 ))}
               </SimpleGrid>
             ) : (
               <Text color={accentColor}>No Results.</Text>
             )
-          }
+        }
       </VStack>
     </>
   );

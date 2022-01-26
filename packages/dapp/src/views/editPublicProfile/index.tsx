@@ -26,6 +26,7 @@ import useCustomColor from "core/hooks/useCustomColor";
 import React, { useContext, useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Web3Context } from "../../contexts/Web3Provider";
+import axios from "axios";
 
 interface EditPublicProfileProps {
   nextStep: () => void;
@@ -250,7 +251,17 @@ const EditPublicProfile = ({
         experiences,
         education,
       });
-      const me = await mySelf.client.dataStore.get("publicProfile");
+
+      const privateProfile = await mySelf.get("privateProfile");
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/profiles/${privateProfile.tokenId}`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      console.log("response: ", response);
+
       nextStep();
     } catch (error) {
       console.log("Error while submitting data: ", error);

@@ -113,6 +113,7 @@ const profileSchema = new mongoose.Schema({
   },
   did: {
     type: String,
+    unique: true,
     required: true
   },
   basicProfile: {

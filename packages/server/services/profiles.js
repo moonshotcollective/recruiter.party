@@ -3,7 +3,7 @@ const { Profile } = require('../models')
 const { getDidFromTokenURI, selfIdCore } = require('../helpers/ceramic')
 const DEBUG = process.env.DEBUG
 
-const updateProfiles = async () => {
+const createProfiles = async () => {
   const lastProfile = await Profile.findOne({}, { _id: 0, tokenId: 1 }, { sort: { tokenId: -1 } })
   const lastTokenIdDb = lastProfile?.tokenId ?? 0
   if (DEBUG) console.log('lastTokenIdDb: ', lastTokenIdDb)
@@ -12,7 +12,7 @@ const updateProfiles = async () => {
   for (let i = lastTokenIdDb + 1; i < lastTokenId.toNumber(); i++) {
     await updateProfile(i)
   }
-  if (DEBUG) console.log('End updateProfiles')
+  if (DEBUG) console.log('End createProfiles')
 }
 
 const updateProfile = async (tokenId) => {
@@ -24,14 +24,19 @@ const updateProfile = async (tokenId) => {
   if (DEBUG) console.log('basicProfile: ', basicProfile)
   const publicProfile = await selfIdCore.get('publicProfile', did)
   if (DEBUG) console.log('publicProfile: ', publicProfile)
-  const profile = await Profile.findOneAndUpdate({ tokenId: tokenId }, {
-    tokenId: tokenId,
-    did: did,
-    basicProfile: basicProfile,
-    publicProfile: publicProfile
-  }, { new: true, upsert: true, overwrite: true })
-  if (DEBUG) console.log('profile: ', profile)
-  return profile
+  try {
+    const profile = await Profile.findOneAndUpdate({ tokenId: tokenId }, {
+      tokenId: tokenId,
+      did: did,
+      basicProfile: basicProfile,
+      publicProfile: publicProfile
+    }, { new: true, upsert: true, overwrite: true })
+    if (DEBUG) console.log('profile: ', profile)
+    return profile
+  } catch (error) {
+    console.error(error)
+    return false
+  }
 }
 
-module.exports = { updateProfiles, updateProfile }
+module.exports = { createProfiles, updateProfile }

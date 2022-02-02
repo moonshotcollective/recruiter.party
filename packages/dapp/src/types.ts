@@ -1,9 +1,16 @@
 export interface Education {
-  school: string;
+  institution: string;
   title: string;
-  start: string;
-  end: string;
-  duration: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+}
+
+export interface Experience {
+  company: string;
+  title: string;
+  startDate: string;
+  endDate: string;
   description: string;
 }
 

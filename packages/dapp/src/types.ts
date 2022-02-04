@@ -33,7 +33,7 @@ export interface BasicProfile {
 
 export interface PublicProfile {
   skillTags: string[];
-  experiences: string[];
+  experiences: Experience[];
   educations: Education[];
   [key: string]: any;
 }

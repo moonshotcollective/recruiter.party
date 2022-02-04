@@ -1,1 +1,1 @@
-web: npm run dapp:start
+web: npm run server:start

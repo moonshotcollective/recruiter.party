@@ -40,11 +40,12 @@ const createModels = async () => {
       if (!schemaURL) {
         throw new Error("Error - manager.getSchemaURL");
       }
+      const camelCaseSchemaName = schemaName.charAt(0).toLowerCase() + schemaName.slice(1);
       const definition = await manager.createDefinition(
-        schemaName.toLowerCase(),
+        camelCaseSchemaName,
         {
-          name: schemaName.toLowerCase(),
-          description: `Schema definition for ${schemaName}.`,
+          name: camelCaseSchemaName,
+          description: `Schema definition for ${camelCaseSchemaName}.`,
           schema: schemaURL,
         }
       );

@@ -13,7 +13,8 @@
     "start": "lerna run start --parallel",
     "ui:build": "lerna run ui:build",
     "dapp:start": "lerna run dapp:start",
-    "dapp:build": "yarn ui:build && lerna run dapp:build"
+    "dapp:build": "yarn ui:build && lerna run dapp:build",
+    "server:start": "lerna run server:start"
   },
   "engines": {
     "node": "14.x"

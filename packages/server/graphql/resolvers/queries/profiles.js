@@ -7,19 +7,20 @@ const QueryProfiles = {
     const sort = {}
     const options = { limit, skip }
     if (name) {
-      filters.name = new RegExp(name, 'i')
+      filters.basicProfile.name = new RegExp(name, 'i')
     }
     if (residenceCountry) {
-      filters.residenceCountry = residenceCountry
+      filters.basicProfile.residenceCountry = residenceCountry
     }
     if (skills) {
-      filters.skills = { $all: skills }
+      filters.publicProfile.skillTags = { $all: skills }
     }
     if (search) {
       filters.$text = { $search: search }
       filters.score = { $meta: 'textScore' }
       sort.score = { $meta: 'textScore' }
     }
+
     const profiles = await Profile.find(filters, sort, options).lean()
     return profiles
   },

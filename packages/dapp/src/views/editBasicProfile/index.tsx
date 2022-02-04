@@ -24,7 +24,9 @@ import React, {
 } from "react";
 import { useForm } from "react-hook-form";
 import { emojis } from "../../../helpers";
+import axios from "axios";
 import { COUNTRIES } from "../../../helpers/countries";
+
 interface EditBasicProfileProps {
   nextStep: () => void;
   prevStep: () => void;
@@ -163,6 +165,17 @@ const EditBasicProfile = ({
       }
 
       await mySelf.client.dataStore.merge("basicProfile", values);
+
+      const privateProfile = await mySelf.get("privateProfile");
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/profiles/${privateProfile.tokenId}`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      console.log("response: ", response);
+
       nextStep();
     } catch (error) {
       console.log("Error while saving BasicProfile: ", error);

@@ -94,10 +94,10 @@ const basicProfile = new mongoose.Schema({
 })
 
 const publicProfile = new mongoose.Schema({
-  skillsTags: {
+  skillTags: {
     type: [String]
   },
-  experience: {
+  experiences: {
     type: [experienceSchema]
   },
   education: {
@@ -113,6 +113,7 @@ const profileSchema = new mongoose.Schema({
   },
   did: {
     type: String,
+    unique: true,
     required: true
   },
   basicProfile: {

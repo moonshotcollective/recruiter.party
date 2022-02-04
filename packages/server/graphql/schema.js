@@ -7,33 +7,58 @@ type Mutation {
     createProfile(data: CreateProfileInput!): Profile!
     updateProfile(data: CreateProfileInput!): Profile!
 }
+type ImageData {
+    src: String
+    size: Int
+    width: Int
+    height: Int
+    mimeType: String
+}
+type ImageSources {
+    original: ImageData
+}
+type BasicProfile {
+    url: String
+    name: String
+    emoji: String
+    image: ImageSources,
+    gender: String
+    birthDate: String
+    background: ImageSources
+    description: String
+    affiliations: [String]
+    homeLocation: String
+    nationalities: [String]
+    residenceCountry: String
+}
+type ExperienceSchema {
+    company: String
+    title: String
+    description: String
+    startDate: String
+    endDate: String
+}
+type EducationSchema {
+    institution: String
+    title: String
+    description: String
+    startDate: String
+    endDate: String
+}
+type PublicProfile {
+    skillTags: [String]
+    experiences: [ExperienceSchema]
+    education: [EducationSchema]
+}
 type Profile {
     tokenId: ID!
-    name: String
-    description: String
-    birthDate: String
-    gender: String
-    residenceCity: String
-    residenceCountry: String
-    nationalities: [String]
-    affiliations: [String]
-    education: [String]
-    skills: [String]
-    experience: [String]
+    did: String
+    basicProfile: BasicProfile
+    publicProfile: PublicProfile
 }
 input CreateProfileInput {
     tokenId: ID!
-    name: String
-    description: String
-    birthDate: String
-    gender: String
-    residenceCity: String
-    residenceCountry: String
-    nationalities: [String]
-    affiliations: [String]
-    education: [String]
-    skills: [String]
-    experience: [String]
+    did: String
 }
 `
 

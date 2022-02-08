@@ -25,7 +25,7 @@ import axios from "axios";
 import NextLink from "next/link";
 import useCustomColor from "core/hooks/useCustomColor";
 import UnlockProfile from "components/Profile/Unlock";
-import { BasicProfile, DecryptedData, Education, PublicProfile } from "types";
+import { BasicProfile, DecryptedData, Education, PublicProfile, Experience } from "types";
 
 const Home = () => {
   const { accentColor } = useCustomColor();
@@ -163,17 +163,21 @@ const Home = () => {
                 Experiences
               </Heading>
               {publicProfile && publicProfile?.experiences ? (
-                publicProfile?.experiences.map((exp: string, index: number) => (
+                publicProfile?.experiences.map((exp: Experience, index: number) => (
                   <VStack paddingX={4} paddingY={2} align="start" key={index}>
-                    <Heading fontSize="xl">{exp}</Heading>
+                    <Heading fontSize="xl">{exp.title}</Heading>
                     <HStack width="100%" color="purple.200">
-                      <Text fontSize="md">COMPANY</Text>
-                      <Icon viewBox="0 0 100 100">
-                        <circle fill="currentColor" cx="50" cy="50" r="15" />
-                      </Icon>
-                      <Text fontSize="md">DURATION (START - END)</Text>
+                      <Text fontSize="md">{exp.company}</Text>
+                      {(exp.startDate || exp.endDate) && (
+                        <>
+                          <Icon viewBox="0 0 100 100">
+                            <circle fill="currentColor" cx="50" cy="50" r="15" />
+                          </Icon>
+                          <Text fontSize="md">{exp.startDate} - {exp.endDate}</Text>
+                        </>
+                      )}
                     </HStack>
-                    <Text fontSize="md">DESCRIPTION</Text>
+                    <Text fontSize="md">{exp.description}</Text>
                     <Divider style={{ marginTop: 40 }} />
                   </VStack>
                 ))
@@ -185,20 +189,23 @@ const Home = () => {
               <Heading fontSize="2xl" color="purple.200" pt={10} pb={5}>
                 Education
               </Heading>
-              {publicProfile && publicProfile?.educations ? (
-                publicProfile?.educations.map(
+              {publicProfile && publicProfile?.education ? (
+                publicProfile?.education.map(
                   (education: Education, index: number) => (
                     <VStack paddingX={4} paddingY={2} align="start" key={index}>
-                      <Heading fontSize="xl">{education.school}</Heading>
+                      <Heading fontSize="xl">{education.institution}</Heading>
                       <HStack width="100%" color="purple.200">
                         <Text fontSize="md">{education.title}</Text>
-                        <Icon viewBox="0 0 100 100">
-                          <circle fill="currentColor" cx="50" cy="50" r="15" />
-                        </Icon>
-                        <Text fontSize="md">
-                          {education.duration} ({education.start} -{" "}
-                          {education.end})
-                        </Text>
+                        {(education.startDate || education.endDate) && (
+                          <>
+                            <Icon viewBox="0 0 100 100">
+                              <circle fill="currentColor" cx="50" cy="50" r="15" />
+                            </Icon>
+                            <Text fontSize="md">
+                              {education.startDate} - {education.endDate}
+                            </Text>
+                          </>
+                        )}
                       </HStack>
                       <Text fontSize="md">{education.description}</Text>
                       <Divider style={{ marginTop: 40 }} />

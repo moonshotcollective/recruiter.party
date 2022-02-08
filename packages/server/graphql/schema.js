@@ -1,7 +1,7 @@
 const schema = `
 type Query {
     profile(tokenId: ID!): Profile!
-    profiles(limit: Int, skip: Int, name: String, residenceCountry: String, skills: [String], search: String): [Profile]!
+    profiles(limit: Int, skip: Int, name: String, residenceCountry: String, homeLocation: String, educationInstitution: String, educationTitle: String, experienceCompany: String, experienceTitle: String, skills: [String], search: String): [Profile]!
 }
 type Mutation {
     createProfile(data: CreateProfileInput!): Profile!

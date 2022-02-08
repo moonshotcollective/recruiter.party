@@ -33,30 +33,6 @@ export const ceramicCoreFactory = () => {
   });
 };
 
-// DATA MODEL CLIENT
-export const ceramicDataModelFactory = async () => {
-  if (!process.env.DID_KEY) {
-    console.warn("DID_KEY not found in .env, generating a new seed..");
-    const newSeed = toString(randomBytes(32), "base16");
-    console.log(`Seed generated. Save this in your .env as DID_KEY=${newSeed}`);
-    process.env.DID_KEY = newSeed;
-  }
-  const key = fromString(process.env.DID_KEY, "base16");
-  // Create and authenticate the DID
-  const did = new DID({
-    provider: new Ed25519Provider(key),
-    resolver: getResolver(),
-  });
-  await did.authenticate();
-
-  // Connect to the testnet local Ceramic node
-  const ceramic = new CeramicClient(CERAMIC_TESTNET_NODE_URL);
-  ceramic.did = did;
-  const model = new DataModel({ ceramic, model: publishedModel });
-  const dataStore = new DIDDataStore({ ceramic, model });
-  return { dataStore, model, ceramic, did };
-};
-
 export function findGitHub(
   { accounts }: AlsoKnownAs,
   username: string
@@ -67,5 +43,7 @@ export function findGitHubIndex(
   { accounts }: AlsoKnownAs,
   username: string
 ): number {
-  return accounts.findIndex((a: any) => a.host === GITHUB_HOST && a.id === username);
+  return accounts.findIndex(
+    (a: any) => a.host === GITHUB_HOST && a.id === username
+  );
 }

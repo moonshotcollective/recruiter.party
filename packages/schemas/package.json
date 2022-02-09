@@ -48,5 +48,6 @@
     "key-did-provider-ed25519": "^1.1.0",
     "key-did-resolver": "^1.4.0",
     "uint8arrays": "^3.0.0"
-  }
+  },
+  "gitHead": "cdcddfb1a066444888cb97078cf52d11c0e5d315"
 }

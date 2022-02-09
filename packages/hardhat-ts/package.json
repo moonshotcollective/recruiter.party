@@ -1,6 +1,6 @@
 {
   "name": "@recuiter.party/hardhat-ts",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "scripts": {
     "chain": "hardhat node --network hardhat --no-deploy",

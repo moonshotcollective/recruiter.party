@@ -50,7 +50,7 @@
     "cids": "^1.1.9",
     "copy-to-clipboard": "^3.3.1",
     "ethers": "^5.5.1",
-    "framer-motion": "^4.1.17",
+    "framer-motion": "^5.6.0",
     "graphql": "^16.0.1",
     "multiparty": "^4.2.2",
     "next": "^11.1.2",

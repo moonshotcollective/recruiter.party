@@ -86,9 +86,6 @@
     "standard-version": "^9.3.1",
     "typescript": "^4.4.4"
   },
-  "cacheDirectories": [
-    ".next/cache"
-  ],
   "engines": {
     "node": ">=14.0.0"
   }

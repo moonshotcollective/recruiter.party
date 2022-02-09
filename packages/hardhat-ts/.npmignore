@@ -1,0 +1,11 @@
+node_modules
+.env
+mnemonic.secret
+
+#Hardhat files
+generated/cache
+generated/artifacts
+generated/deployments
+deploy
+scripts
+test

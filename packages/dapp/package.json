@@ -37,6 +37,8 @@
     "@fontsource/space-mono": "^4.5.0",
     "@gnosis.pm/safe-apps-web3-react": "^0.6.7",
     "@moonshotcollective/ui": "^0.0.6",
+    "@recruiter.party/contracts": "^0.1.4",
+    "@recruiter.party/schemas": "^0.0.4",
     "@self.id/web": "^0.2.0",
     "@walletconnect/web3-provider": "^1.6.6",
     "@web3-react/core": "^6.1.9",

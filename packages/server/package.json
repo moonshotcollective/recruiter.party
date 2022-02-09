@@ -17,6 +17,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@ceramicnetwork/http-client": "^1.4.3",
+    "@recruiter.party/contracts": "^0.1.4",
+    "@recruiter.party/schemas": "^0.0.4",
     "@self.id/core": "^0.1.0",
     "config": "^3.3.6",
     "dids": "^2.4.0",

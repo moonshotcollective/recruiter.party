@@ -1,6 +1,6 @@
 {
   "name": "@recruiter.party/schemas",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "JSON Schema definitions",
   "main": "lib/schemas.js",
   "author": "Moonshot Collective",

@@ -8,6 +8,8 @@
     "contracts": "contracts"
   },
   "files": [
+    "generated",
+    "contracts",
     "hardhat_contracts.json"
   ],
   "scripts": {

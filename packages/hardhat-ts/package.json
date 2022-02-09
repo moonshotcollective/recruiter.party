@@ -1,5 +1,5 @@
 {
-  "name": "@recuiter.party/hardhat-ts",
+  "name": "@recuiter.party/contracts",
   "version": "0.1.2",
   "license": "MIT",
   "scripts": {
@@ -66,5 +66,5 @@
   "installConfig": {
     "hoistingLimits": "workspaces"
   },
-  "gitHead": "cdcddfb1a066444888cb97078cf52d11c0e5d315"
+  "gitHead": "5a22e7fd94b980a3ba1c7869f2c725aae916e9d3"
 }

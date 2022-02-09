@@ -1,4 +1,4 @@
-import ABIS from "@recruiter.party/hardhat-ts/hardhat_contracts.json";
+import ABIS from "@recruiter.party/contracts/hardhat_contracts.json";
 import publishedModel from "@recruiter.party/schemas/lib/model.json";
 import { SelfID, EthereumAuthProvider } from "@self.id/web";
 import WalletConnectProvider from "@walletconnect/web3-provider";

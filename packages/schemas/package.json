@@ -1,6 +1,6 @@
 {
   "name": "@recruiter.party/schemas",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "JSON Schema definitions",
   "main": "lib/schemas.js",
   "author": "Moonshot Collective",
@@ -49,5 +49,5 @@
     "key-did-resolver": "^1.4.0",
     "uint8arrays": "^3.0.0"
   },
-  "gitHead": "5a22e7fd94b980a3ba1c7869f2c725aae916e9d3"
+  "gitHead": "d61578f02d1e58bbcb71e5dc00c669ac0984f77a"
 }

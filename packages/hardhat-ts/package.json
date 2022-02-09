@@ -1,6 +1,6 @@
 {
-  "name": "@recuiter.party/contracts",
-  "version": "0.1.2",
+  "name": "@recruiter.party/contracts",
+  "version": "0.1.3",
   "license": "MIT",
   "scripts": {
     "chain": "hardhat node --network hardhat --no-deploy",
@@ -66,5 +66,5 @@
   "installConfig": {
     "hoistingLimits": "workspaces"
   },
-  "gitHead": "5a22e7fd94b980a3ba1c7869f2c725aae916e9d3"
+  "gitHead": "d61578f02d1e58bbcb71e5dc00c669ac0984f77a"
 }

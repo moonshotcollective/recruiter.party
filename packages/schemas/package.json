@@ -1,10 +1,11 @@
 {
-  "name": "@scaffold-eth/schemas",
+  "name": "@recruiter.party/schemas",
   "version": "0.0.0",
   "description": "JSON Schema definitions",
   "main": "lib/schemas.js",
-  "author": "Scaffold-ETH x Gitcoin DAO x Moonshot Collective",
+  "author": "Moonshot Collective",
   "license": "GPL-3.0-or-later",
+  "private": false,
   "directories": {
     "lib": "lib",
     "test": "__tests__"

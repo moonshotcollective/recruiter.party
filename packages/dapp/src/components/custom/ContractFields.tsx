@@ -1,14 +1,18 @@
 import { Button, HStack, Input, Text, VStack } from "@chakra-ui/react";
-// @ts-ignore
-import ABIS from "@scaffold-eth/hardhat-ts/hardhat_contracts.json";
-import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from "react";
+import { DRecruitV1 } from "@recuiter.party/hardhat-ts/generated/contract-types/DRecruitV1";
+import ABIS from "@recuiter.party/hardhat-ts/hardhat_contracts.json";
+import { useWeb3React } from "@web3-react/core";
+import React, {
+  ChangeEvent,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+
 import { Web3Context } from "../../contexts/Web3Provider";
 import useCustomColor from "../../core/hooks/useCustomColor";
 import NETWORKS from "../../core/networks";
-// @ts-expect-error
-import { DRecruitV1 } from "@scaffold-eth/hardhat-ts/generated/contract-types/DRecruitV1";
-import { useWeb3React } from '@web3-react/core';
-import { BigNumber, BigNumberish } from 'ethers';
 
 type Block = {
   inputs?: Array<Object>;
@@ -28,27 +32,24 @@ function ContractFields({ ...others }: any) {
   const [yourReadContract, setYourReadContract] = useState<DRecruitV1>();
   const [yourWriteContract, setYourWriteContract] = useState<DRecruitV1>();
 
-  const readFee = useCallback(
-    async () => {
-      if (yourReadContract) {
-        const res = await yourReadContract.fee();
-        console.log({ res })
-        setFee(res.toString());
-      }
-    },
-    [yourReadContract, contracts],
-  )
+  const readFee = useCallback(async () => {
+    if (yourReadContract) {
+      const res = await yourReadContract.fee();
+      console.log({ res });
+      setFee(res.toString());
+    }
+  }, [yourReadContract, contracts]);
 
-  const writeFee = useCallback(
-    async () => {
-      if (yourWriteContract && account && tokenIdInput) {
-        const transaction = await yourWriteContract.approveRequest(tokenIdInput, account);
-        await transaction.wait();
-        await readFee();
-      }
-    },
-    [tokenIdInput, yourWriteContract, contracts],
-  )
+  const writeFee = useCallback(async () => {
+    if (yourWriteContract && account && tokenIdInput) {
+      const transaction = await yourWriteContract.approveRequest(
+        tokenIdInput,
+        account
+      );
+      await transaction.wait();
+      await readFee();
+    }
+  }, [tokenIdInput, yourWriteContract, contracts]);
 
   useEffect(() => {
     if (chainId && contracts) {
@@ -56,7 +57,7 @@ function ContractFields({ ...others }: any) {
       const network = NETWORKS[strChainId];
       const abis = ABIS as Record<string, any>;
       if (abis[strChainId]) {
-        const abi = abis[strChainId][network.name].contracts.DRecruitV1.abi;
+        const { abi } = abis[strChainId][network.name].contracts.DRecruitV1;
         setAbi(abi);
         setYourReadContract(contracts.yourReadContract);
         setYourWriteContract(contracts.yourWriteContract);
@@ -66,7 +67,7 @@ function ContractFields({ ...others }: any) {
 
   const handleTokenIdChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTokenIdInput(e.target.value);
-  }
+  };
 
   return (
     <VStack
@@ -80,8 +81,8 @@ function ContractFields({ ...others }: any) {
     >
       <Text textStyle="h1">Your Contract</Text>
       <Text textStyle="small">
-        yarn chain, deploy in /hardhat and yarn dev in dapp.{" "}
-        * make sure you are connected to localhost
+        yarn chain, deploy in /hardhat and yarn dev in dapp. * make sure you are
+        connected to localhost
       </Text>
 
       {abi &&
@@ -90,10 +91,7 @@ function ContractFields({ ...others }: any) {
             return (
               <HStack key={el.name}>
                 <Text>{el.name}</Text>
-                <Input
-                  value={tokenIdInput}
-                  onChange={handleTokenIdChange}
-                />
+                <Input value={tokenIdInput} onChange={handleTokenIdChange} />
                 <Button onClick={() => el.name && writeFee()}>Call</Button>
               </HStack>
             );

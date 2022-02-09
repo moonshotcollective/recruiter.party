@@ -1,11 +1,12 @@
-// @ts-ignore
-import ABIS from "@scaffold-eth/hardhat-ts/hardhat_contracts.json";
-import WalletConnectProvider from "@walletconnect/web3-provider";
+import ABIS from "@recruiter.party/hardhat-ts/hardhat_contracts.json";
+import publishedModel from "@recruiter.party/schemas/lib/model.json";
 import { SelfID, EthereumAuthProvider } from "@self.id/web";
+import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useWeb3React } from "@web3-react/core";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 // import Authereum from "authereum";
+import axios from "axios";
 import { ethers } from "ethers";
 import React, {
   createContext,
@@ -14,17 +15,17 @@ import React, {
   useCallback,
 } from "react";
 import Web3Modal from "web3modal";
-import axios from "axios";
 
 // @ts-ignore
-import publishedModel from "@scaffold-eth/schemas/lib/model.json"
+
 import { ERC20ABI } from "../../helpers/abi";
+import { CERAMIC_TESTNET } from "../core/ceramic";
 import { NETWORK_URLS } from "../core/connectors";
 import { ALL_SUPPORTED_CHAIN_IDS } from "../core/connectors/chains";
 import { useActiveWeb3React } from "../core/hooks/web3";
 import NETWORKS from "../core/networks";
+
 import { State, Web3Reducer } from "./Web3Reducer";
-import { CERAMIC_TESTNET } from '../core/ceramic';
 
 export const supportedNetworks = Object.keys(ABIS);
 const injected = new InjectedConnector({
@@ -120,7 +121,10 @@ const Web3Provider = ({ children }: { children: any }) => {
           }
         );
 
-        if (authenticatedResponse.status === 200 && authenticatedResponse.data.authenticated === true) {
+        if (
+          authenticatedResponse.status === 200 &&
+          authenticatedResponse.data.authenticated === true
+        ) {
           const provider = await web3Modal.connect();
           const mySelf = await SelfID.authenticate({
             authProvider: new EthereumAuthProvider(provider, account!),
@@ -238,10 +242,10 @@ const Web3Provider = ({ children }: { children: any }) => {
       `${process.env.NEXT_PUBLIC_API_URL}/authenticated`,
       {
         withCredentials: true,
-      },
+      }
     );
 
-    console.log(authResponse.data)
+    console.log(authResponse.data);
 
     if (authResponse.data?.address?.toLowerCase() !== account.toLowerCase()) {
       const { data } = await axios.get(

@@ -1,15 +1,6 @@
-import { CeramicClient } from "@ceramicnetwork/http-client";
 import { AlsoKnownAs, Account } from "@datamodels/identity-accounts-web";
-// @ts-ignore
-import publishedModel from "@scaffold-eth/schemas/lib/model.json";
-import { DataModel } from "@glazed/datamodel";
-import { DIDDataStore } from "@glazed/did-datastore";
+import publishedModel from "@recruiter.party/schemas/lib/model.json";
 import { Core } from "@self.id/core";
-import { randomBytes } from "@stablelib/random";
-import { DID } from "dids";
-import { Ed25519Provider } from "key-did-provider-ed25519";
-import { getResolver } from "key-did-resolver";
-import { fromString, toString } from "uint8arrays";
 
 import { GITHUB_HOST } from "../constants";
 

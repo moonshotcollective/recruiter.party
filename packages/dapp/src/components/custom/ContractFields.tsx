@@ -1,6 +1,6 @@
 import { Button, HStack, Input, Text, VStack } from "@chakra-ui/react";
-import { DRecruitV1 } from "@recuiter.party/contracts/generated/contract-types/DRecruitV1";
-import ABIS from "@recuiter.party/contracts/hardhat_contracts.json";
+import { DRecruitV1 } from "@recruiter.party/contracts/generated/contract-types/DRecruitV1";
+import ABIS from "@recruiter.party/contracts/hardhat_contracts.json";
 import { useWeb3React } from "@web3-react/core";
 import React, {
   ChangeEvent,

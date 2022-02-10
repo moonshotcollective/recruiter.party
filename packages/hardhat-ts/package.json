@@ -12,6 +12,9 @@
     "contracts",
     "hardhat_contracts.json"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "chain": "hardhat node --network hardhat --no-deploy",
     "fork": "hardhat node --fork https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad",

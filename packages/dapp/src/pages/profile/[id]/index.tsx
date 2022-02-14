@@ -89,7 +89,7 @@ const Home = () => {
 
   useEffect(() => {
     (async () => {
-      if (queryResult.data && !queryResult.errors) {
+      if (queryResult.data && !queryResult.error) {
         const basicProfile = queryResult.data.profile.basicProfile;
         console.log("basicProfile: ", basicProfile);
         setBasicProfile(basicProfile as BasicProfile);
@@ -145,7 +145,7 @@ const Home = () => {
       {queryResult.loading ? (
         <Spinner marginTop={8} />
       ) : 
-        queryResult.data && !queryResult.errors ? (
+        queryResult.data && !queryResult.error ? (
           <Box marginTop={8}>
             <Image
               objectFit="cover"

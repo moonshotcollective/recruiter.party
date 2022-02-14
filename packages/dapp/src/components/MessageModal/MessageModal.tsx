@@ -1,5 +1,6 @@
 import {
   Button,
+  Flex,
   Icon,
   Input,
   InputGroup,
@@ -26,23 +27,47 @@ const MessageModal = ({
   onOpen: () => void;
   onClose: () => void;
 }) => {
+  const MessageComp = ({
+    message,
+    self,
+  }: {
+    message: string;
+    self: boolean;
+  }) => {
+    return (
+      <Flex
+        align="center"
+        justify={self ? "flex-end" : "flex-start"}
+        borderRadius={4}
+        mb={1}
+      >
+        <Text>{message}</Text>
+      </Flex>
+    );
+  };
+
   return (
     <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader textAlign='center' fontSize='xl' fontWeight="bold">Message</ModalHeader>
+        <ModalHeader textAlign="center" fontSize="xl" fontWeight="bold">
+          Message
+        </ModalHeader>
         <ModalCloseButton />
-        <ModalBody overflowY="auto" height="60vh">
-          <VStack spacing={3} align="stretch">
-            <Text textAlign="left">Good morning</Text>
-            <Text textAlign="right">Good morning</Text>
-            <Text textAlign="left">Good morning</Text>
-            <Text textAlign="right">Good morning</Text>
+        <ModalBody overflowY="auto" maxHeight="60vh">
+          <VStack height="full" spacing={3} align="stretch">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <MessageComp
+                self={i % 2 === 0}
+                key={i}
+                message={`Message ${i}`}
+              />
+            ))}
           </VStack>
         </ModalBody>
         <ModalFooter>
           <InputGroup>
-            <Input />
+            <Input bg="whiteAlpha.900" color="gray.900" />
             <InputRightElement>
               <Button>
                 <Icon as={AiOutlineSend} />

@@ -243,7 +243,6 @@ const EditBasicProfile = ({
           <FormLabel>Description</FormLabel>
           <Textarea
             borderColor="purple.500"
-            type="text"
             placeholder="Web3 and Blockchain enthusiast"
             {...register("description", {
               maxLength: {

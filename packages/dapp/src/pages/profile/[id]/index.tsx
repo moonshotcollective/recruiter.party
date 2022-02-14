@@ -93,7 +93,6 @@ const Home = () => {
         const basicProfile = queryResult.data.profile.basicProfile;
         console.log("basicProfile: ", basicProfile);
         setBasicProfile(basicProfile as BasicProfile);
-        // @ts-expect-error
         const publicProfile = queryResult.data.profile.publicProfile;
         console.log("publicProfile: ", publicProfile);
         setPublicProfile(publicProfile as PublicProfile);

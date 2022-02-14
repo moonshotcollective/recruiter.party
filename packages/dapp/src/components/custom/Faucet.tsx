@@ -1,16 +1,16 @@
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { VStack, Button, Text, Link } from "@chakra-ui/react";
-import React, { useContext, useState, useEffect } from "react";
+import { useWeb3React } from "@web3-react/core";
 import { ethers, utils } from "ethers";
+import React, { useContext, useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { useWeb3React } from '@web3-react/core';
 
 import { Web3Context } from "../../contexts/Web3Provider";
 import { hexToString } from "../../core/helpers";
-import NETWORKS from '../../core/networks';
-import { ExternalLinkIcon } from '@chakra-ui/icons';
+import NETWORKS from "../../core/networks";
 
 function Faucet({ ...others }: any) {
-  const { account, } = useContext(Web3Context);
+  const { account } = useContext(Web3Context);
   const { chainId, library } = useWeb3React();
 
   const [faucetAddress, setFaucetAddress] = useState("");
@@ -75,26 +75,29 @@ function Faucet({ ...others }: any) {
       <VStack
         style={{ margin: 8, left: 0, bottom: 0, position: "fixed" }}
         layerStyle="no-border-card"
-        align={"start"}
+        align="start"
         {...others}
       >
         <Text>Faucet</Text>
         <Text textStyle="small">{faucetAddress}</Text>
-        {
-          faucetBalance &&
+        {faucetBalance && (
           <Text textStyle="small">
-            {faucetBalance}{" "}
-            {network.symbol ?? "Native tokens"}
+            {faucetBalance} {network.symbol ?? "Native tokens"}
           </Text>
-        }
-        {chainId === 31337
-          ? <Button onClick={faucet}>Get some eth</Button>
-          : network && <Link href={network.faucet} target="_blank" rel="noopener noreferrer">
-            <Button leftIcon={<ExternalLinkIcon />}>
-              Get faucet tokens
-            </Button>
-          </Link>
-        }
+        )}
+        {chainId === 31337 ? (
+          <Button onClick={faucet}>Get some eth</Button>
+        ) : (
+          network && (
+            <Link
+              href={network.faucet}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button leftIcon={<ExternalLinkIcon />}>Get faucet tokens</Button>
+            </Link>
+          )
+        )}
       </VStack>
       <Toaster
         toastOptions={{

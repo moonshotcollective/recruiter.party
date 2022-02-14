@@ -1,4 +1,5 @@
-import { SystemStyleObject, SystemStyleFunction } from '@chakra-ui/theme-tools';
+import { SystemStyleObject, SystemStyleFunction } from "@chakra-ui/theme-tools";
+
 import useThemeColor from "../useThemeColor";
 
 const baseStyle: SystemStyleFunction = (props) => {

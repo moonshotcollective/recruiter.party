@@ -63,14 +63,12 @@ const Elements = () => {
           <Button onClick={toggleColorMode}>
             Toggle {colorMode === "light" ? "Dark" : "Light"}
           </Button>
-          <Button variant="solid">
-            Hello
-          </Button>
+          <Button variant="solid">Hello</Button>
           <Button variant="outline">Hello</Button>
           <Button variant="ghost">Hello</Button>
           <Input />
-          <Select placeholder="Select option"></Select>
-          <Textarea placeholder="Select option"></Textarea>
+          <Select placeholder="Select option" />
+          <Textarea placeholder="Select option" />
 
           <Switch />
           {/* set to subtle default variant="subtle" colorScheme="cyan" */}

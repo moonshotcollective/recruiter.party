@@ -3,9 +3,10 @@ import type {
   PartsStyleFunction,
   PartsStyleObject,
   SystemStyleFunction,
-  SystemStyleObject
+  SystemStyleObject,
 } from "@chakra-ui/theme-tools";
 import { mode } from "@chakra-ui/theme-tools";
+
 import { colors } from "../colors";
 import { borderRadius } from "../default-values";
 import useThemeColor from "../useThemeColor";
@@ -35,7 +36,7 @@ const baseStyleDialog: SystemStyleFunction = (props) => {
     bg: mode(colors.neutralLightest, colors.neutralDarkest)(props),
     borderColor: mode(colors.neutralLighter, colors.neutralDarker)(props),
     borderWidth: "1px",
-    borderRadius: borderRadius,
+    borderRadius,
     color: "inherit",
     my: "3.75rem",
     zIndex: "modal",

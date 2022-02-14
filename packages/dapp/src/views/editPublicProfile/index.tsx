@@ -21,12 +21,13 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react";
-import { ceramicCoreFactory } from "core/ceramic";
-import useCustomColor from "core/hooks/useCustomColor";
+import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+
 import { Web3Context } from "../../contexts/Web3Provider";
-import axios from "axios";
+import { ceramicCoreFactory } from "core/ceramic";
+import useCustomColor from "core/hooks/useCustomColor";
 
 interface EditPublicProfileProps {
   nextStep: () => void;
@@ -172,41 +173,47 @@ const EditPublicProfile = ({
         console.log("PublicProfile: ", { publicProfile });
         if (!publicProfile) return;
         if (publicProfile?.education.length > 0) {
-          publicProfile.education.slice().reverse().forEach(
-            (edu: {
-              title: string;
-              institution: string;
-              description: string;
-              startDate: string;
-              endDate: string;
-            }) => {
-              console.log("edu: ", { edu });
-              eduTitlePrepend({value: edu.title});
-              institutionPrepend({value: edu.institution});
-              eduDescPrepend({value: edu.description});
-              eduStartDatePrepend({value: edu.startDate});
-              eduEndDatePrepend({value: edu.endDate});
-            }
-          );
+          publicProfile.education
+            .slice()
+            .reverse()
+            .forEach(
+              (edu: {
+                title: string;
+                institution: string;
+                description: string;
+                startDate: string;
+                endDate: string;
+              }) => {
+                console.log("edu: ", { edu });
+                eduTitlePrepend({ value: edu.title });
+                institutionPrepend({ value: edu.institution });
+                eduDescPrepend({ value: edu.description });
+                eduStartDatePrepend({ value: edu.startDate });
+                eduEndDatePrepend({ value: edu.endDate });
+              }
+            );
         }
 
         if (publicProfile?.experiences.length > 0) {
-          publicProfile.experiences.slice().reverse().forEach(
-            (exp: {
-              title: string;
-              company: string;
-              description: string;
-              startDate: string;
-              endDate: string;
-            }) => {
-              console.log("exp: ", { exp });
-              xpTitlePrepend({value: exp.title});
-              xpCompanyPrepend({value: exp.company});
-              xpDescriptionPrepend({value: exp.description});
-              xpStartDatePrepend({value: exp.startDate});
-              xpEndDatePrepend({value: exp.endDate});
-            }
-          );
+          publicProfile.experiences
+            .slice()
+            .reverse()
+            .forEach(
+              (exp: {
+                title: string;
+                company: string;
+                description: string;
+                startDate: string;
+                endDate: string;
+              }) => {
+                console.log("exp: ", { exp });
+                xpTitlePrepend({ value: exp.title });
+                xpCompanyPrepend({ value: exp.company });
+                xpDescriptionPrepend({ value: exp.description });
+                xpStartDatePrepend({ value: exp.startDate });
+                xpEndDatePrepend({ value: exp.endDate });
+              }
+            );
         }
 
         Object.entries(publicProfile).forEach(([key, value]) => {
@@ -270,18 +277,18 @@ const EditPublicProfile = ({
   };
 
   return (
-    <Box as="main" w={"full"}>
+    <Box as="main" w="full">
       <Stack as="form" onSubmit={handleSubmit(onSubmit)}>
         <Button
           onClick={prevStep}
           w={24}
           pl={2}
-          backgroundColor={"transparent"}
+          backgroundColor="transparent"
           color={accentColor}
         >
           <ChevronLeftIcon w={8} h={8} /> Back
         </Button>
-        <Heading mt={2} mb={2} fontWeight={"medium"} color={accentColor}>
+        <Heading mt={2} mb={2} fontWeight="medium" color={accentColor}>
           Build your profile
         </Heading>
         <FormControl isInvalid={errors.skillTags} mt={2} mb={2}>
@@ -346,7 +353,7 @@ const EditPublicProfile = ({
           </Text>
           {xpTitleFields.map((item, index) => (
             <Box marginY={5}>
-              <Flex alignItems="center" justifyContent={"space-between"}>
+              <Flex alignItems="center" justifyContent="space-between">
                 <Text mb={2} fontSize="lg">
                   Experience {index + 1}
                 </Text>
@@ -508,7 +515,7 @@ const EditPublicProfile = ({
           </Text>
           {eduTitleFields.map((item, index) => (
             <Box marginY={5}>
-              <Flex alignItems="center" justifyContent={"space-between"}>
+              <Flex alignItems="center" justifyContent="space-between">
                 <Text mb={2} fontSize="lg">
                   Education {index + 1}
                 </Text>
@@ -663,19 +670,21 @@ const EditPublicProfile = ({
           <Button
             onClick={prevStep}
             mr={2}
-            backgroundColor={"transparent"}
+            backgroundColor="transparent"
             color={accentColor}
           >
             Back
           </Button>
-          {existingUser && <Button
-            onClick={nextStep}
-            mr={2}
-            backgroundColor={"transparent"}
-            color={accentColor}
-          >
-            Next
-          </Button>}
+          {existingUser && (
+            <Button
+              onClick={nextStep}
+              mr={2}
+              backgroundColor="transparent"
+              color={accentColor}
+            >
+              Next
+            </Button>
+          )}
           <Button
             type="submit"
             _hover={{

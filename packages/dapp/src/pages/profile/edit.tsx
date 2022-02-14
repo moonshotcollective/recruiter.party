@@ -2,6 +2,7 @@ import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { Step, Steps, useSteps } from "chakra-ui-steps";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+
 import EditBasicProfile from "../../views/editBasicProfile";
 import EditPrivateProfile from "../../views/editPrivateProfile";
 import EditPublicProfile from "../../views/editPublicProfile";

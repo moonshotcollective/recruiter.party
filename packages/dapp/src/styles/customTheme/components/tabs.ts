@@ -7,8 +7,9 @@ import type {
   SystemStyleObject,
 } from "@chakra-ui/theme-tools";
 import { mode } from "@chakra-ui/theme-tools";
-import { borderRadius, colorScheme } from "../default-values";
+
 import { colors } from "../colors";
+import { borderRadius, colorScheme } from "../default-values";
 
 const baseStyleRoot: SystemStyleFunction = (props) => {
   const { orientation } = props;
@@ -169,7 +170,7 @@ const variantSoftRounded: PartsStyleFunction<typeof parts> = (props) => {
   const { colorScheme: c } = props;
   return {
     tab: {
-      borderRadius: borderRadius,
+      borderRadius,
       fontWeight: "semibold",
       color: "ice",
       _selected: {
@@ -180,7 +181,7 @@ const variantSoftRounded: PartsStyleFunction<typeof parts> = (props) => {
     tablist: {
       bg: mode(colors.neutralLighter, colors.neutralDarker)(props),
       border: "1px solid",
-      borderRadius: borderRadius,
+      borderRadius,
       borderColor: mode(colors.neutralLight, colors.neutralDark)(props),
     },
   };
@@ -224,7 +225,7 @@ const variants: Record<string, PartsStyleInterpolation<typeof parts>> = {
 const defaultProps = {
   size: "md",
   variant: "soft-rounded",
-  colorScheme: colorScheme,
+  colorScheme,
 };
 
 export default {

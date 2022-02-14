@@ -1,11 +1,12 @@
+import { lighten, darken } from "@chakra-ui/theme-tools";
+
 import { colors } from "./colors";
 import { borderRadius } from "./default-values";
-import { lighten, darken } from "@chakra-ui/theme-tools";
 
 const layerStyles = {
   "gradient-border": {
     p: "2px",
-    borderRadius: borderRadius,
+    borderRadius,
     bgGradient: `linear(to-r, gray.300, ${colors.accentDark[500]}, ${colors.primary[500]})`,
   },
   "gradient-bg": {
@@ -21,7 +22,7 @@ const layerStyles = {
   "solid-card": {
     p: "2rem",
     bg: colors.neutralLighter,
-    borderRadius: borderRadius,
+    borderRadius,
     border: "1px solid",
     borderColor: colors.borderLight,
     ".chakra-ui-dark &": {
@@ -33,7 +34,7 @@ const layerStyles = {
   "outline-card": {
     p: "2rem",
     border: "1px solid",
-    borderRadius: borderRadius,
+    borderRadius,
     borderColor: colors.borderLight,
     ".chakra-ui-dark &": {
       borderColor: colors.borderDark,
@@ -42,7 +43,7 @@ const layerStyles = {
   "no-border-card": {
     p: "2rem",
     bg: colors.neutralLighter,
-    borderRadius: borderRadius,
+    borderRadius,
     ".chakra-ui-dark &": {
       bg: colors.neutralDarker,
     },
@@ -52,7 +53,7 @@ const layerStyles = {
   "solid-hover2": {
     p: "2rem",
     bg: colors.neutralLighter,
-    borderRadius: borderRadius,
+    borderRadius,
     border: "1px solid",
     borderColor: colors.borderLight,
     _hover: { bg: darken(colors.neutralLighter, 5) },
@@ -66,7 +67,7 @@ const layerStyles = {
   "outline-hover2": {
     p: "2rem",
     border: "1px solid",
-    borderRadius: borderRadius,
+    borderRadius,
     borderColor: colors.borderLight,
     _hover: { bg: darken(colors.neutralLighter, 5) },
     ".chakra-ui-dark &": {
@@ -77,7 +78,7 @@ const layerStyles = {
   "no-border-hover2": {
     p: "2rem",
     bg: colors.neutralLighter,
-    borderRadius: borderRadius,
+    borderRadius,
     _hover: { bg: darken(colors.neutralLighter, 5) },
     ".chakra-ui-dark &": {
       bg: colors.neutralDarker,
@@ -89,7 +90,7 @@ const layerStyles = {
   "solid-hover": {
     p: "2rem",
     bg: colors.neutralLighter,
-    borderRadius: borderRadius,
+    borderRadius,
     border: "1px solid",
     borderColor: colors.borderLight,
     transition: "all 0.3s",
@@ -104,7 +105,7 @@ const layerStyles = {
   "outline-hover": {
     p: "2rem",
     border: "1px solid",
-    borderRadius: borderRadius,
+    borderRadius,
     borderColor: colors.borderLight,
     transition: "all 0.3s",
     "transition-timing-function": "spring(1 100 10 10)",
@@ -114,7 +115,7 @@ const layerStyles = {
   "no-border-hover": {
     p: "2rem",
     bg: colors.neutralLighter,
-    borderRadius: borderRadius,
+    borderRadius,
     transition: "all 0.3s",
     "transition-timing-function": "spring(1 100 10 10)",
     _hover: { transform: "translateY(-4px)", shadow: "lg" },
@@ -125,7 +126,7 @@ const layerStyles = {
   "solid-hover3": {
     p: "2rem",
     bg: colors.neutralLighter,
-    borderRadius: borderRadius,
+    borderRadius,
     border: "1px solid",
     borderColor: colors.borderLight,
     transition: "all 0.3s",
@@ -140,7 +141,7 @@ const layerStyles = {
   "outline-hover3": {
     p: "2rem",
     border: "1px solid",
-    borderRadius: borderRadius,
+    borderRadius,
     borderColor: colors.borderLight,
     transition: "all 0.3s",
     "transition-timing-function": "spring(1 100 10 10)",
@@ -150,7 +151,7 @@ const layerStyles = {
   "no-border-hover3": {
     p: "2rem",
     bg: colors.neutralLighter,
-    borderRadius: borderRadius,
+    borderRadius,
     transition: "all 0.3s",
     "transition-timing-function": "spring(1 100 10 10)",
     _hover: { transform: "scale(1.05)" },

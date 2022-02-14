@@ -33,9 +33,8 @@ const lookupAddress = async (
         utils.getAddress(address) === utils.getAddress(resolvedAddress)
       ) {
         return reportedName;
-      } else {
-        return utils.getAddress(address);
       }
+      return utils.getAddress(address);
     } catch (e) {
       return utils.getAddress(address);
     }
@@ -60,7 +59,7 @@ export const useResolveEnsName = (
   const [ensName, setEnsName] = useState(address);
 
   useEffect(() => {
-    const storedData: any = window.localStorage.getItem("ensCache_" + address);
+    const storedData: any = window.localStorage.getItem(`ensCache_${address}`);
     const cache = JSON.parse(storedData ?? "{}") as Record<string, any>;
 
     if (cache && cache?.name && cache?.timestamp > Date.now()) {
@@ -70,7 +69,7 @@ export const useResolveEnsName = (
         if (name) {
           setEnsName(name);
           window.localStorage.setItem(
-            "ensCache_" + address,
+            `ensCache_${address}`,
             JSON.stringify({
               timestamp: Date.now() + 360000,
               name,

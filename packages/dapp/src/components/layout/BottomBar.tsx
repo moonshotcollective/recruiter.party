@@ -13,6 +13,8 @@ import {
   VStack,
 } from "@chakra-ui/react";
 // import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
 import {
   FaDiscord,
   FaGithub,
@@ -20,9 +22,8 @@ import {
   FaTwitter,
 } from "react-icons/fa";
 import { HiDotsVertical, HiHome, HiBriefcase, HiCube } from "react-icons/hi";
+
 import useCustomColor from "../../core/hooks/useCustomColor";
-import { useRouter } from "next/router";
-import NextLink from "next/link";
 
 const NavItem = ({ href, children, icon, ...props }: any) => {
   const { pathname } = useRouter();
@@ -82,7 +83,7 @@ function BottomBar() {
             as={IconButton}
             aria-label="Menu"
             icon={<HiDotsVertical />}
-          ></MenuButton>
+          />
           <MenuList>
             <MenuItem icon={<FaDiscord />}>
               <Link

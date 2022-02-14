@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { LinkIcon } from "@chakra-ui/icons";
 import { HStack, VStack } from "@chakra-ui/layout";
 import {
   Button,
@@ -16,14 +16,15 @@ import {
   Input,
   Checkbox,
 } from "@chakra-ui/react";
-import { LinkIcon } from "@chakra-ui/icons";
-import useDebounce from "core/hooks/useDebounce";
-import { BigNumber, ethers } from "ethers";
-import Blockies from "react-blockies";
-import NETWORKS from "core/networks";
-import { Web3Context } from "contexts/Web3Provider";
 import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
+import { BigNumber, ethers } from "ethers";
+import React, { useContext, useEffect, useState } from "react";
+import Blockies from "react-blockies";
+
+import { Web3Context } from "contexts/Web3Provider";
+import useDebounce from "core/hooks/useDebounce";
+import NETWORKS from "core/networks";
 
 function UnlockProfile({
   privateProfile,
@@ -232,7 +233,7 @@ function UnlockProfile({
           <ModalFooter>
             <Button
               marginLeft={0}
-              marginRight={"auto"}
+              marginRight="auto"
               colorScheme="blue"
               onClick={() => {
                 handleRequestPrivateProfileUnlock();

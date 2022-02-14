@@ -1,6 +1,6 @@
-import { useRouter } from 'next/router';
-import NextLink from "next/link";
 import { Link } from "@chakra-ui/react";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
 
 const LinkItem = ({ href, _target, children, ...props }: any) => {
   const { pathname } = useRouter();

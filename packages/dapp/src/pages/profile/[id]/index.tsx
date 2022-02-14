@@ -1,3 +1,4 @@
+import { EmailIcon, PhoneIcon, InfoIcon } from "@chakra-ui/icons";
 import {
   Heading,
   HStack,
@@ -14,17 +15,17 @@ import {
   Spinner,
   Link,
 } from "@chakra-ui/react";
-import { EmailIcon, PhoneIcon, InfoIcon } from "@chakra-ui/icons";
-import { FaTwitter, FaMapMarkerAlt } from "react-icons/fa";
-import React, { useContext, useEffect, useState } from "react";
-import { Web3Context } from "../../../contexts/Web3Provider";
-import { useRouter } from "next/router";
-import { ceramicCoreFactory } from "core/ceramic";
-import { IPFS_GATEWAY } from "core/constants/index";
 import axios from "axios";
 import NextLink from "next/link";
-import useCustomColor from "core/hooks/useCustomColor";
+import { useRouter } from "next/router";
+import React, { useContext, useEffect, useState } from "react";
+import { FaTwitter, FaMapMarkerAlt } from "react-icons/fa";
+
+import { Web3Context } from "../../../contexts/Web3Provider";
 import UnlockProfile from "components/Profile/Unlock";
+import { ceramicCoreFactory } from "core/ceramic";
+import { IPFS_GATEWAY } from "core/constants/index";
+import useCustomColor from "core/hooks/useCustomColor";
 import { BasicProfile, DecryptedData, Education, PublicProfile } from "types";
 
 const Home = () => {
@@ -44,20 +45,19 @@ const Home = () => {
     (async () => {
       if (contracts) {
         const core = ceramicCoreFactory();
-        const basicProfile = await core.get("basicProfile", did);
-        console.log("basicProfile: ", basicProfile);
-        setBasicProfile(basicProfile as BasicProfile);
+        const userBasicProfile = await core.get("basicProfile", did);
+        console.log("basicProfile: ", userBasicProfile);
+        setBasicProfile(userBasicProfile as BasicProfile);
         // @ts-expect-error
-        const publicProfile = await core.get("publicProfile", did);
-        console.log("publicProfile: ", publicProfile);
-        setPublicProfile(publicProfile as PublicProfile);
+        const userPublicProfile = await core.get("publicProfile", did);
+        console.log("publicProfile: ", userPublicProfile);
+        setPublicProfile(userPublicProfile as PublicProfile);
         // @ts-expect-error
-        const privateProfile = await core.get("privateProfile", did);
-        console.log("privateProfile: ", privateProfile);
-        setPrivateProfile(privateProfile);
+        const userPrivateProfile = await core.get("privateProfile", did);
+        console.log("privateProfile: ", userPrivateProfile);
+        setPrivateProfile(userPrivateProfile);
         try {
           const response = await axios.get(
-            // @ts-expect-error
             `${process.env.NEXT_PUBLIC_API_URL}/unlock/${privateProfile?.tokenId}`,
             {
               withCredentials: true,
@@ -76,7 +76,7 @@ const Home = () => {
         }
       }
     })();
-  }, [contracts]);
+  }, [contracts, did, privateProfile?.tokenId]);
 
   return (
     <>
@@ -140,19 +140,17 @@ const Home = () => {
               </Heading>
               {publicProfile && publicProfile?.skillTags ? (
                 <SimpleGrid columns={6} spacing={4}>
-                  {publicProfile?.skillTags?.map(
-                    (skill: string, index: number) => (
-                      <Tag
-                        bgColor="purple.600"
-                        textAlign="center"
-                        size="lg"
-                        key={index}
-                        minWidth="fit-content"
-                      >
-                        {skill}
-                      </Tag>
-                    )
-                  )}
+                  {publicProfile?.skillTags?.map((skill: string) => (
+                    <Tag
+                      bgColor="purple.600"
+                      textAlign="center"
+                      size="lg"
+                      key={skill}
+                      minWidth="fit-content"
+                    >
+                      {skill}
+                    </Tag>
+                  ))}
                 </SimpleGrid>
               ) : (
                 <Text fontSize="lg" color="purple.200">
@@ -163,8 +161,8 @@ const Home = () => {
                 Experiences
               </Heading>
               {publicProfile && publicProfile?.experiences ? (
-                publicProfile?.experiences.map((exp: string, index: number) => (
-                  <VStack paddingX={4} paddingY={2} align="start" key={index}>
+                publicProfile?.experiences.map((exp: string) => (
+                  <VStack paddingX={4} paddingY={2} align="start" key={exp}>
                     <Heading fontSize="xl">{exp}</Heading>
                     <HStack width="100%" color="purple.200">
                       <Text fontSize="md">COMPANY</Text>
@@ -186,25 +184,28 @@ const Home = () => {
                 Education
               </Heading>
               {publicProfile && publicProfile?.educations ? (
-                publicProfile?.educations.map(
-                  (education: Education, index: number) => (
-                    <VStack paddingX={4} paddingY={2} align="start" key={index}>
-                      <Heading fontSize="xl">{education.school}</Heading>
-                      <HStack width="100%" color="purple.200">
-                        <Text fontSize="md">{education.title}</Text>
-                        <Icon viewBox="0 0 100 100">
-                          <circle fill="currentColor" cx="50" cy="50" r="15" />
-                        </Icon>
-                        <Text fontSize="md">
-                          {education.duration} ({education.start} -{" "}
-                          {education.end})
-                        </Text>
-                      </HStack>
-                      <Text fontSize="md">{education.description}</Text>
-                      <Divider style={{ marginTop: 40 }} />
-                    </VStack>
-                  )
-                )
+                publicProfile?.educations.map((education: Education) => (
+                  <VStack
+                    paddingX={4}
+                    paddingY={2}
+                    align="start"
+                    key={JSON.stringify(education)}
+                  >
+                    <Heading fontSize="xl">{education.school}</Heading>
+                    <HStack width="100%" color="purple.200">
+                      <Text fontSize="md">{education.title}</Text>
+                      <Icon viewBox="0 0 100 100">
+                        <circle fill="currentColor" cx="50" cy="50" r="15" />
+                      </Icon>
+                      <Text fontSize="md">
+                        {education.duration} ({education.start} -{" "}
+                        {education.end})
+                      </Text>
+                    </HStack>
+                    <Text fontSize="md">{education.description}</Text>
+                    <Divider style={{ marginTop: 40 }} />
+                  </VStack>
+                ))
               ) : (
                 <Text fontSize="lg" color="purple.200">
                   N/A
@@ -231,7 +232,7 @@ const Home = () => {
                   <Text fontSize="lg" color="purple.200">
                     <InfoIcon />{" "}
                     {decryptedData
-                      ? decryptedData.firstname + " " + decryptedData.lastname
+                      ? `${decryptedData.firstname} ${decryptedData.lastname}`
                       : "Locked"}
                   </Text>
                   <Text fontSize="lg" color="purple.200">

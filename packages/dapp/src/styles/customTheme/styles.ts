@@ -1,4 +1,5 @@
 import { mode, Styles } from "@chakra-ui/theme-tools";
+
 import { colors } from "./colors";
 
 const styles: Styles = {

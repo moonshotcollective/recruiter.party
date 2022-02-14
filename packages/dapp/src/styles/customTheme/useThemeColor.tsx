@@ -1,5 +1,6 @@
-import { mode } from '@chakra-ui/theme-tools';
-import { colors } from './colors';
+import { mode } from "@chakra-ui/theme-tools";
+
+import { colors } from "./colors";
 
 function useThemeColor() {
   const getTextColor = mode(colors.neutralDarkest, colors.neutralLightest);

@@ -5,6 +5,7 @@ import type {
   SystemStyleObject,
 } from "@chakra-ui/theme-tools";
 import { mode } from "@chakra-ui/theme-tools";
+
 import { colors } from "../colors";
 import { borderRadius, colorScheme } from "../default-values";
 
@@ -17,7 +18,7 @@ const baseStyleList: SystemStyleFunction = (props) => {
     // py: '2',
     p: "2",
     zIndex: 1,
-    borderRadius: borderRadius,
+    borderRadius,
     borderColor: mode(colors.neutralLighter, colors.neutralDarker)(props),
     borderWidth: "1px",
   };
@@ -32,7 +33,7 @@ const baseStyleItem: SystemStyleFunction = (props) => {
     transitionProperty: "background",
     transitionDuration: "ultra-fast",
     transitionTimingFunction: "ease-in",
-    borderRadius: borderRadius,
+    borderRadius,
     _focus: {
       bg: mode(colors.primary[500], colors.primary[200])(props),
       color: mode(colors.neutralLightest, colors.neutralDarkest)(props),
@@ -86,7 +87,7 @@ const baseStyle: PartsStyleFunction<typeof parts> = (props) => ({
 });
 
 const defaultProps = {
-  colorScheme: colorScheme,
+  colorScheme,
 };
 
 export default {

@@ -1,3 +1,4 @@
+import { UnlockIcon } from "@chakra-ui/icons";
 import {
   Avatar,
   Box,
@@ -9,9 +10,9 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { UnlockIcon } from "@chakra-ui/icons";
+import { useRouter } from "next/router";
+
 import useCustomColor from "core/hooks/useCustomColor";
-import { useRouter } from 'next/router'
 
 export interface ProfileCardProps {
   name: string;
@@ -36,10 +37,10 @@ export const ProfileCard = ({
   country,
   skills,
   description,
-  did
+  did,
 }: ProfileCardProps) => {
   const { accentColor } = useCustomColor();
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <Box

@@ -10,11 +10,12 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import axios from "axios";
+import React, { useContext, useEffect } from "react";
+import { useForm } from "react-hook-form";
+
 import { Web3Context } from "contexts/Web3Provider";
 import { ceramicCoreFactory } from "core/ceramic";
 import useCustomColor from "core/hooks/useCustomColor";
-import React, { useContext, useEffect } from "react";
-import { useForm } from "react-hook-form";
 
 interface EditPrivateProfileProps {
   nextStep: () => void;
@@ -130,7 +131,7 @@ const EditPrivateProfile = ({
   };
 
   return (
-    <Box as="main" w={"full"}>
+    <Box as="main" w="full">
       <Stack as="form" onSubmit={handleSubmit(onSubmit)}>
         <FormControl isInvalid={errors.firstname} mb={3}>
           <FormLabel htmlFor="firstname">Firstname</FormLabel>
@@ -208,7 +209,7 @@ const EditPrivateProfile = ({
             {existingUser && (
               <Button
                 mr={2}
-                backgroundColor={"transparent"}
+                backgroundColor="transparent"
                 color={accentColor}
                 onClick={nextStep}
               >

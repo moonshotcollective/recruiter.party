@@ -1,68 +1,82 @@
 // @ts-nocheck
-import { randomStringForEntropy } from '@stablelib/random';
+import { randomStringForEntropy } from "@stablelib/random";
 // TODO: Figure out how to get types from this lib:
-import { Contract, ethers, utils } from 'ethers';
-import { ParsedMessage as ABNFParsedMessage } from './abnf';
-import { ParsedMessage as RegExpParsedMessage } from './regex';
+import { Contract, ethers, utils } from "ethers";
+
+import { ParsedMessage as ABNFParsedMessage } from "./abnf";
+import { ParsedMessage as RegExpParsedMessage } from "./regex";
 
 /**
  * Possible message error types.
  */
 export enum ErrorTypes {
-  /**Thrown when the `validate()` function can verify the message. */
-  INVALID_SIGNATURE = 'Invalid signature.',
-  /**Thrown when the `expirationTime` is present and in the past. */
-  EXPIRED_MESSAGE = 'Expired message.',
-  /**Thrown when some required field is missing. */
-  MALFORMED_SESSION = 'Malformed session.',
+  /** Thrown when the `validate()` function can verify the message. */
+  INVALID_SIGNATURE = "Invalid signature.",
+  /** Thrown when the `expirationTime` is present and in the past. */
+  EXPIRED_MESSAGE = "Expired message.",
+  /** Thrown when some required field is missing. */
+  MALFORMED_SESSION = "Malformed session.",
 }
 
 /**
  * Possible signature types that this library supports.
  */
 export enum SignatureType {
-  /**EIP-191 signature scheme */
-  PERSONAL_SIGNATURE = 'Personal signature',
+  /** EIP-191 signature scheme */
+  PERSONAL_SIGNATURE = "Personal signature",
 }
 
 export class SiweMessage {
-  /**RFC 4501 dns authority that is requesting the signing. */
+  /** RFC 4501 dns authority that is requesting the signing. */
   domain: string;
-  /**Ethereum address performing the signing conformant to capitalization
+
+  /** Ethereum address performing the signing conformant to capitalization
    * encoded checksum specified in EIP-55 where applicable. */
   address: string;
-  /**Human-readable ASCII assertion that the user will sign, and it must not
+
+  /** Human-readable ASCII assertion that the user will sign, and it must not
    * contain `\n`. */
   statement?: string;
-  /**RFC 3986 URI referring to the resource that is the subject of the signing
+
+  /** RFC 3986 URI referring to the resource that is the subject of the signing
    *  (as in the __subject__ of a claim). */
   uri: string;
-  /**Current version of the message. */
+
+  /** Current version of the message. */
   version: string;
-  /**EIP-155 Chain ID to which the session is bound, and the network where
+
+  /** EIP-155 Chain ID to which the session is bound, and the network where
    * Contract Accounts must be resolved. */
   chainId: string;
-  /**Randomized token used to prevent replay attacks, at least 8 alphanumeric
+
+  /** Randomized token used to prevent replay attacks, at least 8 alphanumeric
    * characters. */
   nonce: string;
-  /**ISO 8601 datetime string of the current time. */
+
+  /** ISO 8601 datetime string of the current time. */
   issuedAt: string;
-  /**ISO 8601 datetime string that, if present, indicates when the signed
+
+  /** ISO 8601 datetime string that, if present, indicates when the signed
    * authentication message is no longer valid. */
   expirationTime?: string | null;
-  /**ISO 8601 datetime string that, if present, indicates when the signed
+
+  /** ISO 8601 datetime string that, if present, indicates when the signed
    * authentication message will become valid. */
   notBefore?: string | null;
-  /**System-specific identifier that may be used to uniquely refer to the
+
+  /** System-specific identifier that may be used to uniquely refer to the
    * sign-in request. */
   requestId?: string | null;
-  /**List of information or references to information the user wishes to have
+
+  /** List of information or references to information the user wishes to have
    * resolved as part of authentication by the relying party. They are
    * expressed as RFC 3986 URIs separated by `\n- `. */
   resources?: Array<string> | null;
-  /**Signature of the message signed by the wallet. */
+
+  /** Signature of the message signed by the wallet. */
   signature?: string;
-  /**Type of sign message to be generated. */
+
+  /** Type of sign message to be generated. */
   type?: SignatureType;
 
   /**
@@ -72,7 +86,7 @@ export class SiweMessage {
    * @param param {string | SiweMessage} Sign message as a string or an object.
    */
   constructor(param: string | Partial<SiweMessage>) {
-    if (typeof param === 'string') {
+    if (typeof param === "string") {
       const parsedMessage = new ABNFParsedMessage(param);
       this.domain = parsedMessage.domain;
       this.address = parsedMessage.address;
@@ -112,14 +126,14 @@ export class SiweMessage {
   toMessage(): string {
     const header = `${this.domain} wants you to sign in with your Ethereum account:`;
     const uriField = `URI: ${this.uri}`;
-    let prefix = [header, this.address].join('\n');
+    let prefix = [header, this.address].join("\n");
     const versionField = `Version: ${this.version}`;
 
     if (!this.nonce) {
       this.nonce = generateNonce();
     }
 
-    const chainField = `Chain ID: ` + this.chainId || '1';
+    const chainField = `Chain ID: ${this.chainId}` || "1";
 
     const nonceField = `Nonce: ${this.nonce}`;
 
@@ -147,17 +161,17 @@ export class SiweMessage {
 
     if (this.resources) {
       suffixArray.push(
-        [`Resources:`, ...this.resources.map((x) => `- ${x}`)].join('\n'),
+        [`Resources:`, ...this.resources.map((x) => `- ${x}`)].join("\n")
       );
     }
 
-    const suffix = suffixArray.join('\n');
+    const suffix = suffixArray.join("\n");
 
     if (this.statement) {
-      prefix = [prefix, this.statement].join('\n\n');
+      prefix = [prefix, this.statement].join("\n\n");
     }
 
-    return [prefix, suffix].join('\n\n');
+    return [prefix, suffix].join("\n\n");
   }
 
   /**
@@ -191,25 +205,25 @@ export class SiweMessage {
    * @returns {Promise<SiweMessage>} This object if valid.
    */
   async validate(
-    provider?: ethers.providers.Provider | any,
+    provider?: ethers.providers.Provider | any
   ): Promise<SiweMessage> {
     return new Promise<SiweMessage>(async (resolve, reject) => {
       const message = this.signMessage();
       try {
         const missing: Array<string> = [];
         if (!message) {
-          missing.push('`message`');
+          missing.push("`message`");
         }
 
         if (!this.signature) {
-          missing.push('`signature`');
+          missing.push("`signature`");
         }
         if (!this.address) {
-          missing.push('`address`');
+          missing.push("`address`");
         }
         if (missing.length > 0) {
           throw new Error(
-            `${ErrorTypes.MALFORMED_SESSION} missing: ${missing.join(', ')}.`,
+            `${ErrorTypes.MALFORMED_SESSION} missing: ${missing.join(", ")}.`
           );
         }
 
@@ -220,14 +234,14 @@ export class SiweMessage {
 
         if (addr.toLowerCase() !== this.address.toLowerCase()) {
           try {
-            //EIP-1271
+            // EIP-1271
             const isValidSignature = await checkContractWalletSignature(
               this,
-              provider,
+              provider
             );
             if (!isValidSignature) {
               throw new Error(
-                `${ErrorTypes.INVALID_SIGNATURE}: ${addr} !== ${this.address}`,
+                `${ErrorTypes.INVALID_SIGNATURE}: ${addr} !== ${this.address}`
               );
             }
           } catch (e) {
@@ -260,21 +274,21 @@ export class SiweMessage {
  */
 export const checkContractWalletSignature = async (
   message: SiweMessage,
-  provider?: any,
+  provider?: any
 ): Promise<boolean> => {
   if (!provider) {
     return false;
   }
 
   const abi = [
-    'function isValidSignature(bytes32 _message, bytes _signature) public view returns (bool)',
+    "function isValidSignature(bytes32 _message, bytes _signature) public view returns (bool)",
   ];
   try {
     const walletContract = new Contract(message.address, abi, provider);
     const hashMessage = utils.hashMessage(message.signMessage());
     return await walletContract.isValidSignature(
       hashMessage,
-      message.signature,
+      message.signature
     );
   } catch (e) {
     throw e;

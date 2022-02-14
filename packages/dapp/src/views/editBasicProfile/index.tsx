@@ -12,9 +12,7 @@ import {
   Stack,
   Textarea,
 } from "@chakra-ui/react";
-import { Web3Context } from "../../contexts/Web3Provider";
-import { ceramicCoreFactory } from "core/ceramic";
-import useCustomColor from "core/hooks/useCustomColor";
+import axios from "axios";
 import React, {
   useCallback,
   useContext,
@@ -23,9 +21,12 @@ import React, {
   useState,
 } from "react";
 import { useForm } from "react-hook-form";
+
 import { emojis } from "../../../helpers";
-import axios from "axios";
 import { COUNTRIES } from "../../../helpers/countries";
+import { Web3Context } from "../../contexts/Web3Provider";
+import { ceramicCoreFactory } from "core/ceramic";
+import useCustomColor from "core/hooks/useCustomColor";
 
 interface EditBasicProfileProps {
   nextStep: () => void;
@@ -38,7 +39,7 @@ const EditBasicProfile = ({
   nextStep,
   prevStep,
   activeStep,
-  existingUser
+  existingUser,
 }: EditBasicProfileProps) => {
   const { mySelf } = useContext(Web3Context);
   const { accentColor } = useCustomColor();
@@ -151,17 +152,17 @@ const EditBasicProfile = ({
         });
       }
 
-      if (values["residenceCountry"] === "") {
-        delete values["residenceCountry"];
+      if (values.residenceCountry === "") {
+        delete values.residenceCountry;
       }
-      if (values["birthDate"] === "") {
-        delete values["birthDate"];
+      if (values.birthDate === "") {
+        delete values.birthDate;
       }
       if (!imageFile) {
-        delete values["image"];
+        delete values.image;
       }
       if (!backgroundFile) {
-        delete values["background"];
+        delete values.background;
       }
 
       await mySelf.client.dataStore.merge("basicProfile", values);
@@ -242,7 +243,7 @@ const EditBasicProfile = ({
           <FormLabel>Description</FormLabel>
           <Textarea
             borderColor="purple.500"
-            type={"text"}
+            type="text"
             placeholder="Web3 and Blockchain enthusiast"
             {...register("description", {
               maxLength: {
@@ -347,19 +348,21 @@ const EditBasicProfile = ({
           <Button
             onClick={prevStep}
             mr={2}
-            backgroundColor={"transparent"}
+            backgroundColor="transparent"
             color={accentColor}
           >
             Back
           </Button>
-          {existingUser && <Button
-            onClick={nextStep}
-            mr={2}
-            backgroundColor={"transparent"}
-            color={accentColor}
-          >
-            Next
-          </Button>}
+          {existingUser && (
+            <Button
+              onClick={nextStep}
+              mr={2}
+              backgroundColor="transparent"
+              color={accentColor}
+            >
+              Next
+            </Button>
+          )}
           <Button
             type="submit"
             isLoading={isSubmitting}

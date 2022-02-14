@@ -5,14 +5,14 @@ import { EmotionCache } from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
 // import "@fontsource/poppins";
 // import "@fontsource/space-mono";
-import '@fontsource/inter';
-import '@fontsource/montserrat';
+import "@fontsource/inter";
+import "@fontsource/montserrat";
 import { Web3Provider as EthersProvider } from "@ethersproject/providers";
 import { createWeb3ReactRoot, Web3ReactProvider } from "@web3-react/core";
 import { DefaultSeo } from "next-seo";
 import { AppProps } from "next/app";
+import dynamic from "next/dynamic";
 import Head from "next/head";
-import dynamic from 'next/dynamic';
 
 import { useApollo } from "../../lib/apolloClient";
 import defaultSEOConfig from "../../next-seo.config";
@@ -21,7 +21,7 @@ import Layout from "components/layout";
 import createEmotionCache from "styles/createEmotionCache";
 import theme from "styles/customTheme";
 import "styles/globals.css";
-import Web3ReactManager from '../contexts/Web3Manager';
+import Web3ReactManager from "../contexts/Web3Manager";
 
 const clientSideEmotionCache = createEmotionCache();
 const getLibrary = (provider: any): EthersProvider => {
@@ -34,9 +34,9 @@ interface MyAppProps extends AppProps {
 }
 
 const Web3ReactProviderDefault = dynamic(
-  () => import('../contexts/Web3ProviderNetwork'),
+  () => import("../contexts/Web3ProviderNetwork"),
   { ssr: false }
-)
+);
 
 const MyApp = ({
   Component,
@@ -68,7 +68,7 @@ const MyApp = ({
           </Web3Provider>
         </Web3ReactProviderDefault>
       </Web3ReactProvider>
-    </ApolloProvider >
+    </ApolloProvider>
   );
 };
 

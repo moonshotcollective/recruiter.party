@@ -7,14 +7,15 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/react";
-import { useWeb3React } from '@web3-react/core';
+import { useWeb3React } from "@web3-react/core";
 import NextLink from "next/link";
 import React, { useContext } from "react";
 import { AiFillSetting } from "react-icons/ai";
 import { BsFillPersonLinesFill } from "react-icons/bs";
+
 import { Web3Context } from "../../contexts/Web3Provider";
-import { useActiveWeb3React } from "core/hooks/web3";
 import Address from "../custom/Address";
+import { useActiveWeb3React } from "core/hooks/web3";
 
 // const MenuOptions = (logout: any) => (
 //   <Menu>
@@ -62,10 +63,12 @@ function ConnectButton({ w }: { w?: string }) {
           <Button onClick={logout}>Logout</Button>
           {/* <MenuOptions /> */}
         </>
-      ) : active && (
-        <Button onClick={connectWeb3} w={w}>
-          Connect
-        </Button>
+      ) : (
+        active && (
+          <Button onClick={connectWeb3} w={w}>
+            Connect
+          </Button>
+        )
       )}
     </HStack>
   );

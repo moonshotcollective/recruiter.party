@@ -7,14 +7,14 @@ import {
   Input,
   SimpleGrid,
 } from "@chakra-ui/react";
-import { RecruiterCard } from "components/Profile/RecruiterCard";
-import { Web3Context } from "../contexts/Web3Provider";
-import React, { useContext, useEffect, useState } from "react";
-import { ceramicCoreFactory } from "core/ceramic";
 import { useWeb3React } from "@web3-react/core";
-import { IPFS_GATEWAY } from "core/constants";
+import React, { useContext, useEffect, useState } from "react";
 
 import Container from "../components/layout/Container";
+import { Web3Context } from "../contexts/Web3Provider";
+import { RecruiterCard } from "components/Profile/RecruiterCard";
+import { ceramicCoreFactory } from "core/ceramic";
+import { IPFS_GATEWAY } from "core/constants";
 
 const Requests = () => {
   const { account, contracts, mySelf } = useContext(Web3Context);
@@ -64,11 +64,10 @@ const Requests = () => {
               coverSrc: formattedCover,
               did: did.value,
             };
-          } else {
-            return {
-              address: reqs[idx],
-            };
           }
+          return {
+            address: reqs[idx],
+          };
         })
       );
       console.log("recruiterProfiles: ", recruiterProfiles);
@@ -90,7 +89,7 @@ const Requests = () => {
           color="purple.500"
           width="600px"
           lineHeight="8"
-          fontWeight={"normal"}
+          fontWeight="normal"
         >
           Lorem ipsum dolor sit amet, consectetur adipisicing elit
         </Heading>
@@ -100,7 +99,7 @@ const Requests = () => {
             <RecruiterCard
               {...profile}
               key={profile.did}
-              approve={true}
+              approve
               currentPrivateProfileTokenId={myPrivateProfile?.tokenId}
             />
           ))}

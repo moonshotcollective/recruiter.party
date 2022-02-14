@@ -1,3 +1,4 @@
+import { UnlockIcon } from "@chakra-ui/icons";
 import {
   Avatar,
   Box,
@@ -9,10 +10,10 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { UnlockIcon } from "@chakra-ui/icons";
-import useCustomColor from "core/hooks/useCustomColor";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
+
 import ApproveUnlockProfile from "components/Profile/ApproveUnlock";
+import useCustomColor from "core/hooks/useCustomColor";
 
 export interface RecruiterCardProps {
   name: string;
@@ -39,17 +40,13 @@ export const RecruiterCard = ({
   did,
   address,
   approve,
-  currentPrivateProfileTokenId
+  currentPrivateProfileTokenId,
 }: RecruiterCardProps) => {
   const { accentColor } = useCustomColor();
-  const router = useRouter()
+  const router = useRouter();
 
   return (
-    <Box
-      border="2px solid"
-      borderColor="purple.700"
-      borderRadius="lg"
-    >
+    <Box border="2px solid" borderColor="purple.700" borderRadius="lg">
       <Image
         objectFit="cover"
         height="100px"
@@ -82,7 +79,10 @@ export const RecruiterCard = ({
         </Text>
         <Spacer mt={4} />
         {approve && (
-          <ApproveUnlockProfile recruiterAddress={address} currentPrivateProfileTokenId={currentPrivateProfileTokenId} />
+          <ApproveUnlockProfile
+            recruiterAddress={address}
+            currentPrivateProfileTokenId={currentPrivateProfileTokenId}
+          />
         )}
       </VStack>
     </Box>

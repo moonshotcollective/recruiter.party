@@ -1,3 +1,4 @@
+import { gql, useQuery } from "@apollo/client";
 import {
   Button,
   Container,
@@ -12,17 +13,17 @@ import {
   Image,
 } from "@chakra-ui/react";
 import { useWeb3React } from "@web3-react/core";
+import NextImage from "next/image";
+import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
+
+import { getDidFromTokenURI } from "../../helpers";
 import { Web3Context } from "../contexts/Web3Provider";
 import { hexToString } from "../core/helpers";
-import { ceramicCoreFactory } from "core/ceramic";
-import { getDidFromTokenURI } from "../../helpers";
 import useCustomColor from "../core/hooks/useCustomColor";
 import { ProfileCard } from "components/Profile/Card";
+import { ceramicCoreFactory } from "core/ceramic";
 import { IPFS_GATEWAY } from "core/constants";
-import NextImage from "next/image";
-import { gql, useQuery } from "@apollo/client";
-import { useRouter } from 'next/router'
 
 interface DevProfiles {
   did: string;
@@ -61,7 +62,7 @@ interface DevProfiles {
 
 const Home = () => {
   const { account, contracts } = useContext(Web3Context);
-  const router = useRouter()
+  const router = useRouter();
   const { library } = useWeb3React();
   const { coloredText, accentColor } = useCustomColor();
   const [yourBalance, setYourBalance] = useState("");
@@ -164,7 +165,7 @@ const Home = () => {
   `;
 
   const queryResult = useQuery(GET_PROFILES_QUERY, {
-    variables: { searchText: searchProfilesText }
+    variables: { searchText: searchProfilesText },
   });
 
   return (
@@ -183,7 +184,7 @@ const Home = () => {
           color={coloredText}
           width="600px"
           lineHeight="8"
-          fontWeight={"normal"}
+          fontWeight="normal"
         >
           Lorem ipsum dolor sit amet
           <br />
@@ -224,7 +225,7 @@ const Home = () => {
             placeholder="Search"
             width="30%"
             value={searchProfilesText}
-            onChange={e => setSearchProfilesText(e.target.value)}
+            onChange={(e) => setSearchProfilesText(e.target.value)}
           />
         </HStack>
 
@@ -233,42 +234,46 @@ const Home = () => {
         )}
 
         {queryResult.loading ? (
-            <Spinner />
-          ) :
-            queryResult.data?.profiles.length > 0 ? (
-              <SimpleGrid width="100%" columns={3} spacing={6}>
-                {queryResult.data.profiles.map((profile: any) => (
-                  <ProfileCard
-                    key={profile.tokenId}
-                    avatarSrc={
-                      profile.basicProfile && profile.basicProfile.image
-                        ? IPFS_GATEWAY +
-                          profile.basicProfile.image.original.src.split("//")[1]
-                        : "https://source.unsplash.com/random"
-                    }
-                    name={profile.basicProfile ? profile.basicProfile.name : "Anonymous"}
-                    city={profile.basicProfile && profile.basicProfile.homeLocation}
-                    country={profile.basicProfile && profile.basicProfile.residenceCountry}
-                    description={profile.basicProfile && profile.basicProfile.description}
-                    coverSrc={
-                      profile.basicProfile && profile.basicProfile.background
-                        ? IPFS_GATEWAY +
-                          profile.basicProfile.background?.original.src.split(
-                            "//"
-                          )[1]
-                        : "https://source.unsplash.com/random"
-                    }
-                    isUnlocked={false}
-                    skills={profile.publicProfile?.skillTags ?? [] }
-                    did={profile.did}
-                    emoji={profile.basicProfile && profile.basicProfile.emoji}
-                  />
-                ))}
-              </SimpleGrid>
-            ) : (
-              <Text color={accentColor}>No Results.</Text>
-            )
-        }
+          <Spinner />
+        ) : queryResult.data?.profiles.length > 0 ? (
+          <SimpleGrid width="100%" columns={3} spacing={6}>
+            {queryResult.data.profiles.map((profile: any) => (
+              <ProfileCard
+                key={profile.tokenId}
+                avatarSrc={
+                  profile.basicProfile && profile.basicProfile.image
+                    ? IPFS_GATEWAY +
+                      profile.basicProfile.image.original.src.split("//")[1]
+                    : "https://source.unsplash.com/random"
+                }
+                name={
+                  profile.basicProfile ? profile.basicProfile.name : "Anonymous"
+                }
+                city={profile.basicProfile && profile.basicProfile.homeLocation}
+                country={
+                  profile.basicProfile && profile.basicProfile.residenceCountry
+                }
+                description={
+                  profile.basicProfile && profile.basicProfile.description
+                }
+                coverSrc={
+                  profile.basicProfile && profile.basicProfile.background
+                    ? IPFS_GATEWAY +
+                      profile.basicProfile.background?.original.src.split(
+                        "//"
+                      )[1]
+                    : "https://source.unsplash.com/random"
+                }
+                isUnlocked={false}
+                skills={profile.publicProfile?.skillTags ?? []}
+                did={profile.did}
+                emoji={profile.basicProfile && profile.basicProfile.emoji}
+              />
+            ))}
+          </SimpleGrid>
+        ) : (
+          <Text color={accentColor}>No Results.</Text>
+        )}
       </VStack>
     </>
   );

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { apgApi, apgLib } from 'apg-js';
+import { apgApi, apgLib } from "apg-js";
 
 const GRAMMAR = `
 sign-in-with-ethereum =
@@ -145,16 +145,27 @@ HEXDIG         =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
 
 export class ParsedMessage {
   domain: string;
+
   address: string;
+
   statement: string;
+
   uri: string;
+
   version: string;
+
   chainId: string;
+
   nonce: string;
+
   issuedAt: string;
+
   expirationTime: string | null;
+
   notBefore: string | null;
+
   requestId: string | null;
+
   resources: Array<string> | null;
 
   constructor(msg: string) {
@@ -177,14 +188,14 @@ export class ParsedMessage {
       chars: any,
       phraseIndex: any,
       phraseLength: any,
-      data: any,
+      data: any
     ) {
       const ret = id.SEM_OK;
       if (state === id.SEM_PRE) {
         data.domain = apgLib.utils.charsToString(
           chars,
           phraseIndex,
-          phraseLength,
+          phraseLength
         );
       }
       return ret;
@@ -195,14 +206,14 @@ export class ParsedMessage {
       chars: any,
       phraseIndex: any,
       phraseLength: any,
-      data: any,
+      data: any
     ) {
       const ret = id.SEM_OK;
       if (state === id.SEM_PRE) {
         data.address = apgLib.utils.charsToString(
           chars,
           phraseIndex,
-          phraseLength,
+          phraseLength
         );
       }
       return ret;
@@ -213,14 +224,14 @@ export class ParsedMessage {
       chars: any,
       phraseIndex: any,
       phraseLength: any,
-      data: any,
+      data: any
     ) {
       const ret = id.SEM_OK;
       if (state === id.SEM_PRE) {
         data.statement = apgLib.utils.charsToString(
           chars,
           phraseIndex,
-          phraseLength,
+          phraseLength
         );
       }
       return ret;
@@ -231,7 +242,7 @@ export class ParsedMessage {
       chars: any,
       phraseIndex: any,
       phraseLength: any,
-      data: any,
+      data: any
     ) {
       const ret = id.SEM_OK;
       if (state === id.SEM_PRE) {
@@ -239,7 +250,7 @@ export class ParsedMessage {
           data.uri = apgLib.utils.charsToString(
             chars,
             phraseIndex,
-            phraseLength,
+            phraseLength
           );
         }
       }
@@ -251,14 +262,14 @@ export class ParsedMessage {
       chars: any,
       phraseIndex: any,
       phraseLength: any,
-      data: any,
+      data: any
     ) {
       const ret = id.SEM_OK;
       if (state === id.SEM_PRE) {
         data.version = apgLib.utils.charsToString(
           chars,
           phraseIndex,
-          phraseLength,
+          phraseLength
         );
       }
       return ret;
@@ -269,32 +280,32 @@ export class ParsedMessage {
       chars: any,
       phraseIndex: any,
       phraseLength: any,
-      data: any,
+      data: any
     ) {
       const ret = id.SEM_OK;
       if (state === id.SEM_PRE) {
         data.chainId = apgLib.utils.charsToString(
           chars,
           phraseIndex,
-          phraseLength,
+          phraseLength
         );
       }
       return ret;
     };
-    parser.ast.callbacks['chain-id'] = chainId;
+    parser.ast.callbacks["chain-id"] = chainId;
     const nonce = function (
       state: any,
       chars: any,
       phraseIndex: any,
       phraseLength: any,
-      data: any,
+      data: any
     ) {
       const ret = id.SEM_OK;
       if (state === id.SEM_PRE) {
         data.nonce = apgLib.utils.charsToString(
           chars,
           phraseIndex,
-          phraseLength,
+          phraseLength
         );
       }
       return ret;
@@ -305,92 +316,92 @@ export class ParsedMessage {
       chars: any,
       phraseIndex: any,
       phraseLength: any,
-      data: any,
+      data: any
     ) {
       const ret = id.SEM_OK;
       if (state === id.SEM_PRE) {
         data.issuedAt = apgLib.utils.charsToString(
           chars,
           phraseIndex,
-          phraseLength,
+          phraseLength
         );
       }
       return ret;
     };
-    parser.ast.callbacks['issued-at'] = issuedAt;
+    parser.ast.callbacks["issued-at"] = issuedAt;
     const expirationTime = function (
       state: any,
       chars: any,
       phraseIndex: any,
       phraseLength: any,
-      data: any,
+      data: any
     ) {
       const ret = id.SEM_OK;
       if (state === id.SEM_PRE) {
         data.expirationTime = apgLib.utils.charsToString(
           chars,
           phraseIndex,
-          phraseLength,
+          phraseLength
         );
       }
       return ret;
     };
-    parser.ast.callbacks['expiration-time'] = expirationTime;
+    parser.ast.callbacks["expiration-time"] = expirationTime;
     const notBefore = function (
       state: any,
       chars: any,
       phraseIndex: any,
       phraseLength: any,
-      data: any,
+      data: any
     ) {
       const ret = id.SEM_OK;
       if (state === id.SEM_PRE) {
         data.notBefore = apgLib.utils.charsToString(
           chars,
           phraseIndex,
-          phraseLength,
+          phraseLength
         );
       }
       return ret;
     };
-    parser.ast.callbacks['not-before'] = notBefore;
+    parser.ast.callbacks["not-before"] = notBefore;
     const requestId = function (
       state: any,
       chars: any,
       phraseIndex: any,
       phraseLength: any,
-      data: any,
+      data: any
     ) {
       const ret = id.SEM_OK;
       if (state === id.SEM_PRE) {
         data.requestId = apgLib.utils.charsToString(
           chars,
           phraseIndex,
-          phraseLength,
+          phraseLength
         );
       }
       return ret;
     };
-    parser.ast.callbacks['request-id'] = requestId;
+    parser.ast.callbacks["request-id"] = requestId;
     const resources = function (
       state: any,
       chars: any,
       phraseIndex: any,
       phraseLength: any,
-      data: any,
+      data: any
     ) {
       const ret = id.SEM_OK;
       if (state === id.SEM_PRE) {
         data.resources = apgLib.utils
           .charsToString(chars, phraseIndex, phraseLength)
           .slice(3)
-          .split('\n- ');
+          .split("\n- ");
       }
       return ret;
     };
     parser.ast.callbacks.resources = resources;
 
-    const result = parser.parse(grammarObj, 'sign-in-with-ethereum', msg);
+    const result = parser.parse(grammarObj, "sign-in-with-ethereum", msg);
     if (!result.success) {
       throw new Error(`Invalid message: ${JSON.stringify(result)}`);
     }

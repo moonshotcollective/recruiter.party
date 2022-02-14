@@ -1,12 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
+import { LinkIcon } from "@chakra-ui/icons";
 import { HStack, VStack } from "@chakra-ui/layout";
 import { Button, Text, useToast } from "@chakra-ui/react";
-import { LinkIcon } from "@chakra-ui/icons";
-import { ethers } from "ethers";
-import NETWORKS from "core/networks";
-import { Web3Context } from "contexts/Web3Provider";
 import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
+import { ethers } from "ethers";
+import React, { useContext, useEffect, useState } from "react";
+
+import { Web3Context } from "contexts/Web3Provider";
+import NETWORKS from "core/networks";
 
 function ApproveUnlockProfile({
   currentPrivateProfileTokenId,

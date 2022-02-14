@@ -21,14 +21,15 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useWeb3React } from "@web3-react/core";
-import useCustomColor from "core/hooks/useCustomColor";
-import { useMainnetProvider } from "core/hooks/useMainnetProvider";
 import React, { useContext } from "react";
 import Blockies from "react-blockies";
 import { MdCheckCircle, MdContentCopy } from "react-icons/md";
 import { RiExternalLinkFill } from "react-icons/ri";
+
 import { Web3Context } from "../../contexts/Web3Provider";
 import { useResolveEnsName } from "../../core/hooks/useResolveEnsName";
+import useCustomColor from "core/hooks/useCustomColor";
+import { useMainnetProvider } from "core/hooks/useMainnetProvider";
 
 const blockExplorerLink = (address: string, blockExplorer?: string) =>
   `${blockExplorer || "https://etherscan.io/"}${"address/"}${address}`;
@@ -79,7 +80,7 @@ function Address({
   if (validEnsCheck) {
     displayAddress = ens;
   } else if (size === "short") {
-    displayAddress += "..." + account.substr(-4);
+    displayAddress += `...${account.substr(-4)}`;
   } else if (size === "long") {
     displayAddress = account;
   }

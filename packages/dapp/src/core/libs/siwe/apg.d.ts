@@ -1,1 +1,1 @@
-declare module 'apg-js';
+declare module "apg-js";

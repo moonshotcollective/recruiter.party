@@ -11,7 +11,7 @@
     "server:start": "yarn start"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": "14.x"
   },
   "author": "dRecruit (Moonshot Collective)",
   "license": "Apache-2.0",

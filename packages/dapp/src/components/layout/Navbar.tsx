@@ -17,10 +17,11 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
+
 import useCustomColor from "../../core/hooks/useCustomColor";
 import ConnectButton from "../Buttons/ConnectButton";
 import ThemeToggle from "../Buttons/ThemeToggle";
-import NetworkSwitch from '../custom/NetworkSwitch';
+import NetworkSwitch from "../custom/NetworkSwitch";
 import ScaffoldIcon from "../Icons/ScaffoldIcon";
 
 const LinkItem = ({ href, children, ...props }: any) => {
@@ -60,7 +61,7 @@ const Navbar = () => {
         display="flex"
         p={2}
         maxW="7xl"
-        wrap="wrap"
+        flexWrap="wrap"
         alignItems="center"
       >
         <HStack px="4">

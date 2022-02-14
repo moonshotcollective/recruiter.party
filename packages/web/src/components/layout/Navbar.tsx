@@ -59,7 +59,7 @@ const Header = () => {
         display="flex"
         p={2}
         maxW="7xl"
-        wrap="wrap"
+        flexWrap="wrap"
         alignItems="center"
         justify="space-between"
       >

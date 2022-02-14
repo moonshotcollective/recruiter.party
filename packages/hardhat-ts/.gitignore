@@ -5,3 +5,8 @@ mnemonic.secret
 #Hardhat files
 cache
 artifacts
+
+# Ignore everything in this directory
+generated/*
+# Except this file
+!generated/contract-types

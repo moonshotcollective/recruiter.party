@@ -57,13 +57,7 @@ const Navbar = () => {
 
   return (
     <Box as="nav" w="100%" top="0" zIndex={1}>
-      <Container
-        display="flex"
-        p={2}
-        maxW="7xl"
-        flexWrap="wrap"
-        alignItems="center"
-      >
+      <Container display="flex" p={2} maxW="7xl" alignItems="center">
         <HStack px="4">
           <ScaffoldIcon size="36px" />
           <NextLink href="/">

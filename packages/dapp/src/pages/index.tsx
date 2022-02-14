@@ -10,9 +10,11 @@ import {
   Spinner,
   Text,
   Image,
+  FormControl,
+  FormLabel,
 } from "@chakra-ui/react";
 import { useWeb3React } from "@web3-react/core";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { Web3Context } from "../contexts/Web3Provider";
 import { hexToString } from "../core/helpers";
 import { ceramicCoreFactory } from "core/ceramic";
@@ -22,7 +24,7 @@ import { ProfileCard } from "components/Profile/Card";
 import { IPFS_GATEWAY } from "core/constants";
 import NextImage from "next/image";
 import { gql, useQuery } from "@apollo/client";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 
 interface DevProfiles {
   did: string;
@@ -61,7 +63,7 @@ interface DevProfiles {
 
 const Home = () => {
   const { account, contracts } = useContext(Web3Context);
-  const router = useRouter()
+  const router = useRouter();
   const { library } = useWeb3React();
   const { coloredText, accentColor } = useCustomColor();
   const [yourBalance, setYourBalance] = useState("");
@@ -74,6 +76,10 @@ const Home = () => {
   const [profilesLoading, setProfilesLoading] = React.useState(true);
   const [error, setError] = React.useState<unknown>();
   const [searchProfilesText, setSearchProfilesText] = React.useState("");
+  const [showAdvancedSearch, setShowAdvancedSearch] = React.useState(false);
+  const [searchFields, setSearchFields] = React.useState<{
+    [key: string]: string | number;
+  }>({});
 
   const getEthBalance = async () => {
     if (library && account) {
@@ -134,9 +140,20 @@ const Home = () => {
     getEthBalance();
   }, [account, library]);
 
+  const generateQueryString = useMemo(() => {
+    const arr = [];
+    let op = "";
+    for (let key in searchFields) {
+      if (searchFields[key]) {
+        arr.push(`${key}: "${searchFields[key]}"`);
+      }
+    }
+    return arr.join(",");
+  }, [searchFields]);
+
   const GET_PROFILES_QUERY = gql`
     query GetProfiles($searchText: String) {
-      profiles(search: $searchText) {
+      profiles(search: $searchText, ${generateQueryString}) {
         tokenId
         did
         basicProfile {
@@ -164,7 +181,7 @@ const Home = () => {
   `;
 
   const queryResult = useQuery(GET_PROFILES_QUERY, {
-    variables: { searchText: searchProfilesText }
+    variables: { searchText: searchProfilesText },
   });
 
   return (
@@ -224,51 +241,80 @@ const Home = () => {
             placeholder="Search"
             width="30%"
             value={searchProfilesText}
-            onChange={e => setSearchProfilesText(e.target.value)}
+            onChange={(e) => setSearchProfilesText(e.target.value)}
           />
+          <Button onClick={() => setShowAdvancedSearch((t) => !t)}>
+            {showAdvancedSearch ? "Hide " : "Show "} Advanced search
+          </Button>
         </HStack>
+
+        {showAdvancedSearch && (
+          <form>
+            <VStack>
+              <FormControl>
+                <FormLabel htmlFor="skills">Skills</FormLabel>
+                <Input
+                  name="skills"
+                  value={searchFields["skills"]}
+                  onChange={(e) => {
+                    setSearchFields((d) => {
+                      return {
+                        ...d,
+                        skills: e.target.value,
+                      };
+                    });
+                  }}
+                />
+              </FormControl>
+            </VStack>
+          </form>
+        )}
 
         {error && (
           <Text color="red">An error has occured. Please try again.</Text>
         )}
 
         {queryResult.loading ? (
-            <Spinner />
-          ) :
-            queryResult.data?.profiles.length > 0 ? (
-              <SimpleGrid width="100%" columns={3} spacing={6}>
-                {queryResult.data.profiles.map((profile: any) => (
-                  <ProfileCard
-                    key={profile.tokenId}
-                    avatarSrc={
-                      profile.basicProfile && profile.basicProfile.image
-                        ? IPFS_GATEWAY +
-                          profile.basicProfile.image.original.src.split("//")[1]
-                        : "https://source.unsplash.com/random"
-                    }
-                    name={profile.basicProfile ? profile.basicProfile.name : "Anonymous"}
-                    city={profile.basicProfile && profile.basicProfile.homeLocation}
-                    country={profile.basicProfile && profile.basicProfile.residenceCountry}
-                    description={profile.basicProfile && profile.basicProfile.description}
-                    coverSrc={
-                      profile.basicProfile && profile.basicProfile.background
-                        ? IPFS_GATEWAY +
-                          profile.basicProfile.background?.original.src.split(
-                            "//"
-                          )[1]
-                        : "https://source.unsplash.com/random"
-                    }
-                    isUnlocked={false}
-                    skills={profile.publicProfile?.skillTags ?? [] }
-                    did={profile.did}
-                    emoji={profile.basicProfile && profile.basicProfile.emoji}
-                  />
-                ))}
-              </SimpleGrid>
-            ) : (
-              <Text color={accentColor}>No Results.</Text>
-            )
-        }
+          <Spinner />
+        ) : queryResult.data?.profiles.length > 0 ? (
+          <SimpleGrid width="100%" columns={3} spacing={6}>
+            {queryResult.data.profiles.map((profile: any) => (
+              <ProfileCard
+                key={profile.tokenId}
+                avatarSrc={
+                  profile.basicProfile && profile.basicProfile.image
+                    ? IPFS_GATEWAY +
+                      profile.basicProfile.image.original.src.split("//")[1]
+                    : "https://source.unsplash.com/random"
+                }
+                name={
+                  profile.basicProfile ? profile.basicProfile.name : "Anonymous"
+                }
+                city={profile.basicProfile && profile.basicProfile.homeLocation}
+                country={
+                  profile.basicProfile && profile.basicProfile.residenceCountry
+                }
+                description={
+                  profile.basicProfile && profile.basicProfile.description
+                }
+                coverSrc={
+                  profile.basicProfile && profile.basicProfile.background
+                    ? IPFS_GATEWAY +
+                      profile.basicProfile.background?.original.src.split(
+                        "//"
+                      )[1]
+                    : "https://source.unsplash.com/random"
+                }
+                isUnlocked={false}
+                skills={profile.publicProfile?.skillTags ?? []}
+                did={profile.did}
+                emoji={profile.basicProfile && profile.basicProfile.emoji}
+              />
+            ))}
+          </SimpleGrid>
+        ) : (
+          <Text color={accentColor}>No Results.</Text>
+        )}
       </VStack>
     </>
   );

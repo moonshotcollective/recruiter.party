@@ -26,6 +26,7 @@ import { IPFS_GATEWAY } from "core/constants";
 import NextImage from "next/image";
 import { gql, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
+import useDebounce from "core/hooks/useDebounce";
 
 const convertToSentenceCase = (str: string) => {
   const result = str.replace(/([A-Z])/g, " $1");
@@ -124,6 +125,8 @@ const Home = () => {
   const [searchFields, setSearchFields] = React.useState<{
     [key: string]: string | number;
   }>({});
+  const debouncedSearchFields = useDebounce(searchFields, 500);
+  const debouncedSearchText = useDebounce(searchProfilesText, 500);
 
   const getEthBalance = async () => {
     if (library && account) {
@@ -187,13 +190,13 @@ const Home = () => {
   const generateQueryString = useMemo(() => {
     const arr = [];
     let op = "";
-    for (let key in searchFields) {
-      if (searchFields[key]) {
-        arr.push(`${key}: "${searchFields[key]}"`);
+    for (let key in debouncedSearchFields) {
+      if (debouncedSearchFields[key]) {
+        arr.push(`${key}: "${debouncedSearchFields[key]}"`);
       }
     }
     return arr.join(",");
-  }, [searchFields]);
+  }, [debouncedSearchFields]);
 
   const GET_PROFILES_QUERY = gql`
     query GetProfiles($searchText: String) {
@@ -225,7 +228,7 @@ const Home = () => {
   `;
 
   const queryResult = useQuery(GET_PROFILES_QUERY, {
-    variables: { searchText: searchProfilesText },
+    variables: { searchText: debouncedSearchText },
   });
 
   return (

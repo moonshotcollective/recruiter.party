@@ -12,6 +12,7 @@ import {
   Image,
   FormControl,
   FormLabel,
+  Box,
 } from "@chakra-ui/react";
 import { useWeb3React } from "@web3-react/core";
 import React, { useContext, useEffect, useMemo, useState } from "react";
@@ -25,6 +26,11 @@ import { IPFS_GATEWAY } from "core/constants";
 import NextImage from "next/image";
 import { gql, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
+
+const convertToSentenceCase = (str: string) => {
+  const result = str.replace(/([A-Z])/g, " $1");
+  return result.charAt(0).toUpperCase() + result.slice(1);
+};
 
 interface DevProfiles {
   did: string;
@@ -60,6 +66,44 @@ interface DevProfiles {
   publicProfile: any;
   privateProfile: any;
 }
+
+interface SearchFieldProps {
+  value: { [key: string]: string | number };
+  setValue: React.Dispatch<
+    React.SetStateAction<{
+      [key: string]: string | number;
+    }>
+  >;
+  fieldName: string;
+  label?: string;
+}
+
+const SearchField: React.FC<SearchFieldProps> = ({
+  value,
+  setValue,
+  fieldName,
+  label,
+}) => {
+  return (
+    <Box>
+      <FormLabel htmlFor={fieldName}>
+        {label || convertToSentenceCase(fieldName)}
+      </FormLabel>
+      <Input
+        id={fieldName}
+        value={value[fieldName]}
+        onChange={(e) => {
+          setValue((d) => {
+            return {
+              ...d,
+              [fieldName]: e.target.value,
+            };
+          });
+        }}
+      />
+    </Box>
+  );
+};
 
 const Home = () => {
   const { account, contracts } = useContext(Web3Context);
@@ -252,19 +296,49 @@ const Home = () => {
           <form>
             <VStack>
               <FormControl>
-                <FormLabel htmlFor="skills">Skills</FormLabel>
-                <Input
-                  name="skills"
-                  value={searchFields["skills"]}
-                  onChange={(e) => {
-                    setSearchFields((d) => {
-                      return {
-                        ...d,
-                        skills: e.target.value,
-                      };
-                    });
-                  }}
-                />
+                <SimpleGrid columns={3} spacing={6}>
+                  <SearchField
+                    value={searchFields}
+                    setValue={setSearchFields}
+                    fieldName="skills"
+                  />
+
+                  <SearchField
+                    value={searchFields}
+                    setValue={setSearchFields}
+                    fieldName="residenceCountry"
+                  />
+
+                  <SearchField
+                    value={searchFields}
+                    setValue={setSearchFields}
+                    fieldName="homeLocation"
+                  />
+
+                  <SearchField
+                    value={searchFields}
+                    setValue={setSearchFields}
+                    fieldName="educationInstitution"
+                  />
+
+                  <SearchField
+                    value={searchFields}
+                    setValue={setSearchFields}
+                    fieldName="educationTitle"
+                  />
+
+                  <SearchField
+                    value={searchFields}
+                    setValue={setSearchFields}
+                    fieldName="experienceCompany"
+                  />
+
+                  <SearchField
+                    value={searchFields}
+                    setValue={setSearchFields}
+                    fieldName="experienceTitle"
+                  />
+                </SimpleGrid>
               </FormControl>
             </VStack>
           </form>

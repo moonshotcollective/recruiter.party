@@ -41,8 +41,12 @@ const QueryProfiles = {
   },
 
   profile: async (_, obj) => {
-    const { tokenId } = obj
-    const profile = await Profile.findOne({ tokenId: tokenId }).lean()
+    const { tokenId, did } = obj
+    let filter = { tokenId: tokenId }
+    if (did) {
+      filter = { did: did }
+    }
+    const profile = await Profile.findOne(filter).lean()
     return profile
   }
 }

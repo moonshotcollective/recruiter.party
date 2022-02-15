@@ -24,6 +24,7 @@ import NETWORKS from "core/networks";
 import { Web3Context } from "contexts/Web3Provider";
 import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
+import MessageModal from "components/MessageModal/MessageModal";
 
 function UnlockProfile({
   privateProfile,
@@ -50,6 +51,11 @@ function UnlockProfile({
   const [requested, setRequested] = useState(false);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: messageModalIsOpen,
+    onOpen: messageModalOnOpen,
+    onClose: messageModalOnClose,
+  } = useDisclosure();
 
   const handleRequestPrivateProfileUnlock = async () => {
     if (!stakeAmount || +stakeAmount < +"0.1") {
@@ -249,6 +255,11 @@ function UnlockProfile({
           </ModalFooter>
         </ModalContent>
       </Modal>
+      <MessageModal
+        isOpen={messageModalIsOpen}
+        onOpen={messageModalOnOpen}
+        onClose={messageModalOnClose}
+      />
       <Button
         bgColor="yellow.200"
         style={{ margin: "0 auto", marginTop: 20 }}
@@ -256,6 +267,13 @@ function UnlockProfile({
         disabled={requested}
       >
         {requested ? "Requested" : "Unlock Contact"}
+      </Button>
+      <Button
+        bgColor="yellow.200"
+        style={{ margin: "0 auto", marginTop: 20 }}
+        onClick={messageModalOnOpen}
+      >
+        Message (10)
       </Button>
     </>
   );
